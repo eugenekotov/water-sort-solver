@@ -1,0 +1,6 @@
+
+$indent: 0.5rem;
+
+button:not(:last-child) {
+  margin-right: $indent;
+}
