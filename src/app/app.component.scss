@@ -1,6 +1,11 @@
 
-$indent: 0.5rem;
+@use 'src/styles/variables' as *;
 
 button:not(:last-child) {
   margin-right: $indent;
 }
+
+div {
+  border: 1px solid gray;
+}
+

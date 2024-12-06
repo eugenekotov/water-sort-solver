@@ -1,0 +1,8 @@
+@use 'src/styles/variables' as *;
+
+item {
+  background: red;
+  border-radius: 2px;
+  width: $item-size;
+  height: $item-size;
+}
