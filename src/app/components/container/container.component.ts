@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Color } from 'src/app/classes/color.class';
 
 @Component({
   selector: 'app-container',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./container.component.scss']
 })
 export class ContainerComponent implements OnInit {
+
+  items: Color[] = [];
 
   constructor() { }
 

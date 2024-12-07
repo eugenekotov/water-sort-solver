@@ -1,7 +1,7 @@
 @use 'src/styles/variables' as *;
 
-item {
-  background: red;
+.item {
+  background-color: red;
   border-radius: 2px;
   width: $item-size;
   height: $item-size;

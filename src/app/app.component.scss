@@ -1,11 +1,20 @@
-
 @use 'src/styles/variables' as *;
+@use 'src/styles/colors' as colors;
+
+
+button {
+  height: $button-height;
+  min-width: $button-min-width;
+  padding-left: $button-padding;
+  padding-right: $button-padding;
+}
 
 button:not(:last-child) {
   margin-right: $indent;
 }
 
-div {
-  border: 1px solid gray;
+.buttons-container {
+  border: 1px solid colors.$border-color;
+  margin: 0px;
+  padding: $padding
 }
-

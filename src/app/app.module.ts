@@ -5,13 +5,15 @@ import { AppComponent } from './app.component';
 import { ContainerComponent } from './components/container/container.component';
 import { ColorComponent } from './components/color/color.component';
 import { ItemComponent } from './components/item/item.component';
+import { BoardComponent } from './components/board/board.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ContainerComponent,
     ColorComponent,
-    ItemComponent
+    ItemComponent,
+    BoardComponent
   ],
   imports: [
     BrowserModule
