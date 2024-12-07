@@ -1,7 +1,7 @@
 @use 'src/styles/variables' as *;
 @use 'src/styles/colors' as colors;
 
-.board-container {
+.container {
   border: 1px solid colors.$border-color;
   background-color: colors.$board-background-color;
   margin-top: 1rem;

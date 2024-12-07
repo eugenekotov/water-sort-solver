@@ -1,3 +1,4 @@
+<app-all-colors></app-all-colors>
 <div class="board-container">
-  <app-container *ngFor="let container of boardService.containers"></app-container>
+  <app-container *ngFor="let container of boardService.containers" [container]="container"></app-container>
 </div>

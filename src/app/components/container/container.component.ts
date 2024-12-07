@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Color } from 'src/app/classes/color.class';
+import { Component, Input, OnInit } from '@angular/core';
+import { Container } from 'src/app/classes/container.class';
 
 @Component({
   selector: 'app-container',
@@ -8,7 +8,8 @@ import { Color } from 'src/app/classes/color.class';
 })
 export class ContainerComponent implements OnInit {
 
-  items: Color[] = [];
+  @Input()
+  container: Container = new Container();
 
   constructor() { }
 

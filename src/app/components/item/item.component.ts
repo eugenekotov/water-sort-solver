@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Color } from 'src/app/classes/colors.class';
 
 @Component({
   selector: 'app-item',
@@ -6,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./item.component.scss']
 })
 export class ItemComponent implements OnInit {
+
+@Input()
+color: Color | undefined;
 
   constructor() { }
 
