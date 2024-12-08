@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Container } from 'src/app/classes/container.class';
+import { BoardService } from 'src/app/services/board.service';
 
 @Component({
   selector: 'app-container',
@@ -8,12 +9,20 @@ import { Container } from 'src/app/classes/container.class';
 })
 export class ContainerComponent implements OnInit {
 
-  @Input()
-  container: Container = new Container();
+  @Input() container: Container = new Container();
+  @Input() index: number;
 
-  constructor() { }
+  constructor(public borderService: BoardService) { }
 
   ngOnInit(): void {
+  }
+
+  getItemId(containerIndex: number, itemIndex: number) {
+    return ContainerComponent.getItemId(containerIndex, itemIndex);
+  }
+
+  public static getItemId(containerIndex: number, itemIndex: number): string {
+    return "container" + containerIndex + "item" + itemIndex;
   }
 
 }

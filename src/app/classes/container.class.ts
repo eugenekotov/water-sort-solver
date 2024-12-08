@@ -1,11 +1,12 @@
 import { Color } from "./colors.class";
+import { Item } from "./item.class";
 
 export class Container {
 
   static readonly MAX_SIZE = 4;
   private resolved = false;
 
-  colors: Color[] = [];
+  items: Item[] = [];
 
   constructor() {
     this.afterChange();
@@ -15,14 +16,14 @@ export class Container {
 
   }
 
-  public push(color: Color): void {
-    this.colors.push(color);
-    this.afterChange();
-  }
+  // public push(color: Color): void {
+  //   this.colors.push(color);
+  //   this.afterChange();
+  // }
 
-  public pop(): Color {
-    const result = this.colors.pop()!;
-    this.afterChange();
-    return result;
-  }
+  // public pop(): Color {
+  //   const result = this.colors.pop()!;
+  //   this.afterChange();
+  //   return result;
+  // }
 }

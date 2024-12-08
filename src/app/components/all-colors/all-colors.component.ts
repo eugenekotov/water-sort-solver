@@ -10,14 +10,9 @@ export class AllColorsComponent implements OnInit {
 
   private static readonly COUNT = 4;
 
-  colors: Color[] = [];
+  colors: Color[] = Object.values(Color);
 
   constructor() {
-    this.generateAllColors();
-  }
-
-  private generateAllColors() {
-    Object.values(Color).forEach(color => this.colors.push(...Array(4).fill(color)));
   }
 
   ngOnInit(): void {

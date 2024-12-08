@@ -1,14 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/classes/colors.class';
 import { Item } from 'src/app/classes/item.class';
 import { BoardService } from 'src/app/services/board.service';
 
 @Component({
-  selector: 'app-item',
-  templateUrl: './item.component.html',
-  styleUrls: ['./item.component.scss']
+  selector: 'app-moving-item',
+  templateUrl: './moving-item.component.html',
+  styleUrls: ['./moving-item.component.scss']
 })
-export class ItemComponent implements OnInit {
+export class MovingItemComponent implements OnInit {
 
   @Input() item: Item;
 
@@ -20,9 +19,9 @@ export class ItemComponent implements OnInit {
   getStyle() {
     return {
       'background-color': this.item.color,
-      // 'position': 'absolute',
-      // 'top': this.item.top,
-      // 'left': this.item.left,
+      'position': 'absolute',
+      'top': this.item.top,
+      'left': this.item.left,
       'width': this.boardService.ITEM_SIZE,
       'height': this.boardService.ITEM_SIZE,
 

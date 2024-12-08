@@ -1,4 +1,12 @@
 <app-all-colors></app-all-colors>
-<div class="board-container">
-  <app-container *ngFor="let container of boardService.containers" [container]="container"></app-container>
+<div id="relativeContainer" #relativeContainer class="relative-container">
+  <div id="boardContainer" #boardContainer class="board-container">
+    <app-container *ngFor="let container of boardService.containers; let index=index" [container]="container" [index]="index" [attr.id]="getContainerId(index)"></app-container>
+  </div>
+  <app-moving-item class="item-absolute" [item]="boardService.item"></app-moving-item>
+</div>
+
+<div class="buttons-container">
+  <button (click)="moveTo0()">Move to 0</button>
+  <button (click)="moveToContainer()">Move to container</button>
 </div>
