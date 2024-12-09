@@ -5,7 +5,15 @@
   background-color: colors.$color-06;
   border: 3px solid colors.$color-06;
   border-radius: 5px;
-  transition-property: left,top;
+  width: $item-size;
+  height: $item-size;
+  transition-property: left, top;
   transition-duration: 2s;
   transition-timing-function: ease-in-out;
+}
+
+.item-absolute {
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }

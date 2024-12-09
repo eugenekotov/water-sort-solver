@@ -20,12 +20,6 @@ export class ItemComponent implements OnInit {
   getStyle() {
     return {
       'background-color': this.item.color,
-      // 'position': 'absolute',
-      // 'top': this.item.top,
-      // 'left': this.item.left,
-      'width': this.boardService.ITEM_SIZE,
-      'height': this.boardService.ITEM_SIZE,
-
     };
   }
 

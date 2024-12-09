@@ -22,9 +22,6 @@ export class MovingItemComponent implements OnInit {
       'position': 'absolute',
       'top': this.item.top,
       'left': this.item.left,
-      'width': this.boardService.ITEM_SIZE,
-      'height': this.boardService.ITEM_SIZE,
-
     };
   }
 

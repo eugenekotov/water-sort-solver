@@ -6,6 +6,20 @@ export class Container {
   static readonly MAX_SIZE = 4;
   private resolved = false;
 
+
+
+  /**
+   * Structure Items stores items like stack with indexes
+   *
+   *  |   | <- push, pop
+   *  | 3 |
+   *  | 2 |
+   *  | 1 |
+   *  | 0 |
+   *  -----
+   *
+   */
+
   items: Item[] = [];
 
   constructor() {

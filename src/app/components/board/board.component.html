@@ -3,7 +3,7 @@
   <div id="boardContainer" #boardContainer class="board-container">
     <app-container *ngFor="let container of boardService.containers; let index=index" [container]="container" [index]="index" [attr.id]="getContainerId(index)"></app-container>
   </div>
-  <app-moving-item class="item-absolute" [item]="boardService.item"></app-moving-item>
+  <app-moving-item class="item-absolute" [item]="boardService.movingItem"></app-moving-item>
 </div>
 
 <div class="buttons-container">
