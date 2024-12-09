@@ -1,6 +1,6 @@
 <div class="container">
   <!-- <app-all-colors-item *ngFor="let color of container.colors; let index = index" [color]="color" [index]="index"></app-all-colors-item> -->
-  <app-item *ngFor="let item of container.items; let itemIndex = index" [attr.id]="getItemId(index, itemIndex)" [item]="item"></app-item>
+  <app-item *ngFor="let item of container.items; let itemIndex = index" [attr.id]="getItemId(container.index, itemIndex)" [item]="item"></app-item>
 </div>
 
 

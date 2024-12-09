@@ -3,7 +3,6 @@
 
 
 button {
-  border: 1px solid colors.$button-border-color;
   height: $button-height;
   min-width: $button-min-width;
   padding-left: $button-padding;
@@ -16,9 +15,13 @@ button:not(:last-child) {
   margin-right: $indent;
 }
 
+button:disabled {
+  color: colors.$text-color-disabled;
+}
+
 .buttons-container {
   border: 1px solid colors.$border-color;
-  background-color: colors.$main-background-color;
+  // background-color: colors.$main-background-color;
   margin: 0px;
   padding: $padding
 }

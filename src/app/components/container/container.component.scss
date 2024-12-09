@@ -2,12 +2,13 @@
 @use 'src/styles/colors' as colors;
 
 $border-width: 3px;
-$border-radius: 15px;
+$border-radius: 8px;
+$border-color: colors.$color-08;
 
 .container {
-  border-left: $border-width solid colors.$color-05;
-  border-right: $border-width solid colors.$color-05;
-  border-bottom: $border-width solid colors.$color-05;
+  border-left: $border-width solid $border-color;
+  border-right: $border-width solid $border-color;
+  border-bottom: $border-width solid $border-color;
   border-bottom-left-radius: $border-radius;
   border-bottom-right-radius: $border-radius;
   width: $container-width;

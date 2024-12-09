@@ -2,7 +2,7 @@ import { Color } from "./model/colors.class";
 
 export class MovingItem {
 
-  color: Color;
+  color: Color | undefined;
   containerIndex: number;
   index: number;
   hidden: boolean;

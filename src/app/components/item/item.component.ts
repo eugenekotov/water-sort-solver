@@ -19,7 +19,7 @@ export class ItemComponent implements OnInit {
 
   getStyle() {
     return {
-      'background-color': this.item.color,
+      'opacity': 0.5,
     };
   }
 

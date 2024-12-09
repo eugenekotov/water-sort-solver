@@ -2,6 +2,8 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Color } from 'src/app/classes/model/colors.class';
 import { BoardService } from 'src/app/services/board.service';
 import { ContainerComponent } from '../container/container.component';
+import { Solution } from 'src/app/classes/model/solution.class';
+import { Container } from 'src/app/classes/container.class';
 
 @Component({
   selector: 'app-board',
@@ -11,6 +13,8 @@ import { ContainerComponent } from '../container/container.component';
 export class BoardComponent implements OnInit, AfterViewInit {
 
   itemsElements: HTMLElement[] = [];
+  solution: Solution = new Solution();
+  stepIndex: number = 0;
 
   constructor(public boardService: BoardService) { }
 
@@ -31,25 +35,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private setItemPosition() {
-    const containerIndex = 7;
-    const itemIndex = 2;
-    const index = containerIndex * 2 + itemIndex
-    const itemElement = this.itemsElements[index];
-
-    const movingElement = document.getElementById("moving");
-    const itemRect = itemElement!.getBoundingClientRect();
-
-    const parentMovingElement = movingElement!.parentElement!.getBoundingClientRect();
-
-    const top = itemRect.top - parentMovingElement.top;
-    const left = itemRect.left - parentMovingElement.left;
-
-    this.boardService.movingItem.top = `${top}px`;
-    this.boardService.movingItem.left = `${left}px`;
-  }
-
-
   getContainerId(index: number): string {
     return "container" + index;
   }
@@ -60,7 +45,51 @@ export class BoardComponent implements OnInit, AfterViewInit {
   }
 
   moveToContainer() {
-    this.setItemPosition();
+  }
+
+  makeStep() {
+
+    const iFrom = this.solution.steps[this.stepIndex].iFrom;
+    const iTo = this.solution.steps[this.stepIndex].iTo;
+
+    const color = this.boardService.containers[iFrom].peek();
+    this.boardService.movingItem.color = color;
+    // show moving item
+    const itemIndex = this.boardService.containers[iFrom].size() - 1;
+    this.setMovingItemPosition(iFrom, itemIndex);
+    this.boardService.containers[iFrom].pop();
+    this.boardService.movingItem.hidden = false;
+    setTimeout(() => {
+      this.moveItem(iTo).then(_ => {
+        this.boardService.containers[iTo].push(color);
+        this.boardService.movingItem.hidden = true;
+        this.stepIndex++;
+      });
+    }, 100);
+
+
+  }
+
+  private setMovingItemPosition(containerIndex: number, itemIndex: number) {
+    const index = containerIndex * Container.MAX_SIZE + itemIndex;
+    const itemElement = this.itemsElements[index];
+    const movingElement = document.getElementById("moving");
+    const itemRect = itemElement!.getBoundingClientRect();
+    const parentMovingElement = movingElement!.parentElement!.getBoundingClientRect();
+    const top = itemRect.top - parentMovingElement.top;
+    const left = itemRect.left - parentMovingElement.left;
+    this.boardService.movingItem.top = `${top}px`;
+    this.boardService.movingItem.left = `${left}px`;
+  }
+
+  private moveItem(iTo: number): Promise<void> {
+    return new Promise(resolve => {
+      const itemIndex = this.boardService.containers[iTo].size();
+      this.setMovingItemPosition(iTo, itemIndex);
+      setTimeout(() => {
+        resolve();
+      }, 2000);
+    });
   }
 
 }

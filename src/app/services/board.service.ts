@@ -21,31 +21,18 @@ export class BoardService {
     this.movingItem = new MovingItem();
     this.movingItem.color = Color.RED;
     this.movingItem.containerIndex = 9;
-    this.movingItem.hidden = false;
+    this.movingItem.hidden = true;
   }
 
   private fillBoard() {
     for (let i = 0; i < this.CONTAINER_COUNT; i++) {
-      this.containers.push(new Container());
+      this.containers.push(new Container(i));
     }
-    this.fillContainers();
+
+    this.containers[5].push(Color.YELLOW);
+    this.containers[5].push(Color.LIGHT_GREEN);
+    this.containers[5].push(Color.VIOLET);
+    this.containers[5].push(Color.BROWN);
   }
 
-  private fillContainers() {
-    const container = new Container();
-    const item1 = new Item();
-    item1.color = Color.DARK_BLUE;
-    // item1.containerIndex = index;
-    item1.hidden = false;
-    item1.index = 0;
-    container.items.push(item1);
-    const item2 = new Item();
-    item2.color = Color.DARK_GREEN;
-    // item2.containerIndex = index;
-    item2.hidden = false;
-    item2.index = 1;
-    container.items.push(item2);
-    //
-    return container;
-  }
 }

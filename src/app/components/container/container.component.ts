@@ -9,8 +9,7 @@ import { BoardService } from 'src/app/services/board.service';
 })
 export class ContainerComponent implements OnInit {
 
-  @Input() container: Container = new Container();
-  @Input() index: number;
+  @Input() container!: Container;
 
   constructor(public borderService: BoardService) { }
 
