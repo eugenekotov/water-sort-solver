@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Color } from 'src/app/classes/colors.class';
+import { Color } from 'src/app/classes/model/colors.class';
 import { BoardService } from 'src/app/services/board.service';
 import { ContainerComponent } from '../container/container.component';
 

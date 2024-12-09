@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Color } from 'src/app/classes/colors.class';
+import { Color } from 'src/app/classes/model/colors.class';
 
 @Component({
   selector: 'app-all-colors',

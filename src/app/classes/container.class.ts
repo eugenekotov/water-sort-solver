@@ -1,12 +1,10 @@
-import { Color } from "./colors.class";
+import { Color } from "./model/colors.class";
 import { Item } from "./item.class";
 
 export class Container {
 
   static readonly MAX_SIZE = 4;
   private resolved = false;
-
-
 
   /**
    * Structure Items stores items like stack with indexes
@@ -23,6 +21,7 @@ export class Container {
   items: Item[] = [];
 
   constructor() {
+    this.items.push(new Item())
     this.afterChange();
   }
 

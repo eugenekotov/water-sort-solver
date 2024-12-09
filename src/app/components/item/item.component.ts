@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/classes/colors.class';
+import { Color } from 'src/app/classes/model/colors.class';
 import { Item } from 'src/app/classes/item.class';
 import { BoardService } from 'src/app/services/board.service';
 

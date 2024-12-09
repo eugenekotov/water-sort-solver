@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from 'src/app/classes/item.class';
+import { MovingItem } from 'src/app/classes/moving-item.class';
 import { BoardService } from 'src/app/services/board.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { BoardService } from 'src/app/services/board.service';
 })
 export class MovingItemComponent implements OnInit {
 
-  @Input() item: Item;
+  @Input() item: MovingItem;
 
   constructor(public boardService: BoardService) { }
 
