@@ -7,7 +7,7 @@
 </div>
 
 <div class="buttons-container">
-  <button (click)="makeStep()" [disabled]="stepIndex>=solution.steps.length">Make step</button>
+  <button (click)="makeStep()" [disabled]="inProgress || stepIndex>=solution.steps.length">Make step</button>
   <button (click)="moveTo0()">Move to 0</button>
   <button (click)="moveToContainer()">Move to container</button>
 </div>

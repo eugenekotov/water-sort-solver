@@ -17,10 +17,4 @@ export class ItemComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getStyle() {
-    return {
-      'opacity': 0.5,
-    };
-  }
-
 }

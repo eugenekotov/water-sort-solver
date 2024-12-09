@@ -15,6 +15,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
   itemsElements: HTMLElement[] = [];
   solution: Solution = new Solution();
   stepIndex: number = 0;
+  inProgress: boolean = false;
 
   constructor(public boardService: BoardService) { }
 
@@ -49,8 +50,10 @@ export class BoardComponent implements OnInit, AfterViewInit {
 
   makeStep() {
 
+    this.inProgress = true;
     const iFrom = this.solution.steps[this.stepIndex].iFrom;
     const iTo = this.solution.steps[this.stepIndex].iTo;
+    this.stepIndex++;
 
     const color = this.boardService.containers[iFrom].peek();
     this.boardService.movingItem.color = color;
@@ -63,11 +66,9 @@ export class BoardComponent implements OnInit, AfterViewInit {
       this.moveItem(iTo).then(_ => {
         this.boardService.containers[iTo].push(color);
         this.boardService.movingItem.hidden = true;
-        this.stepIndex++;
+        this.inProgress = false;
       });
-    }, 100);
-
-
+    }, 0);
   }
 
   private setMovingItemPosition(containerIndex: number, itemIndex: number) {
