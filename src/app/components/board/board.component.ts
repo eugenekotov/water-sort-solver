@@ -89,7 +89,7 @@ export class BoardComponent implements OnInit, AfterViewInit {
       this.setMovingItemPosition(iTo, itemIndex);
       setTimeout(() => {
         resolve();
-      }, 2000);
+      }, this.boardService.TRANSITION_DURATION_MS);
     });
   }
 

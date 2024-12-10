@@ -11,6 +11,8 @@ import { MovingItem } from "../classes/moving-item.class";
 export class BoardService {
 
   private readonly CONTAINER_COUNT = 14;
+  public readonly TRANSITION_DURATION_MS = 1000;
+  public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 2000).toString() + "s";
 
   containers: Container[] = [];
   movingItem: MovingItem; // Item for moving animation

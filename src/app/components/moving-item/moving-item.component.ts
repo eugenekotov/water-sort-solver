@@ -23,6 +23,7 @@ export class MovingItemComponent implements OnInit {
       'position': 'absolute',
       'top': this.item.top,
       'left': this.item.left,
+      'transition-duration': this.boardService.TRANSITION_DURATION
     };
   }
 
