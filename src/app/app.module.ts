@@ -8,6 +8,7 @@ import { BoardComponent } from './components/board/board.component';
 import { AllColorsComponent } from './components/all-colors/all-colors.component';
 import { ItemComponent } from './components/item/item.component';
 import { MovingItemComponent } from './components/moving-item/moving-item.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MovingItemComponent } from './components/moving-item/moving-item.compon
     MovingItemComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
