@@ -19,9 +19,7 @@ export class BoardService {
 
   constructor() {
     this.fillBoard();
-
     this.movingItem = new MovingItem();
-    this.movingItem.color = Color.RED;
     this.movingItem.hidden = true;
   }
 
@@ -30,10 +28,58 @@ export class BoardService {
       this.containers.push(new Container(i));
     }
 
+
+    this.containers[0].push(Color.RED);
+    this.containers[0].push(Color.LIGHT_GREEN);
+    this.containers[0].push(Color.VIOLET);
+    this.containers[0].push(Color.BROWN);
+
+    this.containers[1].push(Color.PINK);
+    this.containers[1].push(Color.DARK_BLUE);
+    this.containers[1].push(Color.GREY);
+    this.containers[1].push(Color.GREEN);
+
+    this.containers[2].push(Color.PINK);
+    this.containers[2].push(Color.GREY);
+    this.containers[2].push(Color.GREEN);
+
+    this.containers[3].push(Color.RED);
+    this.containers[3].push(Color.BROWN);
+    this.containers[3].push(Color.GREEN);
+    this.containers[3].push(Color.YELLOW);
+
+    this.containers[4].push(Color.YELLOW);
+    this.containers[4].push(Color.GREEN);
+    this.containers[4].push(Color.YELLOW);
+
     this.containers[5].push(Color.YELLOW);
     this.containers[5].push(Color.LIGHT_GREEN);
     this.containers[5].push(Color.VIOLET);
     this.containers[5].push(Color.BROWN);
+
+    this.containers[6].push(Color.RED);
+    this.containers[6].push(Color.BROWN);
+    this.containers[6].push(Color.VIOLET);
+
+    this.containers[7].push(Color.BROWN);
+    this.containers[7].push(Color.VIOLET);
+    this.containers[7].push(Color.RED);
+
+    this.containers[8].push(Color.BROWN);
+    this.containers[8].push(Color.VIOLET);
+    this.containers[8].push(Color.RED);
+
+    this.containers[9].push(Color.BROWN);
+    this.containers[9].push(Color.VIOLET);
+    this.containers[9].push(Color.RED);
+
+    this.containers[10].push(Color.BROWN);
+    this.containers[10].push(Color.VIOLET);
+
+    this.containers[11].push(Color.VIOLET);
+    this.containers[11].push(Color.VIOLET);
+    this.containers[11].push(Color.RED);
+
   }
 
 }

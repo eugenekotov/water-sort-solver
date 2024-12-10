@@ -3,7 +3,7 @@
 
 .item {
   background-color: colors.$color-06;
-  border: 3px solid colors.$color-06;
+  border: $item-border-width solid colors.$color-06;
   border-radius: 5px;
   width: $item-size;
   height: $item-size;
