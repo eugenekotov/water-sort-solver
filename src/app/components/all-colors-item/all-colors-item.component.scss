@@ -4,7 +4,34 @@
 .item {
   background-color: colors.$color-06;
   border: $item-border-width solid colors.$color-06;
-  border-radius: 5px;
+  border-radius: $item-border-radius;
   width: $item-size;
   height: $item-size;
+
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+$count-size: 18px;
+
+.count {
+  border: 1px solid rgb(170, 0, 0);
+  background-color: rgb(218, 0, 0);
+  border-radius: 12px;
+  color: white;
+  width: $count-size;
+  height: $count-size;
+  font-size: 12px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  top: -$item-size - $count-size/2;
+  left: $item-size;
+
 }

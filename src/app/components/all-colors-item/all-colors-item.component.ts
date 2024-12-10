@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Color } from 'src/app/classes/model/colors.class';
+import { ColorModel } from '../all-colors/all-colors.component';
 
 @Component({
   selector: 'app-all-colors-item',
@@ -8,8 +9,7 @@ import { Color } from 'src/app/classes/model/colors.class';
 })
 export class AllColorsItemComponent implements OnInit {
 
-@Input()
-color: Color | undefined;
+@Input() colorModel!: ColorModel;
 
   constructor() { }
 

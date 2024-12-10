@@ -1,2 +1,7 @@
-<div class="item" [ngStyle]="{ 'background-color': color }">
+<div>
+  <div class="item" [ngStyle]="{ 'background-color': colorModel.color}">
+  </div>
+  <div class="count">
+    <label>{{colorModel.count}}</label>
+  </div>
 </div>
