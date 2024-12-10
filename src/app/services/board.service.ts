@@ -20,7 +20,6 @@ export class BoardService {
 
     this.movingItem = new MovingItem();
     this.movingItem.color = Color.RED;
-    this.movingItem.containerIndex = 9;
     this.movingItem.hidden = true;
   }
 
