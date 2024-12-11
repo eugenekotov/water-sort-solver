@@ -7,11 +7,11 @@ import { Container } from 'src/app/classes/container.class';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: 'app-board',
-  templateUrl: './board.component.html',
-  styleUrls: ['./board.component.scss']
+  selector: 'app-board-setup',
+  templateUrl: './board-setup.component.html',
+  styleUrls: ['./board-setup.component.scss']
 })
-export class BoardComponent implements OnInit, AfterViewInit {
+export class BoardSetupComponent implements OnInit, AfterViewInit {
 
   itemsElements: HTMLElement[] = [];
   solution: Solution = new Solution();

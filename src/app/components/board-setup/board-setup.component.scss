@@ -1,0 +1,51 @@
+@use 'src/styles/variables' as *;
+@use 'src/styles/colors' as colors;
+
+.board-container {
+  border: 1px solid colors.$border-color;
+  background-color: colors.$board-background-color;
+  margin-top: 1rem;
+  padding: 2rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+
+
+.relative-container {
+  position: relative;
+}
+
+.item-absolute {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+button {
+  height: $button-height;
+  min-width: $button-min-width;
+  padding-left: $button-padding;
+  padding-right: $button-padding;
+  color: colors.$text-color;
+  font-weight: 600;
+}
+
+button:disabled {
+  color: colors.$text-color-disabled;
+}
+
+button:not(:last-child) {
+  margin-right: $indent;
+}
+
+.buttons-container {
+  border: 1px solid colors.$border-color;
+  background-color: colors.$main-background-color;
+  margin-top: 1rem;
+  padding: $padding
+}
