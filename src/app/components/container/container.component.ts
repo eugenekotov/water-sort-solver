@@ -24,4 +24,8 @@ export class ContainerComponent implements OnInit {
     return "container" + containerIndex + "item" + itemIndex;
   }
 
+  drop(event: any) {
+    console.log("Drop on the board", event);
+  }
+
 }

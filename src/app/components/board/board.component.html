@@ -1,7 +1,11 @@
 <app-all-colors></app-all-colors>
 <div id="relativeContainer" #relativeContainer class="relative-container">
   <div id="boardContainer" #boardContainer class="board-container">
-    <app-container *ngFor="let container of boardService.containers; let containerIndex = index" [container]="container" [attr.id]="getContainerId(containerIndex)"></app-container>
+    <app-container
+      *ngFor="let container of boardService.containers; let containerIndex = index"
+      [container]="container"
+      [attr.id]="getContainerId(containerIndex)">
+    </app-container>
   </div>
   <app-moving-item class="item-absolute" [item]="boardService.movingItem"></app-moving-item>
 </div>

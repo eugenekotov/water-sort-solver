@@ -4,6 +4,7 @@ import { BoardService } from 'src/app/services/board.service';
 import { ContainerComponent } from '../container/container.component';
 import { Solution } from 'src/app/classes/model/solution.class';
 import { Container } from 'src/app/classes/container.class';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-board',
@@ -92,5 +93,6 @@ export class BoardComponent implements OnInit, AfterViewInit {
       }, this.boardService.TRANSITION_DURATION_MS);
     });
   }
+
 
 }

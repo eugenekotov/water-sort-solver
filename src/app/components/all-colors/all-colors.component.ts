@@ -23,4 +23,9 @@ export class AllColorsComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  drop(event: any) {
+    console.log("Drop on all colors", event);
+  }
+
+
 }

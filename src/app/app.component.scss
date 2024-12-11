@@ -1,6 +1,9 @@
 @use 'src/styles/variables' as *;
 @use 'src/styles/colors' as colors;
 
+label {
+  user-select: none;
+}
 
 button {
   height: $button-height;
@@ -21,7 +24,35 @@ button:disabled {
 
 .buttons-container {
   border: 1px solid colors.$border-color;
-  // background-color: colors.$main-background-color;
+  background-color: colors.$main-background-color;
   margin: 0px;
   padding: $padding
+}
+
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.list {
+  width: 200px;
+  min-height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  padding: 10px;
+  border: 1px solid #aaa;
+  background-color: white;
+  border-radius: 4px;
+  cursor: grab;
+  text-align: center;
 }
