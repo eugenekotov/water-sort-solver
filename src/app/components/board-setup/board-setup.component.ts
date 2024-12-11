@@ -25,74 +25,18 @@ export class BoardSetupComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.getItemsElements();
-  }
-
-  private getItemsElements() {
-    for (let containerIndex = 0; containerIndex < this.boardService.containers.length; containerIndex++) {
-      const container = this.boardService.containers[containerIndex];
-      for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
-      }
-    }
   }
 
   getContainerId(index: number): string {
     return "container" + index;
   }
 
-  moveTo0() {
-    this.boardService.movingItem.top = "0px";
-    this.boardService.movingItem.left = "0px";
+  clearClick() {
+
   }
 
-  moveToContainer() {
+  saveClick() {
+
   }
-
-  makeStep() {
-
-    this.inProgress = true;
-    const iFrom = this.solution.steps[this.stepIndex].iFrom;
-    const iTo = this.solution.steps[this.stepIndex].iTo;
-    this.stepIndex++;
-
-    const color = this.boardService.containers[iFrom].peek();
-    this.boardService.movingItem.color = color;
-    // show moving item
-    const itemIndex = this.boardService.containers[iFrom].size() - 1;
-    this.setMovingItemPosition(iFrom, itemIndex);
-    this.boardService.containers[iFrom].pop();
-    this.boardService.movingItem.hidden = false;
-    setTimeout(() => {
-      this.moveItem(iTo).then(_ => {
-        this.boardService.containers[iTo].push(color);
-        this.boardService.movingItem.hidden = true;
-        this.inProgress = false;
-      });
-    }, 0);
-  }
-
-  private setMovingItemPosition(containerIndex: number, itemIndex: number) {
-    const index = containerIndex * Container.MAX_SIZE + itemIndex;
-    const itemElement = this.itemsElements[index];
-    const movingElement = document.getElementById("moving");
-    const itemRect = itemElement!.getBoundingClientRect();
-    const parentMovingElement = movingElement!.parentElement!.getBoundingClientRect();
-    const top = itemRect.top - parentMovingElement.top;
-    const left = itemRect.left - parentMovingElement.left;
-    this.boardService.movingItem.top = `${top}px`;
-    this.boardService.movingItem.left = `${left}px`;
-  }
-
-  private moveItem(iTo: number): Promise<void> {
-    return new Promise(resolve => {
-      const itemIndex = this.boardService.containers[iTo].size();
-      this.setMovingItemPosition(iTo, itemIndex);
-      setTimeout(() => {
-        resolve();
-      }, this.boardService.TRANSITION_DURATION_MS);
-    });
-  }
-
 
 }

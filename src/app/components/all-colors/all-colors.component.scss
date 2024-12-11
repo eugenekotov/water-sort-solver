@@ -4,8 +4,8 @@
 .container {
   border: 1px solid colors.$border-color;
   background-color: colors.$board-background-color;
-  margin-top: 1rem;
-  padding: 1rem;
+  margin: $margin;
+  padding: $padding;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

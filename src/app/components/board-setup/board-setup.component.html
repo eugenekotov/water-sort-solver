@@ -11,7 +11,6 @@
 </div>
 
 <div class="buttons-container">
-  <button (click)="makeStep()" [disabled]="inProgress || stepIndex>=solution.steps.length">Make step</button>
-  <button (click)="moveTo0()">Move to 0</button>
-  <button (click)="moveToContainer()">Move to container</button>
+  <button (click)="clearClick()" [disabled]="inProgress || stepIndex>=solution.steps.length">Clear board</button>
+  <button (click)="saveClick()">Save and solve</button>
 </div>

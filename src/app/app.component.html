@@ -1,24 +1,8 @@
 <div class="buttons-container">
-  <button>Create new board</button>
-  <button>Solve game</button>
-  <button>Show solution</button>
-  <button>OK</button>
+  <button (click)="setupClick()">Create new board</button>
+  <button (click)="solveClick()">Solve game</button>
 </div>
 
-<app-board-setup></app-board-setup>
+<app-board-setup *ngIf="mode=='setup'"></app-board-setup>
 
-<div class="container">
-  <h2>Список 1</h2>
-  <div cdkDropList [cdkDropListData]="list1" (cdkDropListDropped)="drop1($event)" class="list">
-    <div *ngFor="let item of list1" cdkDrag class="item">
-      {{ item }}
-    </div>
-  </div>
-
-  <h2>Список 2</h2>
-  <div cdkDropList [cdkDropListData]="list2" (cdkDropListDropped)="drop2($event)" class="list">
-    <div *ngFor="let item of list2" cdkDrag class="item">
-      {{ item }}
-    </div>
-  </div>
-</div>
+<app-board-play *ngIf="mode=='solve'"></app-board-play>

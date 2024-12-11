@@ -4,8 +4,8 @@
 .board-container {
   border: 1px solid colors.$border-color;
   background-color: colors.$board-background-color;
-  margin-top: 1rem;
-  padding: 2rem;
+  margin: $margin;
+  padding: $padding;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -46,6 +46,6 @@ button:not(:last-child) {
 .buttons-container {
   border: 1px solid colors.$border-color;
   background-color: colors.$main-background-color;
-  margin-top: 1rem;
-  padding: $padding
+  margin: $margin;
+  padding: $padding;
 }

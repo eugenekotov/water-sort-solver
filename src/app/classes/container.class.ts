@@ -23,9 +23,9 @@ export class Container {
 
   constructor(index: number) {
     this.index = index;
-    for (let i = 0; i < Container.MAX_SIZE; i++) {
-      this.items.push(new Item(undefined, index, false));
-    }
+    // for (let i = 0; i < Container.MAX_SIZE; i++) {
+    //   this.items.push(new Item(undefined, index, false));
+    // }
     this.afterChange();
   }
 
