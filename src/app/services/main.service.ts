@@ -97,6 +97,7 @@ export class MainService {
   }
 
   public stopProgress() {
+    // TODO: implement progress interaption
     this.setMode("setup");
   }
 
