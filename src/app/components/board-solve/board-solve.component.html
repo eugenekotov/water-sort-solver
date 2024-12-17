@@ -7,7 +7,7 @@
     </div>
     <div class="relative-container">
       <div class="containers">
-        <app-container *ngFor="let container of mainService.containers; let containerIndex = index"
+        <app-container *ngFor="let container of mainService.playContainers; let containerIndex = index"
           [container]="container" [attr.id]="getContainerId(containerIndex)">
         </app-container>
       </div>

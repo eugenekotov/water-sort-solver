@@ -27,7 +27,7 @@ export class MainService {
   visibleNoSolution: boolean = false;
   visibleSolve: boolean = false;
 
-  containers: PlayContainer[] = [];
+  playContainers: PlayContainer[] = [];
   solution: Solution = new Solution();
 
   movingItem: Item; // Item for moving animation
@@ -85,10 +85,10 @@ export class MainService {
     }
   }
 
-  public solve(containers: SetupContainer[]) {
+  public solve(setupContainers: SetupContainer[]) {
     this.setMode("in-progress").then(_ => {
-      this.fillBoard(containers);
-      if (this.solution.solve(this.containers)) {
+      this.fillBoard(setupContainers);
+      if (this.solution.solve(this.playContainers)) {
         this.setMode("solve");
       } else {
         this.setMode("no-solution");
@@ -103,19 +103,21 @@ export class MainService {
 
   private createContainers() {
     for (let i = 0; i < this.CONTAINERS_COUNT; i++) {
-      this.containers.push(new PlayContainer(i));
+      this.playContainers.push(new PlayContainer(i));
     }
   }
 
   public fillBoard(setupContainers: SetupContainer[]) {
     this.clearContainers();
     setupContainers.forEach((setupContainer, containerIndex) => {
-      setupContainer.colors.forEach((color, itemIndex) => this.containers[containerIndex].items[PlayContainer.MAX_SIZE - 1 - itemIndex].color = color);
+
+
+      setupContainer.colors.forEach((color, itemIndex) => this.playContainers[containerIndex].items[setupContainer.colors.length - 1 - itemIndex ].color = color);
     });
   }
 
   private clearContainers() {
-    this.containers.forEach(container => container.clear());
+    this.playContainers.forEach(container => container.clear());
   }
 
   private createSetupContainers() {

@@ -76,8 +76,8 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
   }
 
   private getItemsElements() {
-    for (let containerIndex = 0; containerIndex < this.mainService.containers.length; containerIndex++) {
-      const container = this.mainService.containers[containerIndex];
+    for (let containerIndex = 0; containerIndex < this.mainService.playContainers.length; containerIndex++) {
+      const container = this.mainService.playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
         this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
       }
@@ -102,18 +102,18 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
 
   private makeStep(step: PlayStep): Observable<number> {
     return new Observable<number>(observer => {
-      const color = this.mainService.containers[step.iFrom].peek();
+      const color = this.mainService.playContainers[step.iFrom].peek();
       this.mainService.movingItem.color = color;
       // show moving item
-      const itemIndex = this.mainService.containers[step.iFrom].size() - 1;
+      const itemIndex = this.mainService.playContainers[step.iFrom].size() - 1;
       const startPosition = this.getMovingPosition(step.iFrom, itemIndex);
       this.setMovingPosition(startPosition);
-      this.mainService.containers[step.iFrom].pop();
+      this.mainService.playContainers[step.iFrom].pop();
       this.mainService.movingItem.hidden = false;
       const movig_duration = this.calculateMovingDuration(step.iFrom, step.iTo);
       setTimeout(() => {
         this.moveItem(startPosition, step.iTo, movig_duration).then(_ => {
-          this.mainService.containers[step.iTo].push(color);
+          this.mainService.playContainers[step.iTo].push(color);
           this.mainService.movingItem.hidden = true;
           this.completeStepIndex = step.index;
           setTimeout(() => {
@@ -148,7 +148,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
 
   private moveItem(startPosition: Position, iTo: number, moving_duration: number): Promise<void> {
     return new Promise(resolve => {
-      const itemIndex = this.mainService.containers[iTo].size();
+      const itemIndex = this.mainService.playContainers[iTo].size();
       const finishPosition = this.getMovingPosition(iTo, itemIndex);
       const topPosition = new Position(BoardSolveComponent.MOVING_TOP, startPosition.left);
       const leftPosition = new Position(BoardSolveComponent.MOVING_TOP, finishPosition.left);
