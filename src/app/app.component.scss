@@ -3,12 +3,10 @@
 @use 'sass:math';
 
 .body-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  height: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+
   background-color: colors.$main-background-color;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   font-size: 14px;
@@ -16,10 +14,16 @@
   user-select: none;
 }
 
+.body-vertical-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .main-container {
   background-color: colors.$main-background-color;
-  width: $width;
-  height: $height;
+  margin: $margin;
+  flex: 1;
 }
 
 .shadow {

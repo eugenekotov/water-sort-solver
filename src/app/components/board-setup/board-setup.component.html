@@ -1,15 +1,15 @@
 <div class="board-setup-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
   <div>
-    <div style="display: flex; justify-content: center;">
-    <div class="source-containers">
-      <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
-        cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
-        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+    <div class="source-containers-parent">
+      <div class="source-containers">
+        <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
+          cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+          (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
-        <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+          <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
         </div>
       </div>
-    </div>
     </div>
 
     <div class="containers">
