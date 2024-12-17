@@ -1,9 +1,5 @@
-<div class="container" cdkDropList (cdkDropListDropped)="drop($event)">
-  <app-item *ngFor="let item of container.items; let itemIndex = index" [attr.id]="getItemId(container.index, itemIndex)" [item]="item"></app-item>
+<div class="container">
+  <app-item *ngFor="let item of container.items; let itemIndex = index"
+    [attr.id]="getItemId(container.index, itemIndex)" [item]="item">
+  </app-item>
 </div>
-
-
-
-
-
-

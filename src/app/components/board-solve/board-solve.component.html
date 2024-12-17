@@ -1,0 +1,27 @@
+<div class="board-solve-container" [ngStyle]="mainService.visibleSolve ? {'opacity' : 1} : {'opacity' : 0}">
+
+  <div>
+    <div class="solution-text-container">
+      <p>Solution consists of {{mainService.solution.steps.length}} steps</p>
+      <p>Current step: {{completeStepIndex}}</p>
+    </div>
+    <div class="relative-container">
+      <div class="containers">
+        <app-container *ngFor="let container of mainService.containers; let containerIndex = index"
+          [container]="container" [attr.id]="getContainerId(containerIndex)">
+        </app-container>
+      </div>
+      <app-moving-item class="item-absolute" [item]="mainService.movingItem"></app-moving-item>
+    </div>
+  </div>
+
+  <div class="buttons-container">
+    <button mat-raised-button (click)="backClick()" [disabled]="playing || stepIndex === 0">Step back</button>
+    <button mat-raised-button class="mr" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
+    <button mat-raised-button (click)="playBackClick()" [disabled]="playing || stepIndex === 0">Play back</button>
+    <button mat-raised-button class="mr" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
+    <button mat-raised-button class="mr" (click)="stopClick()" [disabled]="!playing || stopping">Stop</button>
+    <button mat-raised-button (click)="setupClick()" [disabled]="playing">Setup board</button>
+  </div>
+
+</div>

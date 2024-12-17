@@ -1,0 +1,8 @@
+<div class="board-container" [ngStyle]="mainService.visibleNoSolution ? {'opacity' : 1} : {'opacity' : 0}">
+  <div style="display: flex; justify-content: center; flex-grow: 1; align-items: center;">
+    No solution :(
+  </div>
+  <div class="buttons-container">
+    <button mat-raised-button (click)="setupClick()">Setup</button>
+  </div>
+</div>

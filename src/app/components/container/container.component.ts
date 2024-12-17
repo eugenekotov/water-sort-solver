@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Container } from 'src/app/classes/container.class';
-import { BoardService } from 'src/app/services/board.service';
+import { PlayContainer } from 'src/app/classes/play-container.class';
+import { MainService } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-container',
@@ -9,9 +9,9 @@ import { BoardService } from 'src/app/services/board.service';
 })
 export class ContainerComponent implements OnInit {
 
-  @Input() container!: Container;
+  @Input() container!: PlayContainer;
 
-  constructor(public borderService: BoardService) { }
+  constructor(public mainService: MainService) { }
 
   ngOnInit(): void {
   }

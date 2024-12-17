@@ -14,10 +14,12 @@ $color-12: rgb(40, 40, 40);
 
 $main-background-color: $color-00;
 
-$border-color: $color-02;
-$button-border-color: $color-04;
+$border-color: $color-04;
 $board-background-color: $main-background-color;
-$container-background-color: $color-03;
 
-$text-color: $color-10;
+$container-background-color: $color-03;
+$source-container-border-color: $color-02;
+$container-border-color: $color-06;
+
+$text-color: $color-09;
 $text-color-disabled: $color-05;

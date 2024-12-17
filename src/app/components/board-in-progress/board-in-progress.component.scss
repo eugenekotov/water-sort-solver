@@ -1,0 +1,29 @@
+@use 'src/styles/variables' as *;
+@use 'src/styles/colors' as colors;
+
+.board-container {
+  width: $width;
+  height: $height;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: opacity 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  margin: $margin;
+  gap: 10px;
+}
+
+button {
+  min-width: $button-min-width;
+  padding-left: $button-padding;
+  padding-right: $button-padding;
+  color: colors.$text-color;
+  font-weight: 600;
+}

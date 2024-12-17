@@ -1,42 +1,75 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Color } from 'src/app/classes/model/colors.class';
-import { BoardService } from 'src/app/services/board.service';
-import { ContainerComponent } from '../container/container.component';
-import { Solution } from 'src/app/classes/model/solution.class';
-import { Container } from 'src/app/classes/container.class';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Component } from '@angular/core';
+import { Color } from 'src/app/classes/colors.class';
+import { SetupContainer } from 'src/app/classes/setup-container.class';
+import { MainService } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-board-setup',
   templateUrl: './board-setup.component.html',
   styleUrls: ['./board-setup.component.scss']
 })
-export class BoardSetupComponent implements OnInit, AfterViewInit {
+export class BoardSetupComponent {
 
-  itemsElements: HTMLElement[] = [];
-  solution: Solution = new Solution();
-  stepIndex: number = 0;
-  inProgress: boolean = false;
-
-  constructor(public boardService: BoardService) { }
-
-  ngOnInit(): void {
-
+  constructor(public mainService: MainService) {
   }
 
-  ngAfterViewInit(): void {
+  drop(event: CdkDragDrop<Color[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex,
+      );
+    }
   }
 
-  getContainerId(index: number): string {
-    return "container" + index;
+  getConnectedLists(currentId: string): string[] {
+    const array: string[] = [...this.mainService.sourceContainers.map(c => c.id), ...this.mainService.setupContainers.map(c => c.id)];
+    return array.filter(id => id !== currentId);
+  }
+
+  getItemStyle(color: Color) {
+    return { 'background-color': color };
+  }
+
+  canDrop(container: SetupContainer): () => boolean {
+    return () => {
+      return container.colors.length < this.mainService.CONTAINER_SIZE;
+    }
   }
 
   clearClick() {
+    // TODO: Ask confirmation
+    this.mainService.createSourceContainers();
+    this.clearContainers();
+  }
 
+  private clearContainers() {
+    this.mainService.setupContainers.forEach(container => container.colors = []);
   }
 
   saveClick() {
+    const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
+    const containersString = JSON.stringify(this.mainService.setupContainers);
+    localStorage.setItem("water-sort-solver-source", sourceContainersString);
+    localStorage.setItem("water-sort-solver-containers", containersString);
+  }
 
+  loadClick() {
+    const sourceContainersString = localStorage.getItem("water-sort-solver-source");
+    const containersString = localStorage.getItem("water-sort-solver-containers");
+    if (sourceContainersString && containersString) {
+      this.mainService.sourceContainers = JSON.parse(sourceContainersString!);
+      this.mainService.setupContainers = JSON.parse(containersString!);
+    }
+  }
+
+  solveClick() {
+    this.mainService.solve(this.mainService.setupContainers);
   }
 
 }

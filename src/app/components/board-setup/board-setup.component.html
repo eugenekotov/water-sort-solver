@@ -1,16 +1,32 @@
-<app-all-colors></app-all-colors>
-<div id="relativeContainer" #relativeContainer class="relative-container">
-  <div id="boardContainer" #boardContainer class="board-container">
-    <app-container
-      *ngFor="let container of boardService.containers; let containerIndex = index"
-      [container]="container"
-      [attr.id]="getContainerId(containerIndex)">
-    </app-container>
-  </div>
-  <app-moving-item class="item-absolute" [item]="boardService.movingItem"></app-moving-item>
-</div>
+<div class="board-setup-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
+  <div>
+    <div style="display: flex; justify-content: center;">
+    <div class="source-containers">
+      <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
+        cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
-<div class="buttons-container">
-  <button (click)="clearClick()" [disabled]="inProgress || stepIndex>=solution.steps.length">Clear board</button>
-  <button (click)="saveClick()">Save and solve</button>
+        <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="containers">
+      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container" cdkDropList
+        [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+
+        <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttons-container">
+    <button mat-raised-button (click)="clearClick()">Clear board</button>
+    <button mat-raised-button (click)="saveClick()">Save</button>
+    <button mat-raised-button (click)="loadClick()">Load</button>
+    <button mat-raised-button (click)="solveClick()">Solve</button>
+  </div>
 </div>

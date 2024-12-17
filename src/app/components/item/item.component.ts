@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Color } from 'src/app/classes/model/colors.class';
 import { Item } from 'src/app/classes/item.class';
-import { BoardService } from 'src/app/services/board.service';
+import { MainService } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-item',
@@ -10,9 +9,9 @@ import { BoardService } from 'src/app/services/board.service';
 })
 export class ItemComponent implements OnInit {
 
-  @Input() item: Item;
+  @Input() item!: Item;
 
-  constructor(public boardService: BoardService) { }
+  constructor(public mainService: MainService) { }
 
   ngOnInit(): void {
   }

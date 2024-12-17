@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'water-sort-solver'`, () => {
+  it(`should have as title 'drag-n-drop'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('water-sort-solver');
+    expect(app.title).toEqual('drag-n-drop');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('water-sort-solver app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('drag-n-drop app is running!');
   });
 });

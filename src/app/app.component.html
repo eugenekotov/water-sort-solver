@@ -1,8 +1,8 @@
-<div class="buttons-container">
-  <button (click)="setupClick()">Create new board</button>
-  <button (click)="solveClick()">Solve game</button>
+<div class="body-container">
+  <div class="main-container shadow">
+    <app-board-setup *ngIf="mainService.mode === 'setup'"></app-board-setup>
+    <app-board-in-progress *ngIf="mainService.mode === 'in-progress'"></app-board-in-progress>
+    <app-board-no-solution *ngIf="mainService.mode === 'no-solution'"></app-board-no-solution>
+    <app-board-solve *ngIf="mainService.mode === 'solve'"></app-board-solve>
+  </div>
 </div>
-
-<app-board-setup *ngIf="mode=='setup'"></app-board-setup>
-
-<app-board-play *ngIf="mode=='solve'"></app-board-play>

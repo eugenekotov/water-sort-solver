@@ -1,25 +1,18 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
-
-
-type TMode = undefined | "setup" | "solve";
+import { AfterViewInit, Component } from '@angular/core';
+import { MainService } from './services/main.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'water-sort-solver';
+export class AppComponent implements AfterViewInit {
 
-  mode: TMode;
-
-  setupClick() {
-    this.mode = "setup";
+  constructor(public mainService: MainService) {
   }
 
-  solveClick() {
-    this.mode = "solve";
+  ngAfterViewInit(): void {
+    this.mainService.setMode("setup");
   }
 
 }

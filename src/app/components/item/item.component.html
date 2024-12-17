@@ -1,8 +1,5 @@
 <div
-  cdkDrag
-  [cdkDragDisabled]="item.hidden || item.color === undefined"
-  class="item drag-item"
+  class="item"
   [style]="{'background-color': item.color}"
-  [ngStyle]="{'opacity': (item.hidden || item.color === undefined) ? 0.05 : 1, 'cursor': (item.hidden || item.color === undefined) ? 'default' : 'grab'}  ">
-
+  [ngStyle]="{'opacity': (item.hidden || item.color === undefined) ? 0.05 : 1}  ">
 </div>

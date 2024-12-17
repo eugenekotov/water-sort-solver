@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from 'src/app/classes/item.class';
-import { BoardService } from 'src/app/services/board.service';
+import { MainService } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-moving-item',
@@ -9,9 +9,9 @@ import { BoardService } from 'src/app/services/board.service';
 })
 export class MovingItemComponent implements OnInit {
 
-  @Input() item: Item;
+  @Input() item!: Item;
 
-  constructor(public boardService: BoardService) { }
+  constructor(public mainService: MainService) { }
 
   ngOnInit(): void {
   }
@@ -22,7 +22,7 @@ export class MovingItemComponent implements OnInit {
       'position': 'absolute',
       'top': this.item.top,
       'left': this.item.left,
-      'transition-duration': this.boardService.TRANSITION_DURATION
+      'transition-duration': this.item.transitionDuration
     };
   }
 

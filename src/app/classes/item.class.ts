@@ -1,12 +1,13 @@
-import { Color } from "./model/colors.class";
+import { Color } from "./colors.class";
 
 export class Item {
 
   color: Color | undefined;
   containerIndex: number;
   hidden: boolean;
-  top: string;
-  left: string;
+  top: string | undefined;
+  left: string | undefined;
+  transitionDuration: string | undefined;
 
   constructor(color: Color | undefined, containerIndex: number, hidden: boolean) {
     this.color = color;
