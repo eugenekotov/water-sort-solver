@@ -12,7 +12,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.mainService.setMode("in-progress");
+    this.mainService.setMode("setup");
   }
 
 }

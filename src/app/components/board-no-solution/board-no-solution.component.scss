@@ -2,8 +2,7 @@
 @use 'src/styles/colors' as colors;
 
 .board-container {
-  width: $width;
-  height: $height;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
