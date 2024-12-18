@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PlayContainer } from 'src/app/classes/play-container.class';
+import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({

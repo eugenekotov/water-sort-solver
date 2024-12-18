@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Color } from '../classes/colors.class';
-import { Item } from '../classes/item.class';
-import { PlayContainer } from '../classes/play-container.class';
-import { SetupContainer } from '../classes/setup-container.class';
+import { Color } from '../classes/model/colors.class';
+import { Item } from '../classes/model/item.class';
+import { PlayContainer } from '../classes/model/play-container.class';
+import { SetupContainer } from '../classes/model/setup-container.class';
 import { Solution } from '../classes/solution.class';
 
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;

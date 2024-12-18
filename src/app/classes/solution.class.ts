@@ -1,6 +1,6 @@
 import { Observable, Subject, takeUntil } from "rxjs";
-import { Board } from "./board.class";
-import { PlayContainer } from "./play-container.class";
+import { Board } from "./model/board.class";
+import { PlayContainer } from "./model/play-container.class";
 
 export class Step {
   iFrom: number;
@@ -114,6 +114,7 @@ export class Solution {
       return true;
     }
 
+    this.tryLogicPatterns();
 
     // Try to check all options
     for (let iFrom = 0; iFrom < board.containers.length; iFrom++) {
@@ -127,6 +128,10 @@ export class Solution {
       }
     }
     return false;
+  }
+
+  private tryLogicPatterns() {
+
   }
 
   private tryToMove(board: Board, iFrom: number, iTo: number, stepsCount: number): boolean {
@@ -155,7 +160,6 @@ export class Solution {
       // Stupid move;
       return false;
     }
-
 
 
     // We can try to move

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { concatMap, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
-import { PlayContainer } from 'src/app/classes/play-container.class';
+import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
