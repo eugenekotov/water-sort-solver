@@ -12,9 +12,17 @@ export class BoardsSet {
     return this.boards.some(existsBoard => existsBoard.equals(board));
   }
 
-  add(board: Board): void {
-    if (!this.contains(board)) {
-      this.boards.push(board);
+  add(board: Board): void;
+  add(boardSet: BoardsSet): void;
+  add(value: Board | BoardsSet): void {
+    if (value instanceof Board) {
+      if (!this.contains(value)) {
+        this.boards.push(value);
+      }
+    } else if (value instanceof BoardsSet) {
+      this.boards = [...this.boards, ...value.boards];
+    } else  {
+      const n: never = value;
     }
   }
 

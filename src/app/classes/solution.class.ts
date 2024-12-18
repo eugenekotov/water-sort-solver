@@ -1,8 +1,9 @@
 import { Subject } from "rxjs";
 import { Board } from "./model/board.class";
 import { PlayContainer } from "./model/play-container.class";
-import { ILogicController } from "./logic/logic-controller.interface"
+import { ILogicController, LogicResult } from "./logic/logic-controller.interface"
 import { BoardsSet } from "./model/boards-set.class";
+import { Logic1To3 } from "./logic/logic-1to3.class";
 
 export class Step {
   iFrom: number;
@@ -20,9 +21,10 @@ export class Solution {
   private oldBoards: BoardsSet = new BoardsSet();
   steps: Step[] = [];
   counter: number = 0;
-  logicControllers: ILogicController[];
+  logicControllers: ILogicController[] = [];
 
   constructor() {
+    this.logicControllers.push(new Logic1To3());
   }
 
   solve(containers: PlayContainer[]): boolean {
@@ -117,7 +119,16 @@ export class Solution {
       return true;
     }
 
-    this.tryLogicPatterns();
+    const logcResult = this.tryLogicPatterns(board);
+    if (logcResult.stepCount > 0) {
+      board = logcResult.board;
+      stepsCount = stepsCount + logcResult.stepCount;
+      this.oldBoards.add(logcResult.oldBoards);
+      this.steps = [...this.steps, ...logcResult.steps];
+      if (board.isResolved()) {
+        return true;
+      }
+    }
 
     // Try to check all options
     for (let iFrom = 0; iFrom < board.containers.length; iFrom++) {
@@ -133,8 +144,24 @@ export class Solution {
     return false;
   }
 
-  private tryLogicPatterns() {
-
+  private tryLogicPatterns(board: Board): LogicResult {
+    const result = new LogicResult();
+    let hasStep = true;
+    while (hasStep) {
+      hasStep = false;
+      this.logicControllers.forEach(logicController => {
+        const logicResult = logicController.run(board);
+        if (logicResult.stepCount > 0) {
+          hasStep = true;
+          board = logicResult.board;
+          result.stepCount = result.stepCount + logicResult.stepCount;
+          result.oldBoards.add(logicResult.oldBoards);
+          result.steps = [...result.steps, ...logicResult.steps];
+        }
+      });
+    }
+    result.board = board;
+    return result;
   }
 
   private tryToMove(board: Board, iFrom: number, iTo: number, stepsCount: number): boolean {
@@ -184,11 +211,9 @@ export class Solution {
   }
 
   private move(board: Board, iFrom: number, iTo: number): Board {
-    const newBoard = board.clone();
-    const a = newBoard.containers[iFrom];
-    const b = a.pop();
-    newBoard.containers[iTo].push(b);
-    return newBoard;
+    board = board.clone();
+    board.containers[iTo].push(board.containers[iFrom].pop());
+    return board;
   }
 
   private removeSteps(stepCount: number) {
