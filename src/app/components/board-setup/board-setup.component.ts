@@ -53,8 +53,22 @@ export class BoardSetupComponent {
   }
 
   fillRandomly() {
-    // TODO: Ask confirmation
 
+    let sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+    while (sourceContainers.length > 0) {
+      const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
+      const color = sourceContainers[sourceIndex].colors.pop();
+      const setupContainers = this.mainService.setupContainers.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE);
+      const setupIndex = this.getRandomInt(0, setupContainers.length - 3);
+      setupContainers[setupIndex].colors.push(color!);
+      sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+    }
+  }
+
+  private getRandomInt(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   saveClick() {
