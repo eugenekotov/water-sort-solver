@@ -31,6 +31,7 @@ class Position {
   }
 }
 
+// TODO: Add faster-slower functionality
 @Component({
   selector: 'app-board-solve',
   templateUrl: './board-solve.component.html',

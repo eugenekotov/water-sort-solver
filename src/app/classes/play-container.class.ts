@@ -119,6 +119,13 @@ export class PlayContainer {
     return this.size() === 2 && this.items[0].color === this.items[1].color;
   }
 
+  public hasOnlyOneColor(): boolean {
+    if (this.isEmpty()) {
+      return false;
+    }
+    return this.items.every(item => item.color === undefined || item.color === this.items[0].color);
+  }
+
   public clone() {
     const newContainer = new PlayContainer(this.index);
     this.items.forEach((item, index) => newContainer.items[index].color = item.color);

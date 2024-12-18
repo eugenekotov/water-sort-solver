@@ -2,14 +2,6 @@
 @use 'src/styles/colors' as colors;
 
 .container {
-  border-left: $container-border-width solid colors.$container-border-color;
-  border-right: $container-border-width solid colors.$container-border-color;
-  border-bottom: $container-border-width solid colors.$container-border-color;
-  border-bottom-left-radius: $container-border-radius;
-  border-bottom-right-radius: $container-border-radius;
-  width: $item-size;
-  height: $item-size * 4 + $container-items-gap * 3;
-  padding: $container-items-gap;
   display: flex;
   flex-direction: column-reverse;
   align-items: center;

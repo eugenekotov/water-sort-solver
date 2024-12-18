@@ -1,23 +1,23 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
   <div>
     <div class="source-containers-parent">
-      <div class="source-containers">
+      <div class="source-containers shadow">
         <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
           cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
           (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
-          <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+          <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngStyle]="getItemStyle(color)" cdkDrag>
           </div>
         </div>
       </div>
     </div>
 
     <div class="containers">
-      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container" cdkDropList
+      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container shadow" cdkDropList
         [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
         (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
-        <div *ngFor="let color of container.colors" class="item" [ngStyle]="getItemStyle(color)" cdkDrag>
+        <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngStyle]="getItemStyle(color)" cdkDrag>
         </div>
       </div>
     </div>

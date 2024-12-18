@@ -3,20 +3,7 @@
 @use 'sass:math';
 
 .item {
-  width: $item-size;
-  height: $item-size;
-  border-radius: $item-border-radius;
   cursor: move;
-  transition: box-shadow 200ms cubic-bezier(0, 0, 0.2, 1);
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
-}
-
-.item:active {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .view-container {
@@ -31,19 +18,14 @@
 }
 
 .source-containers {
-  border: 1px solid colors.$source-container-border-color;
   margin-top: $margin * 2;
   padding: $padding;
-  // background-color: white;
   height: $item-size * 4 + $container-items-gap * 3;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: center;
   gap: $container-items-gap;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .source-container {
@@ -66,22 +48,11 @@
 }
 
 .container {
-  // border-left: $container-border-width solid colors.$container-border-color;
-  // border-right: $container-border-width solid colors.$container-border-color;
-  // border-bottom: $container-border-width solid colors.$container-border-color;
-  border-bottom-left-radius: $container-border-radius;
-  border-bottom-right-radius: $container-border-radius;
-  width: $item-size;
-  height: $item-size * 4 + $container-items-gap * 3;
-  padding: $container-items-gap;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: end;
   gap: $container-items-gap;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-preview {
