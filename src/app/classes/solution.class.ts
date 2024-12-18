@@ -1,6 +1,8 @@
-import { Observable, Subject, takeUntil } from "rxjs";
+import { Subject } from "rxjs";
 import { Board } from "./model/board.class";
 import { PlayContainer } from "./model/play-container.class";
+import { ILogicController } from "./logic/logic-controller.interface"
+import { BoardsSet } from "./model/boards-set.class";
 
 export class Step {
   iFrom: number;
@@ -15,15 +17,16 @@ export class Step {
 export class Solution {
 
   private cancel$ = new Subject<void>();
-  private oldBoards: Board[] = [];
+  private oldBoards: BoardsSet = new BoardsSet();
   steps: Step[] = [];
   counter: number = 0;
+  logicControllers: ILogicController[];
 
   constructor() {
   }
 
   solve(containers: PlayContainer[]): boolean {
-    this.oldBoards = [];
+    this.oldBoards.clear();
     this.steps = [];
     this.counter = 0;
     const result = this.tryToResolve(new Board(containers).clone(), 0);
@@ -165,13 +168,13 @@ export class Solution {
     // We can try to move
     board = this.move(board, iFrom, iTo);
     // console.log("Moved one from " + iFrom + " to " + iTo);
-    if (this.oldBoardsHasBoard(board)) {
+    if (this.oldBoards.contains(board)) {
       // We already tried it
       // console.log("We already tried it!");
       return false;
     }
     this.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index));
-    this.addToOldBoards(board);
+    this.oldBoards.add(board);
     const result = this.tryToResolve(board, stepsCount + 1);
     if (!result) {
       // console.log("Back to step " + stepsCount);
@@ -192,16 +195,6 @@ export class Solution {
     while (this.steps.length > stepCount) {
       this.steps.pop();
     }
-  }
-
-  private addToOldBoards(board: Board) {
-    if (!this.oldBoardsHasBoard(board)) {
-      this.oldBoards.push(board);
-    }
-  }
-
-  private oldBoardsHasBoard(board: Board): boolean {
-    return this.oldBoards.some(oldBoard => oldBoard.equals(board));
   }
 
 
