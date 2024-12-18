@@ -24,10 +24,10 @@
   </div>
 
   <div class="buttons-container">
-    <button mat-raised-button (click)="clearClick()">Clear board</button>
-    <button mat-raised-button class="mr-1" (click)="fillRandomly()">Fill randomly</button>
-    <button mat-raised-button (click)="saveClick()">Save</button>
-    <button mat-raised-button class="mr-1" (click)="loadClick()">Load</button>
-    <button mat-raised-button (click)="solveClick()">Solve</button>
+    <button mat-raised-button (click)="clearClick()" [disabled]="filling">Clear board</button>
+    <button mat-raised-button class="mr-1" (click)="fillRandomly()" [disabled]="filling">Fill randomly</button>
+    <button mat-raised-button (click)="saveClick()" [disabled]="filling">Save</button>
+    <button mat-raised-button class="mr-1" (click)="loadClick()" [disabled]="filling">Load</button>
+    <button mat-raised-button (click)="solveClick()" [disabled]="filling">Solve</button>
   </div>
 </div>

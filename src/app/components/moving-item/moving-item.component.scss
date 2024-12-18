@@ -5,6 +5,7 @@
   background-color: colors.$color-06;
   transition-property: left, top;
   // transition-duration: 2s; - it is on variables
+  transition-timing-function: ease-in-out;
   position: absolute;
   top: 0px;
   left: 0px;

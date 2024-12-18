@@ -11,6 +11,8 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class BoardSetupComponent {
 
+  filling: boolean = false;
+
   constructor(public mainService: MainService) {
   }
 
@@ -52,17 +54,26 @@ export class BoardSetupComponent {
     this.mainService.setupContainers.forEach(container => container.colors = []);
   }
 
-  fillRandomly() {
-
+  async fillRandomly() {
+    this.filling = true;
     let sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
     while (sourceContainers.length > 0) {
       const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
       const color = sourceContainers[sourceIndex].colors.pop();
+      await this.pause(20);
       const setupContainers = this.mainService.setupContainers.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE);
       const setupIndex = this.getRandomInt(0, setupContainers.length - 3);
-      setupContainers[setupIndex].colors.push(color!);
+      setupContainers[setupIndex].colors.splice(0, 0, color!);
       sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+      await this.pause(80);
     }
+    this.filling = false;
+  }
+
+  async pause(delay: number): Promise<void> {
+    return new Promise<void>(resolve => {
+      setTimeout(() => resolve(), delay);
+    });
   }
 
   private getRandomInt(min: number, max: number): number {

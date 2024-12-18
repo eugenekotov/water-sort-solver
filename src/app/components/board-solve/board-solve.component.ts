@@ -126,9 +126,10 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // TODO: Move faster when you are close to finish
   private calculateMovingDuration(iFrom: number, iTo: number): number {
     const way = Math.abs(iFrom - iTo);
-    return 600;
+    return 400 + way * 50;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {
