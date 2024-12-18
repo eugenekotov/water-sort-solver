@@ -6,14 +6,17 @@ import { BoardsSet } from "./model/boards-set.class";
 import { Logic1To3 } from "./logic/logic-1to3.class";
 import { Logic2To2 } from "./logic/logic-2to2.class";
 import { Logic3To1 } from "./logic/logic-3to1.class";
+import { Color } from "./model/colors.class";
 
 export class Step {
   iFrom: number;
   iTo: number;
+  color: Color;
 
-  constructor(iFrom: number, iTo: number) {
+  constructor(iFrom: number, iTo: number, color: Color) {
     this.iFrom = iFrom;
     this.iTo = iTo;
+    this.color = color;
   }
 }
 
@@ -27,8 +30,8 @@ export class Solution {
 
   constructor() {
     this.logicControllers.push(new Logic1To3());
-    // this.logicControllers.push(new Logic2To2());
-    // this.logicControllers.push(new Logic3To1());
+    this.logicControllers.push(new Logic2To2());
+    this.logicControllers.push(new Logic3To1());
   }
 
   solve(containers: PlayContainer[]): boolean {
@@ -58,8 +61,8 @@ export class Solution {
         const checkingStep = this.steps[i];
         let j = i + 1;
         while (j < this.steps.length && (this.steps[i].iFrom !== this.steps[j].iTo || this.steps[i].iTo !== this.steps[j].iFrom)) {
-          if (this.steps[i].iFrom === this.steps[j].iFrom || this.steps[i].iFrom === this.steps[j].iTo ||
-            this.steps[i].iTo === this.steps[j].iFrom || this.steps[i].iTo === this.steps[j].iTo) {
+          if ((this.steps[i].iFrom === this.steps[j].iFrom || this.steps[i].iFrom === this.steps[j].iTo ||
+            this.steps[i].iTo === this.steps[j].iFrom || this.steps[i].iTo === this.steps[j].iTo) && this.steps[i].color !== this.steps[j].color) {
             break;
           }
           j++;
@@ -88,7 +91,8 @@ export class Solution {
           let k = j - 1;
           let used = false;
           while (i < k) {
-            if (this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) {
+            if ((this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo
+                || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) && this.steps[k].color !== this.steps[j].color) {
               used = true;
               break;
             }
@@ -195,7 +199,6 @@ export class Solution {
       return false;
     }
 
-
     // We can try to move
     board = this.move(board, iFrom, iTo);
     // console.log("Moved one from " + iFrom + " to " + iTo);
@@ -204,7 +207,7 @@ export class Solution {
       // console.log("We already tried it!");
       return false;
     }
-    this.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index));
+    this.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[board.containers[iTo].size() - 1].color!));
     this.oldBoards.add(board);
     const result = this.tryToResolve(board, stepsCount + 1);
     if (!result) {
