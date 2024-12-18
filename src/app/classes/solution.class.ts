@@ -28,17 +28,20 @@ export class Solution {
     this.counter = 0;
     const result = this.tryToResolve(new Board(containers).clone(), 0);
     if (result) {
+      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo));
       this.optimizeSolution();
     }
     return result;
   }
 
   private optimizeSolution() {
-    // Optimize case 1 -> 2, 2-> 1
     let count1 = 0;
+    let count2 = 0;
     let i = 0;
     let optimized = true;
     while (optimized) {
+      // Optimize case 1 -> 2, 2-> 1
+      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo));
       optimized = false;
       i = 0;
       let j = 0;
@@ -62,39 +65,40 @@ export class Solution {
           i++;
         }
       }
-    }
 
-    // Optimize case 1 -> 2, ..., 2 -> 3 to 1 -> 3
-    let count2 = 0;
-    i = 0;
-    while (i < this.steps.length - 1) {
-      // try to find second part
-      let j = i + 1;
-      while (j < this.steps.length && this.steps[i].iTo !== this.steps[j].iFrom) {
-        j++;
-      }
-      if (j < this.steps.length && this.steps[i].iTo === this.steps[j].iFrom) {
-        // We found, lets check that these containers was not used
-        let k = j - 1;
-        let used = false;
-        while (i < k) {
-          if (this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) {
-            used = true;
-            break;
-          }
-          k--;
-
+      // Optimize case 1 -> 2, ..., 2 -> 3 to 1 -> 3
+      i = 0;
+      while (i < this.steps.length - 1) {
+        // try to find second part
+        let j = i + 1;
+        while (j < this.steps.length && this.steps[i].iTo !== this.steps[j].iFrom) {
+          j++;
         }
-        if (used === false) {
-          this.steps[i].iTo = this.steps[j].iTo;
-          this.steps.splice(j, 1);
-          count2++;
+        if (j < this.steps.length && this.steps[i].iTo === this.steps[j].iFrom) {
+          // We found, lets check that these containers was not used
+          let k = j - 1;
+          let used = false;
+          while (i < k) {
+            if (this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) {
+              used = true;
+              break;
+            }
+            k--;
+
+          }
+          if (used === false) {
+            this.steps[i].iTo = this.steps[j].iTo;
+            this.steps.splice(j, 1);
+            optimized = true;
+            count2++;
+          } else {
+            i++;
+          }
         } else {
           i++;
         }
-      } else {
-        i++;
       }
+
     }
     console.log("Optimization 1 - " + count1);
     console.log("Optimization 2 - " + count2);
@@ -146,6 +150,14 @@ export class Solution {
       // Stupid move;
       return false;
     }
+    if (board.containers[iFrom].hasOnlyOneColor() && board.containers[iTo].isEmpty()) {
+      // if we have only one color and move to empty container
+      // Stupid move;
+      return false;
+    }
+
+
+
     // We can try to move
     board = this.move(board, iFrom, iTo);
     // console.log("Moved one from " + iFrom + " to " + iTo);
