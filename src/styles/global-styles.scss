@@ -1,0 +1,27 @@
+@use 'src/styles/variables' as *;
+@use 'src/styles/colors' as colors;
+
+
+.view-container {
+  height: 100%;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  margin: $margin;
+  gap: 10px;
+}
+
+button {
+  min-width: $button-min-width !important;
+  padding-left: $button-padding !important;
+  padding-right: $button-padding !important;
+  color: colors.$text-color !important;
+  font-weight: 600!important;
+}
+
+// button:disabled {
+//   color: colors.$text-color-disabled;
+// }

@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { Color } from 'src/app/classes/colors.class';
 import { SetupContainer } from 'src/app/classes/setup-container.class';
 import { MainService } from 'src/app/services/main.service';

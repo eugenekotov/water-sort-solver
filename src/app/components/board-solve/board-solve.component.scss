@@ -1,12 +1,10 @@
 @use 'src/styles/variables' as *;
 @use 'src/styles/colors' as colors;
 
-.board-solve-container {
-  height: 100%;
+.view-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: opacity 0.3s ease-in-out;
 }
 
 .relative-container {
@@ -27,21 +25,6 @@
   position: absolute;
   top: 0px;
   left: 0px;
-}
-
-.buttons-container {
-  display: flex;
-  justify-content: center;
-  margin: $margin;
-  gap: 10px;
-}
-
-button {
-  min-width: $button-min-width;
-  padding-left: $button-padding;
-  padding-right: $button-padding;
-  color: colors.$text-color;
-  font-weight: 600;
 }
 
 .mr {
