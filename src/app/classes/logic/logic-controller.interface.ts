@@ -15,13 +15,16 @@ export interface ILogicController {
 
 }
 
-export function makeStep(board: Board, iFrom: number, iTo: number, result: LogicResult): Board {
+export function makeStep(board: Board, iFrom: number, iTo: number, stepCount: number, result: LogicResult): Board {
   board = board.clone();
-  board.containers[iTo].push(board.containers[iFrom].pop());
+  for (let i = 0; i < stepCount; i++) {
+    board.containers[iTo].push(board.containers[iFrom].pop());
+    result.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index));
+  }
   result.board = board;
-  result.stepCount++;
+  result.stepCount = result.stepCount + stepCount;
   result.oldBoards.add(board);
-  result.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index));
+
   return board;
 }
 

@@ -4,6 +4,8 @@ import { PlayContainer } from "./model/play-container.class";
 import { ILogicController, LogicResult } from "./logic/logic-controller.interface"
 import { BoardsSet } from "./model/boards-set.class";
 import { Logic1To3 } from "./logic/logic-1to3.class";
+import { Logic2To2 } from "./logic/logic-2to2.class";
+import { Logic3To1 } from "./logic/logic-3to1.class";
 
 export class Step {
   iFrom: number;
@@ -25,6 +27,8 @@ export class Solution {
 
   constructor() {
     this.logicControllers.push(new Logic1To3());
+    // this.logicControllers.push(new Logic2To2());
+    // this.logicControllers.push(new Logic3To1());
   }
 
   solve(containers: PlayContainer[]): boolean {

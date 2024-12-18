@@ -14,7 +14,7 @@ export class Logic1To3 implements ILogicController {
         if (board.containers[iTo].hasOnlyThreeOfOneColor()) {
           const iFrom = this.getColorContainerIndex(board, board.containers[iTo].items[0].color!, iTo);
           if (iFrom !== -1) {
-            board = makeStep(board, iFrom, iTo, result);
+            board = makeStep(board, iFrom, iTo, 1, result);
             hasStep = true;
             break;
           }

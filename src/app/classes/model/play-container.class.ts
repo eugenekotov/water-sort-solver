@@ -119,6 +119,11 @@ export class PlayContainer {
     return this.size() === 2 && this.items[0].color === this.items[1].color;
   }
 
+  public hasOnlyOneOfOneColor(): boolean {
+    return this.size() === 1;
+  }
+
+
   public hasOnlyOneColor(): boolean {
     if (this.isEmpty()) {
       return false;
