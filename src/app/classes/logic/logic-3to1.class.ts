@@ -27,7 +27,7 @@ export class Logic3To1 implements ILogicController {
 
   private getColorThreeContainerIndex(board: Board, color: Color, excludeIndex: number): number {
     for (let i = 0; i < board.containers.length; i++) {
-      if (i !== excludeIndex && board.containers[i].size() > 2
+      if (i !== excludeIndex && board.containers[i].size() == 4
           && board.containers[i].items[board.containers[i].size() - 1].color === color
           && board.containers[i].items[board.containers[i].size() - 2].color === color
           && board.containers[i].items[board.containers[i].size() - 3].color === color) {
