@@ -52,6 +52,11 @@ export class BoardSetupComponent {
     this.mainService.setupContainers.forEach(container => container.colors = []);
   }
 
+  fillRandomly() {
+    // TODO: Ask confirmation
+
+  }
+
   saveClick() {
     const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
     const containersString = JSON.stringify(this.mainService.setupContainers);
