@@ -1,17 +1,33 @@
-$indent: 0.5rem;
-$margin: 20px;
-$padding: 20px;
+$margin: 10px;
+$margin-large: 20px;
+$padding: 10px;
+$padding-large: 20px;
 
-$button-height: 30px;
-$button-min-width: 100px;
-$button-padding: 20px;
+$font-size: 12px;
+$font-size-large: 14px;
+
+$button-height: 24px;
+$button-height-large: 36px;
+
+$button-font-size: 12px;
+$button-font-size-large: 16px;
+
+$button-min-width: 80px;
+$button-min-width-large: 100px;
+
+$button-padding: 10px;
+$button-padding-large: 20px;
 
 $container-width: 30px;
 $container-height: 155px;
 $container-items-gap: 3px;
 $container-border-width: 2px;
-$container-border-radius: 6px;
+$container-border-radius: 3px;
+$container-border-radius-large: 6px;
 
-$item-size: 30px;
+$item-size: 20px;
+$item-size-large: 30px;
 $item-border-width: 0px;
-$item-border-radius: 5px;
+
+$item-border-radius: 3px;
+$item-border-radius-large: 5px;

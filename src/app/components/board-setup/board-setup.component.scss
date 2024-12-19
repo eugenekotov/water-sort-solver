@@ -16,23 +16,23 @@
 }
 
 .source-containers-parent2 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .header-text {
   margin: $margin;
-  width: 300px;
+  width: 250px;
   text-align: center;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 12px;
+  font-weight: 400;
   color: colors.$text-color;
 }
 
 .source-containers {
-  padding: 8px;
+  padding: math.div($item-size, 4);
   height: 4 * $item-size + 10px;
   display: flex;
   flex-direction: row;
@@ -68,7 +68,7 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  border-radius: 3px;
+  border-radius: $item-border-radius;
   cursor: move; // is not working
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
@@ -90,4 +90,3 @@
 .cdk-drag-animating {
   transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }
-
