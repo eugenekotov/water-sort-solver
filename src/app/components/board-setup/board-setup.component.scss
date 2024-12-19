@@ -2,14 +2,12 @@
 @use 'src/styles/colors' as colors;
 @use 'sass:math';
 
-.item {
-  cursor: move;
-}
-
 .view-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  // font-size: 14px;
+  // font-weight: 200;
 }
 
 .source-containers-parent {
@@ -17,13 +15,28 @@
   justify-content: center;
 }
 
+.source-containers-parent2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header-text {
+  margin: $margin;
+  width: 300px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: colors.$text-color;
+}
+
 .source-containers {
-  margin-top: $margin * 2;
-  padding: math.div($padding, 2);
-  height: $item-size * 4 + $container-items-gap * 3;
+  padding: 8px;
+  height: 4 * $item-size + 10px;
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: center;
   gap: $container-items-gap;
 }
@@ -47,6 +60,10 @@
   align-items: center;
   justify-content: end;
   gap: $container-items-gap;
+}
+
+.item {
+  cursor: move;
 }
 
 .cdk-drag-preview {

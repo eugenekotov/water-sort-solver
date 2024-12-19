@@ -18,22 +18,25 @@
 }
 
 .container {
-  border-left: $container-border-width solid colors.$container-border-color;
-  border-right: $container-border-width solid colors.$container-border-color;
-  border-bottom: $container-border-width solid colors.$container-border-color;
-  border-bottom-left-radius: $container-border-radius;
-  border-bottom-right-radius: $container-border-radius;
+  // border-left: $container-border-width solid colors.$container-border-color;
+  // border-right: $container-border-width solid colors.$container-border-color;
+  // border-bottom: $container-border-width solid colors.$container-border-color;
+  border-radius: $container-border-radius;
+  // border-bottom-left-radius: $container-border-radius;
+  // border-bottom-right-radius: $container-border-radius;
   width: $item-size;
   height: $item-size * 4 + $container-items-gap * 3;
   padding: $container-items-gap;
-  // box-shadow: inset 0 3px 1px -2px rgba(0, 0, 0, 0.2),
-  //   inset 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-  //   inset 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: inset 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+    inset 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    inset 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 
-    border: 1px solid #ccc;
-        box-shadow:
-          inset 0 -2px 3px rgba(255, 255, 255, 0.7), /* Внутрішнє світло зверху */
-          0 2px 3px rgba(0, 0, 0, 0.2); /* Зовнішня темна тінь знизу */
+  // border: 1px solid #ccc;
+  // box-shadow:
+  //   inset 0 -2px 3px rgba(255, 255, 255, 0.7),
+  //   /* Внутрішнє світло зверху */
+  //   0 2px 3px rgba(0, 0, 0, 0.2);
+  // /* Зовнішня темна тінь знизу */
 }
 
 .item {
@@ -80,6 +83,12 @@
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.fab-button {
+  font-size: 20px;
+  color: colors.$text-color !important;
+  background-color: white !important;
 }
 
 .mr-1 {

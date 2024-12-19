@@ -1,20 +1,25 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
   <div>
     <div class="source-containers-parent">
-      <div class="source-containers shadow-inset">
-        <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
-          cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
-          (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+      <div class="source-containers-parent2">
+        <div class="header-text">
+          Create your own game board by moving colored squares to the containers below
+        </div>
+        <div class="source-containers shadow-inset">
+          <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
+            cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+            (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
-          <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngStyle]="getItemStyle(color)"
-            cdkDrag>
+            <div *ngFor="let color of container.colors" class="item shadow shadow-active"
+              [ngStyle]="getItemStyle(color)" cdkDrag>
+            </div>
           </div>
         </div>
+        <!-- <div style="display: flex; gap: 0.5rem; margin: 10px;">
+          <button mat-mini-fab class="fab-button">+</button>
+          <button mat-mini-fab class="fab-button">-</button>
+        </div> -->
       </div>
-      <!-- <div>
-        <button mat-mini-fab>+</button>
-        <button mat-mini-fab>-</button>
-      </div> -->
 
     </div>
 

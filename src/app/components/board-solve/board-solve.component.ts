@@ -40,7 +40,9 @@ class Position {
 export class BoardSolveComponent implements OnInit, AfterViewInit {
 
   static readonly MOVING_TOP = -50;
-  static readonly MOVING_TOP_DURATION = 400;
+  // TODO: Revert speed
+  // static readonly MOVING_TOP_DURATION = 400;
+  static readonly MOVING_TOP_DURATION = 100;
 
   itemsElements: HTMLElement[] = [];
   stepIndex: number = 0;
@@ -126,10 +128,13 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
     });
   }
 
+  // TODO: Change speed in options
   // TODO: Move faster when you are close to finish
   private calculateMovingDuration(iFrom: number, iTo: number): number {
     const way = Math.abs(iFrom - iTo);
-    return 400 + way * 50;
+    // TODO: back speed
+    // return 400 + way * 50;
+    return 100 + way * 10;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {
