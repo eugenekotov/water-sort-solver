@@ -18,7 +18,7 @@ export class MainService {
   public readonly CONTAINER_SIZE = 4;
   public readonly OPACITY_DELAY = 300;
 
-
+  public isMobile = false;
 
   public containersCount = 14;
   sourceContainers: SetupContainer[] = [];

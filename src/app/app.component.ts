@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MainService } from './services/main.service';
 
 @Component({
@@ -8,7 +9,11 @@ import { MainService } from './services/main.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(public mainService: MainService) {
+  constructor(private breakpointObserver: BreakpointObserver, public mainService: MainService) {
+  }
+
+  ngOnInit() {
+    this.breakpointObserver.observe(Breakpoints.Handset).subscribe({ next: result => this.mainService.isMobile = result.matches });
   }
 
   ngAfterViewInit(): void {

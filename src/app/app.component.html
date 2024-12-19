@@ -1,6 +1,6 @@
 <div class="body-container">
   <div class="body-vertical-container">
-    <div class="main-container shadow">
+    <div class="main-container">
       <app-board-setup *ngIf="mainService.mode === 'setup'"></app-board-setup>
       <app-board-in-progress *ngIf="mainService.mode === 'in-progress'"></app-board-in-progress>
       <app-board-no-solution *ngIf="mainService.mode === 'no-solution'"></app-board-no-solution>
