@@ -12,6 +12,7 @@ export class Step {
   iFrom: number;
   iTo: number;
   color: Color;
+  notes: string = "";
 
   constructor(iFrom: number, iTo: number, color: Color) {
     this.iFrom = iFrom;
@@ -40,9 +41,12 @@ export class Solution {
     this.counter = 0;
     const result = this.tryToResolve(new Board(containers).clone(), 0);
     if (result) {
-      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo));
+      // console.log("Before optmization");
+      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo + " " + step.notes));
       this.optimizeSolution();
     }
+    // console.log("After optmization");
+    // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo + " " + step.notes));
     return result;
   }
 
@@ -53,7 +57,7 @@ export class Solution {
     let optimized = true;
     while (optimized) {
       // Optimize case 1 -> 2, ..., 2-> 1
-      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo));
+      // this.steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
       optimized = false;
       i = 0;
       let j = 0;
@@ -61,8 +65,8 @@ export class Solution {
         const checkingStep = this.steps[i];
         let j = i + 1;
         while (j < this.steps.length && (this.steps[i].iFrom !== this.steps[j].iTo || this.steps[i].iTo !== this.steps[j].iFrom)) {
-          if ((this.steps[i].iFrom === this.steps[j].iFrom || this.steps[i].iFrom === this.steps[j].iTo ||
-            this.steps[i].iTo === this.steps[j].iFrom || this.steps[i].iTo === this.steps[j].iTo) && this.steps[i].color !== this.steps[j].color) {
+          if (this.steps[i].iFrom === this.steps[j].iFrom || this.steps[i].iFrom === this.steps[j].iTo ||
+              this.steps[i].iTo === this.steps[j].iFrom || this.steps[i].iTo === this.steps[j].iTo) {
             break;
           }
           j++;
@@ -71,6 +75,7 @@ export class Solution {
           // found back step, remove both
           this.steps.splice(j, 1);
           this.steps.splice(i, 1);
+          // console.log("remove steps " + j + ", " + i);
           optimized = true;
           count1++;
         } else {
@@ -102,7 +107,9 @@ export class Solution {
           }
           if (used === false) {
             this.steps[i].iTo = this.steps[j].iTo;
+            this.steps[i].notes = "Updated by optimization 2";
             this.steps.splice(j, 1);
+            // console.log("remove step " + j);
             optimized = true;
             count2++;
           } else {
