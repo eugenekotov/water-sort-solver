@@ -19,7 +19,7 @@
 
 .source-containers {
   margin-top: $margin * 2;
-  padding: $padding;
+  padding: math.div($padding, 2);
   height: $item-size * 4 + $container-items-gap * 3;
   display: flex;
   flex-direction: row;

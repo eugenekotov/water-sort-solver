@@ -16,12 +16,12 @@
   </div>
 
   <div class="buttons-container">
-    <button mat-raised-button (click)="backClick()" [disabled]="playing || stepIndex === 0">Step back</button>
-    <button mat-raised-button class="mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
-    <button mat-raised-button (click)="playBackClick()" [disabled]="playing || stepIndex === 0">Play back</button>
-    <button mat-raised-button class="mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
-    <button mat-raised-button class="mr-1" (click)="stopClick()" [disabled]="!playing || stopping">Stop</button>
-    <button mat-raised-button (click)="setupClick()" [disabled]="playing">Setup board</button>
+    <button mat-raised-button class="button" (click)="backClick()" [disabled]="playing || stepIndex === 0">Step back</button>
+    <button mat-raised-button class="button mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
+    <button mat-raised-button class="button" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">Play back</button>
+    <button mat-raised-button class="button mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
+    <button mat-raised-button class="button mr-1" (click)="stopClick()" [disabled]="!playing || stopping">Stop</button>
+    <button mat-raised-button class="button" (click)="setupClick()" [disabled]="playing">Setup board</button>
   </div>
 
 </div>

@@ -12,12 +12,15 @@ type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 })
 export class MainService {
 
-  private readonly CONTAINERS_COUNT = 14;
+
   public readonly TRANSITION_DURATION_MS = 500;
   public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 1000).toString() + "s";
   public readonly CONTAINER_SIZE = 4;
   public readonly OPACITY_DELAY = 300;
 
+
+
+  public containersCount = 14;
   sourceContainers: SetupContainer[] = [];
   setupContainers: SetupContainer[] = [];
 
@@ -103,7 +106,7 @@ export class MainService {
 
 
   private createContainers() {
-    for (let i = 0; i < this.CONTAINERS_COUNT; i++) {
+    for (let i = 0; i < this.containersCount; i++) {
       this.playContainers.push(new PlayContainer(i));
     }
   }
@@ -122,7 +125,7 @@ export class MainService {
   }
 
   private createSetupContainers() {
-    for (let i = 0; i < this.CONTAINERS_COUNT; i++) {
+    for (let i = 0; i < this.containersCount; i++) {
       this.setupContainers.push({ id: 'source-container' + i, colors: [] });
     }
   }
