@@ -1,7 +1,7 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
   <div>
     <div class="source-containers-parent">
-      <div class="source-containers shadow">
+      <div class="source-containers shadow-inset">
         <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
           cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
           (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
@@ -13,7 +13,7 @@
     </div>
 
     <div class="containers">
-      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container shadow" cdkDropList
+      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container" cdkDropList
         [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
         (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
