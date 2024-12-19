@@ -152,6 +152,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
     return new Promise(resolve => {
       const itemIndex = this.mainService.playContainers[iTo].size();
       const finishPosition = this.getMovingPosition(iTo, itemIndex);
+      // TODO: Calculate BoardSolveComponent.MOVING_TOP
       const topPosition = new Position(BoardSolveComponent.MOVING_TOP, startPosition.left);
       const leftPosition = new Position(BoardSolveComponent.MOVING_TOP, finishPosition.left);
       // Move top

@@ -52,7 +52,7 @@ export class Solution {
     let i = 0;
     let optimized = true;
     while (optimized) {
-      // Optimize case 1 -> 2, 2-> 1
+      // Optimize case 1 -> 2, ..., 2-> 1
       // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo));
       optimized = false;
       i = 0;
@@ -91,6 +91,7 @@ export class Solution {
           let k = j - 1;
           let used = false;
           while (i < k) {
+            // TODO: improve logic
             if ((this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo
                 || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) && this.steps[k].color !== this.steps[j].color) {
               used = true;
