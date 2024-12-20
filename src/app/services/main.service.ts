@@ -12,7 +12,6 @@ type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 })
 export class MainService {
 
-
   public readonly TRANSITION_DURATION_MS = 500;
   public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 1000).toString() + "s";
   public readonly CONTAINER_SIZE = 4;
@@ -23,10 +22,6 @@ export class MainService {
   public containersCount = 14;
   sourceContainers: SetupContainer[] = [];
 
-  // for large screen
-  setupContainers: SetupContainer[] = [];
-
-  // for small screen
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
@@ -110,7 +105,6 @@ export class MainService {
     this.setMode("setup");
   }
 
-
   private createContainers() {
     for (let i = 0; i < this.containersCount; i++) {
       this.playContainers.push(new PlayContainer(i));
@@ -135,9 +129,6 @@ export class MainService {
     }
     for (let i = halfContainersCount; i < this.containersCount; i++) {
       this.setupContainers2.push({ id: 'source-container' + i, colors: [] });
-    }
-    for (let i = 0; i < this.containersCount; i++) {
-      this.setupContainers.push({ id: 'source-container' + i, colors: [] });
     }
   }
 

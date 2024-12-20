@@ -15,12 +15,12 @@
   justify-content: space-evenly;
 }
 
-.source-containers-parent {
+.text-containers-parent {
   display: flex;
   justify-content: center;
 }
 
-.source-containers-parent2 {
+.source-containers-parent {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -71,13 +71,18 @@
 }
 
 .source-container-small {
-  // width: $item-size-small;
+  width: $item-size-small;
   gap: $container-items-gap-small;
 }
 
 .source-container-large {
-  // width: $item-size-large;
+  width: $item-size-large;
   gap: $container-items-gap-large;
+}
+
+.setup-containers-small {
+  margin-bottom: $margin-small * 2;
+
 }
 
 .container {

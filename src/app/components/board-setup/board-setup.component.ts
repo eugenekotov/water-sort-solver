@@ -30,7 +30,10 @@ export class BoardSetupComponent {
   }
 
   getConnectedLists(currentId: string): string[] {
-    const array: string[] = [...this.mainService.sourceContainers.map(c => c.id), ...this.mainService.setupContainers.map(c => c.id)];
+    const array: string[] = [
+      ...this.mainService.sourceContainers.map(c => c.id),
+      ...this.mainService.setupContainers1.map(c => c.id),
+      ...this.mainService.setupContainers2.map(c => c.id)];
     return array.filter(id => id !== currentId);
   }
 
@@ -51,7 +54,7 @@ export class BoardSetupComponent {
   }
 
   private clearContainers() {
-    this.mainService.setupContainers.forEach(container => container.colors = []);
+    // this.mainService.setupContainers.forEach(container => container.colors = []);
     this.mainService.setupContainers1.forEach(container => container.colors = []);
     this.mainService.setupContainers2.forEach(container => container.colors = []);
   }
@@ -63,7 +66,9 @@ export class BoardSetupComponent {
       const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
       const color = sourceContainers[sourceIndex].colors.pop();
       await this.pause(20);
-      const setupContainers = this.mainService.setupContainers.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE);
+      const setupContainers = [
+        ...this.mainService.setupContainers1.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE),
+        ...this.mainService.setupContainers2.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE)];
       const setupIndex = this.getRandomInt(0, setupContainers.length - 3);
       setupContainers[setupIndex].colors.splice(0, 0, color!);
       sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
@@ -86,22 +91,26 @@ export class BoardSetupComponent {
 
   saveClick() {
     const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
-    const containersString = JSON.stringify(this.mainService.setupContainers);
+    const containersString1 = JSON.stringify(this.mainService.setupContainers1);
+    const containersString2 = JSON.stringify(this.mainService.setupContainers2);
     localStorage.setItem("water-sort-solver-source", sourceContainersString);
-    localStorage.setItem("water-sort-solver-containers", containersString);
+    localStorage.setItem("water-sort-solver-containers-1", containersString1);
+    localStorage.setItem("water-sort-solver-containers-2", containersString2);
   }
 
   loadClick() {
     const sourceContainersString = localStorage.getItem("water-sort-solver-source");
-    const containersString = localStorage.getItem("water-sort-solver-containers");
-    if (sourceContainersString && containersString) {
+    const containersString1 = localStorage.getItem("water-sort-solver-containers-1");
+    const containersString2 = localStorage.getItem("water-sort-solver-containers-2");
+    if (sourceContainersString && containersString1 && containersString2) {
       this.mainService.sourceContainers = JSON.parse(sourceContainersString!);
-      this.mainService.setupContainers = JSON.parse(containersString!);
+      this.mainService.setupContainers1 = JSON.parse(containersString1!);
+      this.mainService.setupContainers2 = JSON.parse(containersString2!);
     }
   }
 
   solveClick() {
-    this.mainService.solve(this.mainService.setupContainers);
+    this.mainService.solve([...this.mainService.setupContainers1, ...this.mainService.setupContainers2]);
   }
 
 }
