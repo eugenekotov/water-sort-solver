@@ -6,8 +6,13 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  // font-size: 14px;
-  // font-weight: 200;
+}
+
+.view-container2 {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .source-containers-parent {
@@ -23,35 +28,56 @@
 }
 
 .header-text {
-  margin: $margin;
-  width: 250px;
   text-align: center;
-  font-size: 12px;
-  font-weight: 400;
   color: colors.$text-color;
 }
 
+.header-text-large {
+  margin: $margin-large;
+  width: 350px;
+}
+
+.header-text-small {
+  margin: $margin;
+  width: 250px;
+}
+
 .source-containers {
-  padding: math.div($item-size, 4);
-  height: 4 * $item-size + 10px;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
-  gap: $container-items-gap;
+}
+
+.source-containers-large {
+  padding: math.div($item-size-large, 4);
+  height: 4 * $item-size-large + $container-items-gap-large * 3;
+  width: 12 * $item-size-large + $container-items-gap-large * 11;
+  gap: $container-items-gap-large;
+}
+
+.source-containers-small {
+  padding: math.div($item-size, 4);
+  height: 4 * $item-size-small + $container-items-gap-small * 3;
+  width: 12 * $item-size-small + $container-items-gap-small * 11;
+  gap: $container-items-gap-small;
 }
 
 .source-container {
-  width: $item-size;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: $container-items-gap;
 }
 
-.containers {
-  margin-top: $margin * 3;
+.source-container-small {
+  // width: $item-size-small;
+  gap: $container-items-gap-small;
+}
+
+.source-container-large {
+  // width: $item-size-large;
+  gap: $container-items-gap-large;
 }
 
 .container {
@@ -59,20 +85,35 @@
   flex-direction: column;
   align-items: center;
   justify-content: end;
-  gap: $container-items-gap;
+}
+
+.container-small {
+  gap: $container-items-gap-small;
+}
+
+.container-large {
+  gap: $container-items-gap-large;
 }
 
 .item {
   cursor: move;
 }
 
+// TODO: Where it is using
 .cdk-drag-preview {
   box-sizing: border-box;
-  border-radius: $item-border-radius;
   cursor: move; // is not working
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14),
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-preview-small {
+  border-radius: $item-border-radius-small;
+}
+
+.cdk-drag-preview-large {
+  border-radius: $item-border-radius-large;
 }
 
 .cdk-drag-placeholder {

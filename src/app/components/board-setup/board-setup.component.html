@@ -1,17 +1,20 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
-  <div>
+  <div class="view-container2">
     <div class="source-containers-parent">
       <div class="source-containers-parent2">
-        <div class="header-text">
+        <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
           Create your own game board by moving colored squares to the containers below
         </div>
-        <div class="source-containers shadow-inset">
+        <div class="source-containers shadow-inset"
+          [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
+
           <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
-            cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+            [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" cdkDropList
+            [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
             (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
 
             <div *ngFor="let color of container.colors" class="item shadow shadow-active"
-              [ngStyle]="getItemStyle(color)" cdkDrag>
+              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)" cdkDrag>
             </div>
           </div>
         </div>
@@ -23,23 +26,80 @@
 
     </div>
 
-    <div class="containers">
-      <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container" cdkDropList
-        [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
-        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+    <ng-container *ngIf="mainService.isMobile">
 
-        <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngStyle]="getItemStyle(color)"
-          cdkDrag>
+      <div class="containers containers-small">
+
+        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
+          class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
+
+          <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
         </div>
       </div>
-    </div>
+
+      <div class="containers containers-small">
+        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
+          class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
+
+          <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!mainService.isMobile">
+      <div class="containers containers-large">
+
+        <div *ngFor="let container of mainService.setupContainers" [id]="container.id" class="container container-large"
+          cdkDropList [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+          (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+
+          <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
+        </div>
+      </div>
+    </ng-container>
   </div>
 
-  <div class="buttons-container">
-    <button mat-raised-button class="button" (click)="clearClick()" [disabled]="filling">Clear board</button>
-    <button mat-raised-button class="button mr-1" (click)="fillRandomly()" [disabled]="filling">Fill randomly</button>
-    <button mat-raised-button class="button" (click)="saveClick()" [disabled]="filling">Save</button>
-    <button mat-raised-button class="button mr-1" (click)="loadClick()" [disabled]="filling">Load</button>
-    <button mat-raised-button class="button" (click)="solveClick()" [disabled]="filling">Solve</button>
-  </div>
+  <ng-container *ngIf="mainService.isMobile">
+    <div class="buttons-container buttons-container-small">
+
+      <button mat-raised-button class="button button-small"
+        (click)="clearClick()" [disabled]="filling">Clear board</button>
+      <button mat-raised-button class="button button-small mr-1"
+        (click)="fillRandomly()" [disabled]="filling">Fill randomly</button>
+      <button mat-raised-button class="button button-small"
+        (click)="saveClick()" [disabled]="filling">Save</button>
+      <button mat-raised-button class="button button-small mr-1"
+        (click)="loadClick()" [disabled]="filling">Load</button>
+      <button mat-raised-button class="button button-small"
+        (click)="solveClick()" [disabled]="filling">Solve</button>
+    </div>
+
+  </ng-container>
+
+  <ng-container *ngIf="!mainService.isMobile">
+    <div class="buttons-container buttons-container-large">
+      <button mat-raised-button class="button button-large"
+        (click)="clearClick()" [disabled]="filling">Clear board</button>
+      <button mat-raised-button class="button button-large mr-1"
+        (click)="fillRandomly()" [disabled]="filling">Fill randomly</button>
+      <button mat-raised-button class="button button-large"
+        (click)="saveClick()" [disabled]="filling">Save</button>
+      <button mat-raised-button class="button button-large mr-1"
+        (click)="loadClick()" [disabled]="filling">Load</button>
+      <button mat-raised-button class="button button-large"
+        (click)="solveClick()" [disabled]="filling">Solve</button>
+    </div>
+
+  </ng-container>
+
 </div>

@@ -1,5 +1,6 @@
 @use 'src/styles/variables' as *;
 @use 'src/styles/colors' as colors;
+@use 'sass:math';
 
 
 .view-container {
@@ -8,12 +9,20 @@
 }
 
 .containers {
-  margin-top: $margin * 2;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: flex-start;
+}
+
+.containers-small {
+  margin-top: $margin-small * 2;
+  gap: 4rem 1rem;
+}
+
+.containers-large {
+  margin-top: $margin-large * 2;
   gap: 4rem 0.5rem;
 }
 
@@ -21,47 +30,83 @@
   // border-left: $container-border-width solid colors.$container-border-color;
   // border-right: $container-border-width solid colors.$container-border-color;
   // border-bottom: $container-border-width solid colors.$container-border-color;
-  border-radius: $container-border-radius;
-  // border-bottom-left-radius: $container-border-radius;
-  // border-bottom-right-radius: $container-border-radius;
-  width: $item-size;
-  height: $item-size * 4 + $container-items-gap * 3;
-  padding: $container-items-gap;
   box-shadow: inset 0 3px 1px -2px rgba(0, 0, 0, 0.2),
     inset 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     inset 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 
-  // border: 1px solid #ccc;
   // box-shadow:
   //   inset 0 -2px 3px rgba(255, 255, 255, 0.7),
-  //   /* Внутрішнє світло зверху */
   //   0 2px 3px rgba(0, 0, 0, 0.2);
-  // /* Зовнішня темна тінь знизу */
 }
 
-.item {
-  width: $item-size;
-  height: $item-size;
-  border-radius: $item-border-radius;
+.container-small {
+  border-radius: $container-border-radius-small;
+  // border-bottom-left-radius: $container-border-radius;
+  // border-bottom-right-radius: $container-border-radius;
+  width: $item-size-small;
+  height: $item-size-small * 4 + $container-items-gap-small * 3;
+  padding: $container-items-gap-small;
+}
+
+.container-large {
+  border-radius: $container-border-radius-large;
+  // border-bottom-left-radius: $container-border-radius;
+  // border-bottom-right-radius: $container-border-radius;
+  width: $item-size-large;
+  height: $item-size-large * 4 + $container-items-gap-large * 3;
+  padding: $container-items-gap-large;
+}
+
+.item-large {
+  width: $item-size-large;
+  height: $item-size-large;
+  border-radius: $item-border-radius-large;
+}
+
+.item-small {
+  width: $item-size-small;
+  height: $item-size-small;
+  border-radius: $item-border-radius-small;
 }
 
 .buttons-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: center;
-  margin: $margin;
-  gap: 10px;
+}
+
+.buttons-container-small {
+  margin: $margin-small;
+  gap: math.div($margin-small, 2);
+}
+
+.buttons-container-large {
+  margin: $margin-large;
+  gap: math.div($margin-large, 2);
 }
 
 .button {
-  min-width: $button-min-width !important;
-  height: $button-height !important;
-  line-height: $button-height !important;
-  padding-left: $button-padding !important;
-  padding-right: $button-padding !important;
   color: colors.$text-color !important;
-  font-size: $button-font-size;
-  font-weight: 400 !important;
+}
+
+.button-small {
+  min-width: $button-min-width-small !important;
+  height: $button-height-small !important;
+  line-height: $button-height-small !important;
+  padding-left: $button-padding-small !important;
+  padding-right: $button-padding-small !important;
+  font-size: $button-font-size-small;
+  font-weight: $button-font-weight-small !important;
+}
+
+.button-large {
+  min-width: $button-min-width-large !important;
+  height: $button-height-large !important;
+  line-height: $button-height-large !important;
+  padding-left: $button-padding-large !important;
+  padding-right: $button-padding-large !important;
+  font-size: $button-font-size-large;
+  font-weight: $button-font-weight-large !important;
 }
 
 // button:disabled {

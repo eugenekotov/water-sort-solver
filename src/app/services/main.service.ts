@@ -22,7 +22,13 @@ export class MainService {
 
   public containersCount = 14;
   sourceContainers: SetupContainer[] = [];
+
+  // for large screen
   setupContainers: SetupContainer[] = [];
+
+  // for small screen
+  setupContainers1: SetupContainer[] = [];
+  setupContainers2: SetupContainer[] = [];
 
   private _mode: TMode = undefined;
   visibleSetup: boolean = false;
@@ -114,9 +120,7 @@ export class MainService {
   public fillBoard(setupContainers: SetupContainer[]) {
     this.clearContainers();
     setupContainers.forEach((setupContainer, containerIndex) => {
-
-
-      setupContainer.colors.forEach((color, itemIndex) => this.playContainers[containerIndex].items[setupContainer.colors.length - 1 - itemIndex ].color = color);
+      setupContainer.colors.forEach((color, itemIndex) => this.playContainers[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
     });
   }
 
@@ -125,6 +129,13 @@ export class MainService {
   }
 
   private createSetupContainers() {
+    const halfContainersCount = Math.ceil(this.containersCount / 2);
+    for (let i = 0; i < halfContainersCount; i++) {
+      this.setupContainers1.push({ id: 'source-container' + i, colors: [] });
+    }
+    for (let i = halfContainersCount; i < this.containersCount; i++) {
+      this.setupContainers2.push({ id: 'source-container' + i, colors: [] });
+    }
     for (let i = 0; i < this.containersCount; i++) {
       this.setupContainers.push({ id: 'source-container' + i, colors: [] });
     }

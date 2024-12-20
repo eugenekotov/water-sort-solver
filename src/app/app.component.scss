@@ -9,8 +9,17 @@
 
   background-color: colors.$main-background-color;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: $font-size;
   user-select: none;
+}
+
+.body-container-small {
+  font-size: $font-size-small;
+  font-weight: $font-weight-small;
+}
+
+.body-container-large {
+  font-size: $font-size-large;
+  font-weight: $font-weight-large;
 }
 
 .body-vertical-container {
@@ -22,4 +31,9 @@
 .main-container {
   background-color: colors.$main-background-color;
   flex: 1;
+
+}
+
+.main-container-large {
+  margin: $margin-large;
 }

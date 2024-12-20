@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MainService } from './services/main.service';
 
@@ -12,8 +12,17 @@ export class AppComponent implements AfterViewInit {
   constructor(private breakpointObserver: BreakpointObserver, public mainService: MainService) {
   }
 
+  @HostListener('window:resize', [])
+  onResize() {
+    this.checkScreenSize();
+  }
+
   ngOnInit() {
-    this.breakpointObserver.observe(Breakpoints.Handset).subscribe({ next: result => this.mainService.isMobile = result.matches });
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize() {
+    this.mainService.isMobile = window.innerWidth <= 768;
   }
 
   ngAfterViewInit(): void {

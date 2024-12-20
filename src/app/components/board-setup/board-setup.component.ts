@@ -52,6 +52,8 @@ export class BoardSetupComponent {
 
   private clearContainers() {
     this.mainService.setupContainers.forEach(container => container.colors = []);
+    this.mainService.setupContainers1.forEach(container => container.colors = []);
+    this.mainService.setupContainers2.forEach(container => container.colors = []);
   }
 
   async fillRandomly() {
