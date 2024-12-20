@@ -7,3 +7,9 @@
   justify-content: space-between;
 }
 
+.text-container {
+  display: flex;
+  justify-content: center;
+  flex-grow: 1;
+  align-items: center;
+}
