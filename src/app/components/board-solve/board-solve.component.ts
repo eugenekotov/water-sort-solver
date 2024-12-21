@@ -39,7 +39,7 @@ class Position {
 })
 export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  static readonly MOVING_TOP = -50;
+  // static readonly MOVING_TOP = -50;
   // TODO: Revert speed
   // static readonly MOVING_TOP_DURATION = 400;
   static readonly MOVING_TOP_DURATION = 800;
@@ -129,7 +129,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.mainService.movingItem.hidden = false;
       const movig_duration = this.calculateMovingDuration(step.iFrom, step.iTo);
       setTimeout(() => {
-        this.moveItem(startPosition, step.iTo, movig_duration).then(_ => {
+        this.moveItem(startPosition, step.iFrom, step.iTo, movig_duration).then(_ => {
           this.playContainers[step.iTo].push(color);
           this.mainService.movingItem.hidden = true;
           this.completeStepIndex = step.index;
@@ -162,18 +162,31 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Position(top, left);
   }
 
+  private getMovingTopPosition(containerIndex: number): number {
+    const index = containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
+    const itemElement = this.itemsElements[index];
+    const movingElement = document.getElementById("moving");
+    const itemRect = itemElement!.getBoundingClientRect();
+    const parentMovingElement = movingElement!.parentElement!.getBoundingClientRect();
+    const top = itemRect.top - parentMovingElement.top - itemRect.height * 2;
+    return top;
+  }
+
+
   private setMovingPosition(position: Position) {
     this.mainService.movingItem.top = `${position.top}px`;
     this.mainService.movingItem.left = `${position.left}px`;
   }
 
-  private moveItem(startPosition: Position, iTo: number, moving_duration: number): Promise<void> {
+  private moveItem(startPosition: Position, iFrom: number, iTo: number, moving_duration: number): Promise<void> {
     return new Promise(resolve => {
       const itemIndex = this.playContainers[iTo].size();
       const finishPosition = this.getMovingPosition(iTo, itemIndex);
       // TODO: Calculate BoardSolveComponent.MOVING_TOP
-      const topPosition = new Position(BoardSolveComponent.MOVING_TOP, startPosition.left);
-      const leftPosition = new Position(BoardSolveComponent.MOVING_TOP, finishPosition.left);
+      const topStartCoord = this.getMovingTopPosition(iFrom);
+      const topLeftCoord = this.getMovingTopPosition(iTo);
+      const topPosition = new Position(topStartCoord, startPosition.left);
+      const leftPosition = new Position(topLeftCoord, finishPosition.left);
       // Move top
       this.mainService.movingItem.transitionDuration = "" + (BoardSolveComponent.MOVING_TOP_DURATION / 1000) + "s";
       this.setMovingPosition(topPosition);
