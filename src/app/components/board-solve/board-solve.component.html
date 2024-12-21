@@ -1,6 +1,5 @@
 <div class="view-container" [ngStyle]="mainService.visibleSolve ? {'opacity' : 1} : {'opacity' : 0}">
 
-  <div>
     <div class="solution-text-container"
       [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
       <p>Solution consists of {{mainService.solution.steps.length}} steps</p>
@@ -8,6 +7,7 @@
     </div>
     <div class="relative-container">
       <ng-container *ngIf="mainService.isMobile">
+        <div class="play-containers-small">
         <div class="containers containers-small">
           <app-container *ngFor="let container of mainService.playContainers1"
             [container]="container" [attr.id]="getContainerId(container.index)">
@@ -17,6 +17,7 @@
           <app-container *ngFor="let container of mainService.playContainers2"
             [container]="container" [attr.id]="getContainerId(container.index)">
           </app-container>
+        </div>
         </div>
       </ng-container>
 
@@ -34,7 +35,6 @@
 
       <app-moving-item class="moving-item" [item]="mainService.movingItem"></app-moving-item>
     </div>
-  </div>
 
   <ng-container *ngIf="mainService.isMobile">
     <div>

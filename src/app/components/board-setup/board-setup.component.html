@@ -1,5 +1,4 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
-  <div class="view-container2">
     <div class="text-containers-parent">
       <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
         Create your own game board by moving colored squares to the containers below
@@ -78,7 +77,6 @@
         </div>
       </div>
     </ng-container>
-  </div>
 
   <ng-container *ngIf="mainService.isMobile">
 
