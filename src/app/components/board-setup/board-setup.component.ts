@@ -49,12 +49,15 @@ export class BoardSetupComponent {
 
   clearClick() {
     // TODO: Ask confirmation
+    this.clearBoard();
+  }
+
+  private clearBoard() {
     this.mainService.createSourceContainers();
     this.clearContainers();
   }
 
   private clearContainers() {
-    // this.mainService.setupContainers.forEach(container => container.colors = []);
     this.mainService.setupContainers1.forEach(container => container.colors = []);
     this.mainService.setupContainers2.forEach(container => container.colors = []);
   }
@@ -62,6 +65,10 @@ export class BoardSetupComponent {
   async fillRandomly() {
     this.filling = true;
     let sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+    if (sourceContainers.length === 0) {
+      this.clearBoard();
+    }
+    sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
     while (sourceContainers.length > 0) {
       const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
       const color = sourceContainers[sourceIndex].colors.pop();

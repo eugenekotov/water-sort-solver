@@ -127,9 +127,8 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setMovingPosition(startPosition);
       this.playContainers[step.iFrom].pop();
       this.mainService.movingItem.hidden = false;
-      const movig_duration = this.calculateMovingDuration(step.iFrom, step.iTo);
       setTimeout(() => {
-        this.moveItem(startPosition, step.iFrom, step.iTo, movig_duration).then(_ => {
+        this.moveItem(startPosition, step.iFrom, step.iTo).then(_ => {
           this.playContainers[step.iTo].push(color);
           this.mainService.movingItem.hidden = true;
           this.completeStepIndex = step.index;
@@ -144,11 +143,9 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // TODO: Change speed in options
   // TODO: Move faster when you are close to finish
-  private calculateMovingDuration(iFrom: number, iTo: number): number {
-    const way = Math.abs(iFrom - iTo);
-    // TODO: back speed
-    // return 400 + way * 50;
-    return 600 + way * 100;
+  private calculateMovingDuration(from: Position, to: Position): number {
+    const way = Math.sqrt(Math.pow(to.top - from.top, 2) + Math.pow(to.left - from.left, 2));
+    return 400 + way * 0.5;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {
@@ -178,32 +175,34 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.movingItem.left = `${position.left}px`;
   }
 
-  private moveItem(startPosition: Position, iFrom: number, iTo: number, moving_duration: number): Promise<void> {
+  private moveItem(startPosition: Position, iFrom: number, iTo: number): Promise<void> {
     return new Promise(resolve => {
       const itemIndex = this.playContainers[iTo].size();
       const finishPosition = this.getMovingPosition(iTo, itemIndex);
-      // TODO: Calculate BoardSolveComponent.MOVING_TOP
       const topStartCoord = this.getMovingTopPosition(iFrom);
       const topLeftCoord = this.getMovingTopPosition(iTo);
       const topPosition = new Position(topStartCoord, startPosition.left);
       const leftPosition = new Position(topLeftCoord, finishPosition.left);
       // Move top
-      this.mainService.movingItem.transitionDuration = "" + (BoardSolveComponent.MOVING_TOP_DURATION / 1000) + "s";
+      const moving_duration1 = this.calculateMovingDuration(startPosition, topPosition);
+      this.mainService.movingItem.transitionDuration = "" + (moving_duration1 / 1000) + "s";
       this.setMovingPosition(topPosition);
       setTimeout(() => {
         // Move left
-        this.mainService.movingItem.transitionDuration = "" + (moving_duration / 1000) + "s";
+        const moving_duration2 = this.calculateMovingDuration(topPosition, leftPosition);
+        this.mainService.movingItem.transitionDuration = "" + (moving_duration2 / 1000) + "s";
         this.setMovingPosition(leftPosition);
         setTimeout(() => {
           // Move down
-          this.mainService.movingItem.transitionDuration = "" + (BoardSolveComponent.MOVING_TOP_DURATION / 1000) + "s";
+          const moving_duration3 = this.calculateMovingDuration(leftPosition, finishPosition);
+          this.mainService.movingItem.transitionDuration = "" + (moving_duration3 / 1000) + "s";
           this.setMovingPosition(finishPosition);
           setTimeout(() => {
             resolve();
-          }, BoardSolveComponent.MOVING_TOP_DURATION);
+          }, moving_duration3);
 
-        }, moving_duration);
-      }, BoardSolveComponent.MOVING_TOP_DURATION);
+        }, moving_duration2);
+      }, moving_duration1);
     });
   }
 
