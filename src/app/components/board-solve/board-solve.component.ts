@@ -119,25 +119,36 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private makeStep(step: PlayStep): Observable<number> {
     return new Observable<number>(observer => {
-      const color = this.playContainers[step.iFrom].peek();
-      this.mainService.movingItem.color = color;
       // show moving item
-      const itemIndex = this.playContainers[step.iFrom].size() - 1;
-      const startPosition = this.getMovingPosition(step.iFrom, itemIndex);
+      this.mainService.movingItem.color = this.playContainers[step.iFrom].peek();
+      const startPosition = this.getMovingPosition(step.iFrom, this.playContainers[step.iFrom].size() - 1);
       this.setMovingPosition(startPosition);
       this.playContainers[step.iFrom].pop();
       this.mainService.movingItem.hidden = false;
-      setTimeout(() => {
-        this.moveItem(startPosition, step.iFrom, step.iTo).then(_ => {
-          this.playContainers[step.iTo].push(color);
-          this.mainService.movingItem.hidden = true;
-          this.completeStepIndex = step.index;
-          setTimeout(() => {
-            observer.next(step.index);
-            observer.complete();
-          }, 100);
-        });
+      // moving
+      setTimeout(async () => {
+        const finishPosition = this.getMovingPosition(step.iTo, this.playContainers[step.iTo].size());
+        const topPosition = new Position(this.getMovingTopPosition(step.iFrom), startPosition.left);
+        const leftPosition = new Position(this.getMovingTopPosition(step.iTo), finishPosition.left);
+        await this.moving(startPosition, topPosition);
+        await this.moving(topPosition, leftPosition);
+        await this.moving(leftPosition, finishPosition);
+        this.playContainers[step.iTo].push(this.mainService.movingItem.color!);
+        this.mainService.movingItem.hidden = true;
+        this.completeStepIndex = step.index;
+        await new Promise<void>(resolve => setTimeout(resolve, 100));
+        observer.next(step.index);
+        observer.complete();
       }, 0);
+    });
+  }
+
+  private async moving(from: Position, to: Position): Promise<void> {
+    return new Promise<void>(resolve => {
+      const moving_duration1 = this.calculateMovingDuration(from, to);
+      this.mainService.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+      this.setMovingPosition(to);
+      setTimeout(resolve, moving_duration1);
     });
   }
 
@@ -173,37 +184,6 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   private setMovingPosition(position: Position) {
     this.mainService.movingItem.top = `${position.top}px`;
     this.mainService.movingItem.left = `${position.left}px`;
-  }
-
-  private moveItem(startPosition: Position, iFrom: number, iTo: number): Promise<void> {
-    return new Promise(resolve => {
-      const itemIndex = this.playContainers[iTo].size();
-      const finishPosition = this.getMovingPosition(iTo, itemIndex);
-      const topStartCoord = this.getMovingTopPosition(iFrom);
-      const topLeftCoord = this.getMovingTopPosition(iTo);
-      const topPosition = new Position(topStartCoord, startPosition.left);
-      const leftPosition = new Position(topLeftCoord, finishPosition.left);
-      // Move top
-      const moving_duration1 = this.calculateMovingDuration(startPosition, topPosition);
-      this.mainService.movingItem.transitionDuration = "" + (moving_duration1 / 1000) + "s";
-      this.setMovingPosition(topPosition);
-      setTimeout(() => {
-        // Move left
-        const moving_duration2 = this.calculateMovingDuration(topPosition, leftPosition);
-        this.mainService.movingItem.transitionDuration = "" + (moving_duration2 / 1000) + "s";
-        this.setMovingPosition(leftPosition);
-        setTimeout(() => {
-          // Move down
-          const moving_duration3 = this.calculateMovingDuration(leftPosition, finishPosition);
-          this.mainService.movingItem.transitionDuration = "" + (moving_duration3 / 1000) + "s";
-          this.setMovingPosition(finishPosition);
-          setTimeout(() => {
-            resolve();
-          }, moving_duration3);
-
-        }, moving_duration2);
-      }, moving_duration1);
-    });
   }
 
   backClick() {
