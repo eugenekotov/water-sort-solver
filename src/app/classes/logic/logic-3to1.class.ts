@@ -21,7 +21,7 @@ export class Logic3To1 implements ILogicController {
         }
       }
     }
-    console.log("Logic 3 to 1 made " + result.stepCount + " steps.");
+    // console.log("Logic 3 to 1 made " + result.stepCount + " steps.");
     return result;
   }
 

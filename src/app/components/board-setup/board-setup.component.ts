@@ -110,7 +110,7 @@ export class BoardSetupComponent {
   }
 
   solveClick() {
-    this.mainService.solve([...this.mainService.setupContainers1, ...this.mainService.setupContainers2]);
+    this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 
 }

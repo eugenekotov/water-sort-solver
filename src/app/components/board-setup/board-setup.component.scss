@@ -91,14 +91,6 @@
   justify-content: end;
 }
 
-.container-small {
-  gap: $container-items-gap-small;
-}
-
-.container-large {
-  gap: $container-items-gap-large;
-}
-
 .item {
   cursor: move;
 }

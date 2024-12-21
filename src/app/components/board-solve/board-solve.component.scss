@@ -11,8 +11,12 @@
   position: relative;
 }
 
-.containers {
-  margin-top: $margin * 7;
+.containers-small {
+  margin-top: $margin-small * 3;
+}
+
+.containers-large {
+  margin-top: $margin-large * 3;
 }
 
 .moving-item {
@@ -22,6 +26,13 @@
 }
 
 .solution-text-container {
-  margin: $margin * 2;
   text-align: center;
+}
+
+.solution-text-container-small {
+  margin: $margin-small * 2;
+}
+
+.solution-text-container-large {
+  margin: $margin-large * 2;
 }

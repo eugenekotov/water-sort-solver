@@ -46,6 +46,7 @@
   width: $item-size-small;
   height: $item-size-small * 4 + $container-items-gap-small * 3;
   padding: $container-items-gap-small;
+  gap: $container-items-gap-small;
 }
 
 .container-large {
@@ -55,6 +56,7 @@
   width: $item-size-large;
   height: $item-size-large * 4 + $container-items-gap-large * 3;
   padding: $container-items-gap-large;
+  gap: $container-items-gap-large;
 }
 
 .item-large {

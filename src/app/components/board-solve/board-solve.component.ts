@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { concatMap, Observable, ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, Observable, ReplaySubject, Subject, Subscription, takeUntil } from 'rxjs';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution.class';
 import { MainService } from 'src/app/services/main.service';
@@ -37,12 +37,15 @@ class Position {
   templateUrl: './board-solve.component.html',
   styleUrls: ['./board-solve.component.scss']
 })
-export class BoardSolveComponent implements OnInit, AfterViewInit {
+export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   static readonly MOVING_TOP = -50;
   // TODO: Revert speed
   // static readonly MOVING_TOP_DURATION = 400;
-  static readonly MOVING_TOP_DURATION = 100;
+  static readonly MOVING_TOP_DURATION = 800;
+
+  playContainers: PlayContainer[] = [];
+  private screenChangedSubscription: Subscription | undefined = undefined;
 
   itemsElements: HTMLElement[] = [];
   stepIndex: number = 0;
@@ -75,12 +78,23 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.playContainers = [...this.mainService.playContainers1, ...this.mainService.playContainers2];
+    this.screenChangedSubscription = this.mainService.screenChanged$.subscribe(() => {
+      setTimeout(() => this.getItemsElements(), 500);
+    });
     this.getItemsElements();
   }
 
+  ngOnDestroy(): void {
+    if (this.screenChangedSubscription) {
+      this.screenChangedSubscription.unsubscribe();
+    }
+  }
+
   private getItemsElements() {
-    for (let containerIndex = 0; containerIndex < this.mainService.playContainers.length; containerIndex++) {
-      const container = this.mainService.playContainers[containerIndex];
+    this.itemsElements = [];
+    for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
+      const container = this.playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
         this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
       }
@@ -105,18 +119,18 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
 
   private makeStep(step: PlayStep): Observable<number> {
     return new Observable<number>(observer => {
-      const color = this.mainService.playContainers[step.iFrom].peek();
+      const color = this.playContainers[step.iFrom].peek();
       this.mainService.movingItem.color = color;
       // show moving item
-      const itemIndex = this.mainService.playContainers[step.iFrom].size() - 1;
+      const itemIndex = this.playContainers[step.iFrom].size() - 1;
       const startPosition = this.getMovingPosition(step.iFrom, itemIndex);
       this.setMovingPosition(startPosition);
-      this.mainService.playContainers[step.iFrom].pop();
+      this.playContainers[step.iFrom].pop();
       this.mainService.movingItem.hidden = false;
       const movig_duration = this.calculateMovingDuration(step.iFrom, step.iTo);
       setTimeout(() => {
         this.moveItem(startPosition, step.iTo, movig_duration).then(_ => {
-          this.mainService.playContainers[step.iTo].push(color);
+          this.playContainers[step.iTo].push(color);
           this.mainService.movingItem.hidden = true;
           this.completeStepIndex = step.index;
           setTimeout(() => {
@@ -134,7 +148,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
     const way = Math.abs(iFrom - iTo);
     // TODO: back speed
     // return 400 + way * 50;
-    return 100 + way * 10;
+    return 600 + way * 100;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {
@@ -155,7 +169,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
 
   private moveItem(startPosition: Position, iTo: number, moving_duration: number): Promise<void> {
     return new Promise(resolve => {
-      const itemIndex = this.mainService.playContainers[iTo].size();
+      const itemIndex = this.playContainers[iTo].size();
       const finishPosition = this.getMovingPosition(iTo, itemIndex);
       // TODO: Calculate BoardSolveComponent.MOVING_TOP
       const topPosition = new Position(BoardSolveComponent.MOVING_TOP, startPosition.left);
@@ -167,7 +181,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit {
         // Move left
         this.mainService.movingItem.transitionDuration = "" + (moving_duration / 1000) + "s";
         this.setMovingPosition(leftPosition);
-        setTimeout(()=>{
+        setTimeout(() => {
           // Move down
           this.mainService.movingItem.transitionDuration = "" + (BoardSolveComponent.MOVING_TOP_DURATION / 1000) + "s";
           this.setMovingPosition(finishPosition);

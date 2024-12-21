@@ -4,6 +4,7 @@ import { Item } from '../classes/model/item.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
 import { Solution } from '../classes/solution.class';
+import { Subject } from 'rxjs';
 
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 
@@ -17,7 +18,8 @@ export class MainService {
   public readonly CONTAINER_SIZE = 4;
   public readonly OPACITY_DELAY = 300;
 
-  public isMobile = false;
+  private _isMobile: boolean = false;
+  public screenChanged$: Subject<void> = new Subject<void>();
 
   public containersCount = 14;
   sourceContainers: SetupContainer[] = [];
@@ -31,18 +33,18 @@ export class MainService {
   visibleNoSolution: boolean = false;
   visibleSolve: boolean = false;
 
-  playContainers: PlayContainer[] = [];
-  solution: Solution = new Solution();
+  playContainers1: PlayContainer[] = [];
+  playContainers2: PlayContainer[] = [];
 
+  solution: Solution = new Solution();
   movingItem: Item; // Item for moving animation
 
   constructor() {
     this.createSourceContainers();
     this.createSetupContainers();
-    this.createContainers();
+    this.createPlayContainers();
     this.movingItem = new Item(undefined, 0, true);
   }
-
 
   public get mode(): TMode {
     return this._mode;
@@ -62,6 +64,19 @@ export class MainService {
       }, this.OPACITY_DELAY);
     });
   }
+
+  public get isMobile(): boolean {
+    return this._isMobile;
+  }
+
+  public set isMobile(value: boolean) {
+    if (this._isMobile !== value) {
+      this._isMobile = value;
+      this.screenChanged$.next();
+    }
+
+  }
+
 
   setVisible(value: boolean) {
     switch (this._mode) {
@@ -89,10 +104,10 @@ export class MainService {
     }
   }
 
-  public solve(setupContainers: SetupContainer[]) {
+  public solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.setMode("in-progress").then(_ => {
-      this.fillBoard(setupContainers);
-      if (this.solution.solve(this.playContainers)) {
+      this.fillBoard(setupContainers1, setupContainers2);
+      if (this.solution.solve([...this.playContainers1, ...this.playContainers2])) {
         this.setMode("solve");
       } else {
         this.setMode("no-solution");
@@ -105,21 +120,29 @@ export class MainService {
     this.setMode("setup");
   }
 
-  private createContainers() {
-    for (let i = 0; i < this.containersCount; i++) {
-      this.playContainers.push(new PlayContainer(i));
+  private createPlayContainers() {
+    const halfContainersCount = Math.ceil(this.containersCount / 2);
+    for (let i = 0; i < halfContainersCount; i++) {
+      this.playContainers1.push(new PlayContainer(i));
+    }
+    for (let i = halfContainersCount; i < this.containersCount; i++) {
+      this.playContainers2.push(new PlayContainer(i));
     }
   }
 
-  public fillBoard(setupContainers: SetupContainer[]) {
+  public fillBoard(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.clearContainers();
-    setupContainers.forEach((setupContainer, containerIndex) => {
-      setupContainer.colors.forEach((color, itemIndex) => this.playContainers[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
+    setupContainers1.forEach((setupContainer, containerIndex) => {
+      setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
+    });
+    setupContainers2.forEach((setupContainer, containerIndex) => {
+      setupContainer.colors.forEach((color, itemIndex) => this.playContainers2[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
     });
   }
 
   private clearContainers() {
-    this.playContainers.forEach(container => container.clear());
+    this.playContainers1.forEach(container => container.clear());
+    this.playContainers2.forEach(container => container.clear());
   }
 
   private createSetupContainers() {

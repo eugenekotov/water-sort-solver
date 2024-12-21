@@ -1,27 +1,83 @@
 <div class="view-container" [ngStyle]="mainService.visibleSolve ? {'opacity' : 1} : {'opacity' : 0}">
 
   <div>
-    <div class="solution-text-container">
+    <div class="solution-text-container"
+      [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
       <p>Solution consists of {{mainService.solution.steps.length}} steps</p>
       <p>Current step: {{completeStepIndex}}</p>
     </div>
     <div class="relative-container">
-      <div class="containers">
-        <app-container *ngFor="let container of mainService.playContainers; let containerIndex = index"
-          [container]="container" [attr.id]="getContainerId(containerIndex)">
-        </app-container>
-      </div>
+      <ng-container *ngIf="mainService.isMobile">
+        <div class="containers containers-small">
+          <app-container *ngFor="let container of mainService.playContainers1"
+            [container]="container" [attr.id]="getContainerId(container.index)">
+          </app-container>
+        </div>
+        <div class="containers containers-small">
+          <app-container *ngFor="let container of mainService.playContainers2"
+            [container]="container" [attr.id]="getContainerId(container.index)">
+          </app-container>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!mainService.isMobile">
+        <div class="containers containers-large">
+          <app-container *ngFor="let container of mainService.playContainers1; let containerIndex = index"
+            [container]="container" [attr.id]="getContainerId(containerIndex)">
+          </app-container>
+          <app-container *ngFor="let container of mainService.playContainers2; let containerIndex = index" [container]="container"
+            [attr.id]="getContainerId(containerIndex)">
+          </app-container>
+        </div>
+      </ng-container>
+
+
       <app-moving-item class="moving-item" [item]="mainService.movingItem"></app-moving-item>
     </div>
   </div>
 
-  <div class="buttons-container">
-    <button mat-raised-button class="button" (click)="backClick()" [disabled]="playing || stepIndex === 0">Step back</button>
-    <button mat-raised-button class="button mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
-    <button mat-raised-button class="button" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">Play back</button>
-    <button mat-raised-button class="button mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
-    <button mat-raised-button class="button mr-1" (click)="stopClick()" [disabled]="!playing || stopping">Stop</button>
-    <button mat-raised-button class="button" (click)="setupClick()" [disabled]="playing">Setup board</button>
-  </div>
+  <ng-container *ngIf="mainService.isMobile">
+    <div>
+      <div class="buttons-container buttons-container-small">
+        <button mat-raised-button class="button button-small" (click)="backClick()"
+          [disabled]="playing || stepIndex === 0">Step
+          back</button>
+        <button mat-raised-button class="button button-small" (click)="nextClick()"
+          [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
+      </div>
+      <div class="buttons-container buttons-container-small">
+        <button mat-raised-button class="button button-small" (click)="playBackClick()"
+          [disabled]="playing || stepIndex === 0">Play
+          back</button>
+        <button mat-raised-button class="button button-small mr-1" (click)="playClick()"
+          [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
+        <button mat-raised-button class="button button-small" (click)="stopClick()"
+          [disabled]="!playing || stopping">Stop</button>
+      </div>
+      <div class="buttons-container buttons-container-small">
+        <button mat-raised-button class="button button-small" (click)="setupClick()" [disabled]="playing">Setup
+          board</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!mainService.isMobile">
+    <div class="buttons-container buttons-container-large">
+      <button mat-raised-button class="button button-large" (click)="backClick()"
+        [disabled]="playing || stepIndex === 0">Step
+        back</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="nextClick()"
+        [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
+      <button mat-raised-button class="button button-large" (click)="playBackClick()"
+        [disabled]="playing || stepIndex === 0">Play
+        back</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="playClick()"
+        [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="stopClick()"
+        [disabled]="!playing || stopping">Stop</button>
+      <button mat-raised-button class="button button-large" (click)="setupClick()" [disabled]="playing">Setup
+        board</button>
+    </div>
+  </ng-container>
 
 </div>

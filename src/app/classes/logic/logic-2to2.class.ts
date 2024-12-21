@@ -21,7 +21,7 @@ export class Logic2To2 implements ILogicController {
         }
       }
     }
-    console.log("Logic 2 to 2 made " + result.stepCount + " steps.");
+    // console.log("Logic 2 to 2 made " + result.stepCount + " steps.");
     return result;
   }
 
