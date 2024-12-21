@@ -72,22 +72,20 @@ export class BoardSetupComponent {
     while (sourceContainers.length > 0) {
       const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
       const color = sourceContainers[sourceIndex].colors.pop();
-      await this.pause(20);
+      await this.pause(10);
       const setupContainers = [
         ...this.mainService.setupContainers1.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE),
         ...this.mainService.setupContainers2.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE)];
       const setupIndex = this.getRandomInt(0, setupContainers.length - 3);
       setupContainers[setupIndex].colors.splice(0, 0, color!);
       sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
-      await this.pause(80);
+      await this.pause(20);
     }
     this.filling = false;
   }
 
   async pause(delay: number): Promise<void> {
-    return new Promise<void>(resolve => {
-      setTimeout(() => resolve(), delay);
-    });
+    return new Promise<void>(resolve => setTimeout(resolve, delay));
   }
 
   private getRandomInt(min: number, max: number): number {
