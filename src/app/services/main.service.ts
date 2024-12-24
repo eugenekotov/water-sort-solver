@@ -17,6 +17,7 @@ export class MainService {
   public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 1000).toString() + "s";
   public readonly CONTAINER_SIZE = 4;
   public readonly OPACITY_DELAY = 300;
+  public static readonly STORAGE_KEY = "water-sort-solver";
 
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();

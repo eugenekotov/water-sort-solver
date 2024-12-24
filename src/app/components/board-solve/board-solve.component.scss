@@ -50,3 +50,21 @@
 .solution-text-container-large {
   // margin: $margin-large;
 }
+
+.speed-small {
+  display: flex;
+  justify-content: center;
+}
+
+.speed-small-2 {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 300px;
+  padding-left: $padding-small;
+  padding-right: $padding-small;
+}
+
+mat-slider {
+  width: 250px;
+}

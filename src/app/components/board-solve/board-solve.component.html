@@ -1,54 +1,61 @@
 <div class="view-container" [ngStyle]="mainService.visibleSolve ? {'opacity' : 1} : {'opacity' : 0}">
 
-    <div class="solution-text-container"
-      [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-      <p>Solution consists of {{mainService.solution.steps.length}} steps</p>
-      <p>Current step: {{completeStepIndex}}</p>
-    </div>
-    <div class="relative-container">
-      <ng-container *ngIf="mainService.isMobile">
-        <div class="play-containers-small">
+  <div class="solution-text-container"
+    [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
+    <p>Solution consists of {{mainService.solution.steps.length}} steps</p>
+    <p>Current step: {{completeStepIndex}}</p>
+  </div>
+  <div class="relative-container">
+    <ng-container *ngIf="mainService.isMobile">
+      <div class="play-containers-small">
         <div class="containers containers-small">
-          <app-container *ngFor="let container of mainService.playContainers1"
-            [container]="container" [attr.id]="getContainerId(container.index)">
+          <app-container *ngFor="let container of mainService.playContainers1" [container]="container"
+            [attr.id]="getContainerId(container.index)">
           </app-container>
         </div>
         <div class="containers containers-small">
-          <app-container *ngFor="let container of mainService.playContainers2"
-            [container]="container" [attr.id]="getContainerId(container.index)">
+          <app-container *ngFor="let container of mainService.playContainers2" [container]="container"
+            [attr.id]="getContainerId(container.index)">
           </app-container>
         </div>
-        </div>
-      </ng-container>
+      </div>
+    </ng-container>
 
-      <ng-container *ngIf="!mainService.isMobile">
-        <div class="containers containers-large">
-          <app-container *ngFor="let container of mainService.playContainers1; let containerIndex = index"
-            [container]="container" [attr.id]="getContainerId(containerIndex)">
-          </app-container>
-          <app-container *ngFor="let container of mainService.playContainers2; let containerIndex = index" [container]="container"
-            [attr.id]="getContainerId(containerIndex)">
-          </app-container>
-        </div>
-      </ng-container>
+    <ng-container *ngIf="!mainService.isMobile">
+      <div class="containers containers-large">
+        <app-container *ngFor="let container of mainService.playContainers1; let containerIndex = index"
+          [container]="container" [attr.id]="getContainerId(containerIndex)">
+        </app-container>
+        <app-container *ngFor="let container of mainService.playContainers2; let containerIndex = index"
+          [container]="container" [attr.id]="getContainerId(containerIndex)">
+        </app-container>
+      </div>
+    </ng-container>
 
 
-      <app-moving-item class="moving-item" [item]="mainService.movingItem"></app-moving-item>
+    <app-moving-item class="moving-item" [item]="mainService.movingItem"></app-moving-item>
+  </div>
+
+  <div class="speed-small">
+    <div class="speed-small-2 shadow-inset">
+    <label>Speed</label>
+    <mat-slider [min]="minSpeed" [max]="maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="speed">
+      <input matSliderThumb >
+    </mat-slider>
     </div>
+  </div>
 
   <ng-container *ngIf="mainService.isMobile">
     <div>
       <div class="buttons-container buttons-container-small">
         <button mat-raised-button class="button button-small" (click)="backClick()"
-          [disabled]="playing || stepIndex === 0">Step
-          back</button>
+          [disabled]="playing || stepIndex === 0">Step back</button>
         <button mat-raised-button class="button button-small" (click)="nextClick()"
           [disabled]="playing || stepIndex>=mainService.solution.steps.length">Next step</button>
       </div>
       <div class="buttons-container buttons-container-small">
         <button mat-raised-button class="button button-small" (click)="playBackClick()"
-          [disabled]="playing || stepIndex === 0">Play
-          back</button>
+          [disabled]="playing || stepIndex === 0">Play back</button>
         <button mat-raised-button class="button button-small mr-1" (click)="playClick()"
           [disabled]="playing || stepIndex>=mainService.solution.steps.length">Play forward</button>
         <button mat-raised-button class="button button-small" (click)="stopClick()"

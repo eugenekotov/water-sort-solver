@@ -39,17 +39,15 @@ class Position {
 })
 export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  // static readonly MOVING_TOP = -50;
-  // TODO: Revert speed
-  // static readonly MOVING_TOP_DURATION = 400;
-  static readonly MOVING_TOP_DURATION = 800;
-
   playContainers: PlayContainer[] = [];
   private screenChangedSubscription: Subscription | undefined = undefined;
 
   itemsElements: HTMLElement[] = [];
   stepIndex: number = 0;
   completeStepIndex: number = 0;
+  readonly minSpeed = 1;
+  readonly maxSpeed = 20;
+  speed: number = this.minSpeed;
   playing: boolean = false;
   stopping: boolean = false;
 
@@ -75,6 +73,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
           console.log("Complete");
         }
       });
+    this.loadSpeed();
   }
 
   ngAfterViewInit(): void {
@@ -89,6 +88,26 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.screenChangedSubscription) {
       this.screenChangedSubscription.unsubscribe();
     }
+  }
+
+  private loadSpeed() {
+    let speed = Number(localStorage.getItem(MainService.STORAGE_KEY + "-speed"));
+    if (speed < this.minSpeed) {
+      speed = this.minSpeed;
+    }
+    if (this.maxSpeed < speed) {
+      speed = this.maxSpeed;
+    }
+    this.speed = speed;
+  }
+
+  private saveSpeed(speed: number) {
+    localStorage.setItem(MainService.STORAGE_KEY + "-speed", String(speed));
+  }
+
+  speedChanged(event: any) {
+    const speed = Number(event);
+    this.saveSpeed(speed);
   }
 
   private getItemsElements() {
@@ -136,7 +155,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
         this.playContainers[step.iTo].push(this.mainService.movingItem.color!);
         this.mainService.movingItem.hidden = true;
         this.completeStepIndex = step.index;
-        await new Promise<void>(resolve => setTimeout(resolve, 100));
+        await new Promise<void>(resolve => setTimeout(resolve, 100/this.speed));
         observer.next(step.index);
         observer.complete();
       }, 0);
@@ -152,11 +171,10 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // TODO: Change speed in options
   // TODO: Move faster when you are close to finish
   private calculateMovingDuration(from: Position, to: Position): number {
     const way = Math.sqrt(Math.pow(to.top - from.top, 2) + Math.pow(to.left - from.left, 2));
-    return 400 + way * 0.5;
+    return (1000 + way * 15) / this.speed;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {
@@ -220,7 +238,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       this.stopping = false;
       console.log("Set this.stepIndex = " + this.completeStepIndex);
       this.stepIndex = this.completeStepIndex;
-    }, 2000);
+    }, 2000); // TODO: Fix it
   }
 
   setupClick() {

@@ -1,5 +1,5 @@
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, ViewEncapsulation } from '@angular/core';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Component } from '@angular/core';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MainService } from 'src/app/services/main.service';
@@ -98,15 +98,15 @@ export class BoardSetupComponent {
     const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
     const containersString1 = JSON.stringify(this.mainService.setupContainers1);
     const containersString2 = JSON.stringify(this.mainService.setupContainers2);
-    localStorage.setItem("water-sort-solver-source", sourceContainersString);
-    localStorage.setItem("water-sort-solver-containers-1", containersString1);
-    localStorage.setItem("water-sort-solver-containers-2", containersString2);
+    localStorage.setItem(MainService.STORAGE_KEY + "-source", sourceContainersString);
+    localStorage.setItem(MainService.STORAGE_KEY + "-containers-1", containersString1);
+    localStorage.setItem(MainService.STORAGE_KEY + "-containers-2", containersString2);
   }
 
   loadClick() {
-    const sourceContainersString = localStorage.getItem("water-sort-solver-source");
-    const containersString1 = localStorage.getItem("water-sort-solver-containers-1");
-    const containersString2 = localStorage.getItem("water-sort-solver-containers-2");
+    const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
+    const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
+    const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
     if (sourceContainersString && containersString1 && containersString2) {
       this.mainService.sourceContainers = JSON.parse(sourceContainersString!);
       this.mainService.setupContainers1 = JSON.parse(containersString1!);
