@@ -38,13 +38,11 @@ export class MainService {
   playContainers2: PlayContainer[] = [];
 
   solution: Solution = new Solution();
-  movingItem: Item; // Item for moving animation
 
   constructor() {
     this.createSourceContainers();
     this.createSetupContainers();
     this.createPlayContainers();
-    this.movingItem = new Item(undefined, 0, true);
   }
 
   public get mode(): TMode {
