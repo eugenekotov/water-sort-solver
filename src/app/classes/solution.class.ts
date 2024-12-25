@@ -53,6 +53,7 @@ export class Solution {
   private optimizeSolution() {
     let count1 = 0;
     let count2 = 0;
+    let count3 = 0;
     let i = 0;
     let optimized = true;
     while (optimized) {
@@ -120,9 +121,21 @@ export class Solution {
         }
       }
 
+      // Optimize case 1 -> 1
+      i = 0;
+      while (i < this.steps.length - 1) {
+        if (this.steps[i].iFrom === this.steps[i].iTo) {
+          this.steps.splice(i, 1);
+          optimized = true;
+          count3++;
+        } else {
+          i++;
+        }
+      }
     }
     console.log("Optimization 1 - " + count1);
     console.log("Optimization 2 - " + count2);
+    console.log("Optimization 3 - " + count3);
   }
 
   cancel() {

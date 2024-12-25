@@ -69,8 +69,12 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.playContainers = [...this.mainService.playContainers1, ...this.mainService.playContainers2];
     this.screenChangedSubscription = this.mainService.screenChanged$.subscribe(() => {
-      setTimeout(() => this.getItemsElements(), 500);
+      setTimeout(() => this.onScreenChanged(), 500);
     });
+    this.onScreenChanged();
+  }
+
+  private onScreenChanged() {
     this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
