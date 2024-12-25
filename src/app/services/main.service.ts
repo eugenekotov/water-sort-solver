@@ -3,7 +3,7 @@ import { Color } from '../classes/model/colors.class';
 import { Item } from '../classes/model/item.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
-import { Solution } from '../classes/solution.class';
+import { SolutionController } from '../classes/solution-controller.class';
 import { Subject } from 'rxjs';
 
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
@@ -28,7 +28,7 @@ export class MainService {
   public screenChanged$: Subject<void> = new Subject<void>();
 
   // TODO: public containersCount = 14;
-  public containersCount = 10;
+  public containersCount = 8;
   sourceContainers: SetupContainer[] = [];
 
   setupContainers1: SetupContainer[] = [];
@@ -43,7 +43,7 @@ export class MainService {
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
 
-  solution: Solution = new Solution();
+  solutionController: SolutionController = new SolutionController();
 
   constructor() {
     this.createSourceContainers();
@@ -112,7 +112,9 @@ export class MainService {
   public solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.setMode("in-progress").then(_ => {
       this.fillBoard(setupContainers1, setupContainers2);
-      if (this.solution.solve([...this.playContainers1, ...this.playContainers2])) {
+      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]);
+      if (this.solutionController.solutions.length > 0) {
+        this.solutionController.bestSolution = this.solutionController.solutions[0];
         this.setMode("solve");
       } else {
         this.setMode("no-solution");

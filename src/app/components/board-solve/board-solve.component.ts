@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { Item } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
-import { Step } from 'src/app/classes/solution.class';
+import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
 
@@ -92,7 +92,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: stepIndex => {
           this.completeStepIndex = stepIndex;
-          if (this.playing && (this.completeStepIndex === 0 || this.completeStepIndex === this.mainService.solution.steps.length)) {
+          if (this.playing && (this.completeStepIndex === 0 || this.completeStepIndex === this.mainService.solutionController.bestSolution.steps.length)) {
             this.playing = false;
             this.stopping = false;
           }
@@ -140,14 +140,14 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private makeStepForward() {
-    const step: Step = this.mainService.solution.steps[this.stepIndex];
+    const step: Step = this.mainService.solutionController.bestSolution.steps[this.stepIndex];
     this.stepIndex++;
     this.stepsSubject$.next(PlayStep.createPlayStep(this.stepIndex, step));
   }
 
   private makeStepBackward() {
     this.stepIndex--;
-    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solution.steps[this.stepIndex].iTo, this.mainService.solution.steps[this.stepIndex].iFrom);
+    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solutionController.bestSolution.steps[this.stepIndex].iTo, this.mainService.solutionController.bestSolution.steps[this.stepIndex].iFrom);
     this.stepsSubject$.next(step);
   }
 
@@ -227,7 +227,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playClick() {
     this.playing = true;
-    while (this.stepIndex < this.mainService.solution.steps.length) {
+    while (this.stepIndex < this.mainService.solutionController.bestSolution.steps.length) {
       this.makeStepForward();
     }
   }

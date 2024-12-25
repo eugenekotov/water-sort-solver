@@ -1,6 +1,6 @@
 import { Board } from "../model/board.class";
 import { BoardsSet } from "../model/boards-set.class";
-import { Step } from "../solution.class";
+import { Step } from "../solution-controller.class";
 
 export class LogicResult {
   board: Board;

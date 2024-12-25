@@ -1,6 +1,5 @@
 import { Board } from "../model/board.class";
 import { Color } from "../model/colors.class";
-import { Step } from "../solution.class";
 import { ILogicController, LogicResult, makeStep } from "./logic-controller.interface";
 
 export class Logic2To2 implements ILogicController {

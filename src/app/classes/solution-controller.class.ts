@@ -19,13 +19,31 @@ export class Step {
     this.iTo = iTo;
     this.color = color;
   }
+
+  public clone(): Step {
+    const step = new Step(this.iFrom, this.iTo, this.color);
+    step.notes = this.notes;
+    return step;
+  }
 }
 
 export class Solution {
+  steps: Step[] = [];
+
+  constructor(steps: Step[]) {
+    this.steps = [];
+    steps.forEach(step => this.steps.push(step.clone()));
+  }
+}
+
+export class SolutionController {
 
   private cancel$ = new Subject<void>();
   private oldBoards: BoardsSet = new BoardsSet();
-  steps: Step[] = [];
+  private steps: Step[] = [];
+  solutions: Solution[] = [];
+  bestSolution: Solution;
+  solutionCount = 0;
   counter: number = 0;
   logicControllers: ILogicController[] = [];
 
@@ -35,22 +53,28 @@ export class Solution {
     this.logicControllers.push(new Logic3To1());
   }
 
-  solve(containers: PlayContainer[]): boolean {
+  solve(containers: PlayContainer[]): void {
     this.oldBoards.clear();
     this.steps = [];
     this.counter = 0;
-    const result = this.tryToResolve(new Board(containers).clone(), 0);
-    if (result) {
-      // console.log("Before optmization");
-      // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo + " " + step.notes));
-      this.optimizeSolution();
-    }
-    // console.log("After optmization");
-    // this.steps.forEach((step, index) => console.log("Steap " + index + ": " + step.iFrom + " -> " + step.iTo + " " + step.notes));
-    return result;
+    this.tryToResolve(new Board(containers).clone(), 0);
+    console.log("Found " + this.solutions.length + " solutions");
+    this.getBestSolution();
   }
 
-  private optimizeSolution() {
+  private getBestSolution(): void {
+    if (this.solutions.length > 0) {
+      this.bestSolution = this.solutions[0];
+      this.solutions.forEach(solution => {
+        console.log(solution.steps.length);
+        if (solution.steps.length < this.bestSolution!.steps.length) {
+          this.bestSolution = solution;
+        }
+      });
+    }
+  }
+
+  private optimizeSolution(steps: Step[]): Step[] {
     let count1 = 0;
     let count2 = 0;
     let count3 = 0;
@@ -58,24 +82,24 @@ export class Solution {
     let optimized = true;
     while (optimized) {
       // Optimize case 1 -> 2, ..., 2-> 1
-      // this.steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
+      // steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
       optimized = false;
       i = 0;
       let j = 0;
-      while (i < this.steps.length - 1) {
-        const checkingStep = this.steps[i];
+      while (i < steps.length - 1) {
+        const checkingStep = steps[i];
         let j = i + 1;
-        while (j < this.steps.length && (this.steps[i].iFrom !== this.steps[j].iTo || this.steps[i].iTo !== this.steps[j].iFrom)) {
-          if (this.steps[i].iFrom === this.steps[j].iFrom || this.steps[i].iFrom === this.steps[j].iTo ||
-              this.steps[i].iTo === this.steps[j].iFrom || this.steps[i].iTo === this.steps[j].iTo) {
+        while (j < steps.length && (steps[i].iFrom !== steps[j].iTo || steps[i].iTo !== steps[j].iFrom)) {
+          if (steps[i].iFrom === steps[j].iFrom || steps[i].iFrom === steps[j].iTo ||
+              steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
             break;
           }
           j++;
         }
-        if (j < this.steps.length && (this.steps[i].iFrom === this.steps[j].iTo && this.steps[i].iTo === this.steps[j].iFrom)) {
+        if (j < steps.length && (steps[i].iFrom === steps[j].iTo && steps[i].iTo === steps[j].iFrom)) {
           // found back step, remove both
-          this.steps.splice(j, 1);
-          this.steps.splice(i, 1);
+          steps.splice(j, 1);
+          steps.splice(i, 1);
           // console.log("remove steps " + j + ", " + i);
           optimized = true;
           count1++;
@@ -86,20 +110,20 @@ export class Solution {
 
       // Optimize case 1 -> 2, ..., 2 -> 3 to 1 -> 3
       i = 0;
-      while (i < this.steps.length - 1) {
+      while (i < steps.length - 1) {
         // try to find second part
         let j = i + 1;
-        while (j < this.steps.length && this.steps[i].iTo !== this.steps[j].iFrom) {
+        while (j < steps.length && steps[i].iTo !== steps[j].iFrom) {
           j++;
         }
-        if (j < this.steps.length && this.steps[i].iTo === this.steps[j].iFrom) {
+        if (j < steps.length && steps[i].iTo === steps[j].iFrom) {
           // We found, lets check that these containers was not used
           let k = j - 1;
           let used = false;
           while (i < k) {
             // TODO: improve logic
-            if ((this.steps[k].iFrom === this.steps[j].iFrom || this.steps[k].iFrom === this.steps[j].iTo
-                || this.steps[k].iTo === this.steps[j].iFrom || this.steps[k].iTo === this.steps[j].iTo) && this.steps[k].color !== this.steps[j].color) {
+            if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
+                || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
               used = true;
               break;
             }
@@ -107,9 +131,9 @@ export class Solution {
 
           }
           if (used === false) {
-            this.steps[i].iTo = this.steps[j].iTo;
-            this.steps[i].notes = "Updated by optimization 2";
-            this.steps.splice(j, 1);
+            steps[i].iTo = steps[j].iTo;
+            steps[i].notes = "Updated by optimization 2";
+            steps.splice(j, 1);
             // console.log("remove step " + j);
             optimized = true;
             count2++;
@@ -123,9 +147,9 @@ export class Solution {
 
       // Optimize case 1 -> 1
       i = 0;
-      while (i < this.steps.length - 1) {
-        if (this.steps[i].iFrom === this.steps[i].iTo) {
-          this.steps.splice(i, 1);
+      while (i < steps.length - 1) {
+        if (steps[i].iFrom === steps[i].iTo) {
+          steps.splice(i, 1);
           optimized = true;
           count3++;
         } else {
@@ -136,6 +160,7 @@ export class Solution {
     console.log("Optimization 1 - " + count1);
     console.log("Optimization 2 - " + count2);
     console.log("Optimization 3 - " + count3);
+    return steps;
   }
 
   cancel() {
@@ -145,7 +170,8 @@ export class Solution {
   private tryToResolve(board: Board, stepsCount: number): boolean {
     this.counter++;
     if (board.isResolved()) {
-      return true;
+      this.foundSolution();
+      return false;
     }
 
     const logcResult = this.tryLogicPatterns(board);
@@ -155,7 +181,8 @@ export class Solution {
       this.oldBoards.add(logcResult.oldBoards);
       this.steps = [...this.steps, ...logcResult.steps];
       if (board.isResolved()) {
-        return true;
+        this.foundSolution();
+        return false;
       }
     }
 
@@ -164,13 +191,22 @@ export class Solution {
       // Try to find place for each
       for (let iTo = 0; iTo < board.containers.length; iTo++) {
         if (iFrom !== iTo) {
+          if (stepsCount === 0) {
+            console.log("First level check step " + iFrom + " -> " + iTo);
+          }
           if (this.tryToMove(board, iFrom, iTo, stepsCount)) {
-            return true;
+            return false;
           }
         }
       }
     }
     return false;
+  }
+
+  private foundSolution() {
+    this.solutionCount++;
+    // TODO: check is the solution unique
+    this.solutions.push(new Solution(this.optimizeSolution(this.steps)));
   }
 
   private tryLogicPatterns(board: Board): LogicResult {
@@ -249,6 +285,5 @@ export class Solution {
       this.steps.pop();
     }
   }
-
 
 }

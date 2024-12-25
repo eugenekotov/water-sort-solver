@@ -14,7 +14,6 @@ export class Board {
   }
 
   public isResolved(): boolean {
-
     let result = true;
     let i = 0;
     while (i < this.containers.length) {
