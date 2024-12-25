@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MainService } from './services/main.service';
 
 @Component({
@@ -9,7 +8,7 @@ import { MainService } from './services/main.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(private breakpointObserver: BreakpointObserver, public mainService: MainService) {
+  constructor(public mainService: MainService) {
   }
 
   @HostListener('window:resize', [])

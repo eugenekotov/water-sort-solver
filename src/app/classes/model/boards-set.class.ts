@@ -15,9 +15,13 @@ export class BoardsSet {
   add(board: Board): void;
   add(boardSet: BoardsSet): void;
   add(value: Board | BoardsSet): void {
+    // console.log("add to oldboards, size = " + this.boards.length);
     if (value instanceof Board) {
       if (!this.contains(value)) {
         this.boards.push(value);
+        // console.log("added");
+      } else {
+        // console.log("skipped");
       }
     } else if (value instanceof BoardsSet) {
       this.boards = [...this.boards, ...value.boards];
