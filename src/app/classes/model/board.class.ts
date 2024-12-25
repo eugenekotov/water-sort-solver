@@ -37,24 +37,22 @@ export class Board {
     return board;
   }
 
-  // TODO: Needs to check if find similar container, counts of these containers must be equal
   public equals(board: Board): boolean {
     if (this.containers.length !== board.containers.length) {
       return false;
     }
     for (let i = 0; i < this.containers.length; i++) {
-      if (!this.contains(board.containers[i])) {
-        return false;
-      }
-      if (!board.contains(this.containers[i])) {
+      const count1 = board.getContainerCount(this.containers[i]);
+      const count2 = this.getContainerCount(this.containers[i]);
+      if (count1 !== count2) {
         return false;
       }
     }
     return true;
   }
 
-  public contains(container2: PlayContainer): boolean {
-    return this.containers.some(container1 => container1.equals(container2));
+  public getContainerCount(container2: PlayContainer): number {
+    return this.containers.filter(container1 => container1.equals(container2)).length;
   }
 
 }
