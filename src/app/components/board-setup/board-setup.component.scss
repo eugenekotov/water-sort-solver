@@ -44,14 +44,14 @@
 .source-containers-large {
   padding: math.div($item-size-large, 4);
   height: 4 * $item-size-large + $container-items-gap-large * 3;
-  width: 12 * $item-size-large + $container-items-gap-large * 11;
+  // width: 12 * $item-size-large + $container-items-gap-large * 11; // width calculats in .ts
   gap: $container-items-gap-large;
 }
 
 .source-containers-small {
   padding: math.div($item-size, 4);
   height: 4 * $item-size-small + $container-items-gap-small * 3;
-  width: 12 * $item-size-small + $container-items-gap-small * 11;
+  // width: 12 * $item-size-small + $container-items-gap-small * 11; // width calculats in .ts
   gap: $container-items-gap-small;
 }
 

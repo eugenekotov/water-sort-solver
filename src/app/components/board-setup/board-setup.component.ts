@@ -1,5 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MainService } from 'src/app/services/main.service';
@@ -9,11 +10,22 @@ import { MainService } from 'src/app/services/main.service';
   templateUrl: './board-setup.component.html',
   styleUrls: ['./board-setup.component.scss']
 })
-export class BoardSetupComponent {
+export class BoardSetupComponent implements OnInit, OnDestroy {
 
   filling: boolean = false;
+  sourceContainersWidth: number;
+  private subscription: Subscription | undefined;
 
   constructor(public mainService: MainService) {
+    this.calculateSourceContainersWidth();
+  }
+
+  ngOnInit(): void {
+    this.subscription = this.mainService.screenChanged$.subscribe(()=> this.calculateSourceContainersWidth());
+  }
+
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
   drop(event: CdkDragDrop<Color[]>) {
@@ -118,4 +130,16 @@ export class BoardSetupComponent {
     this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 
+  private calculateSourceContainersWidth() {
+    let itemWidth: number;
+    let containerItemsGap: number;
+    if (this.mainService.isMobile) {
+      itemWidth = this.mainService.itemWidthSmall;
+      containerItemsGap = this.mainService.containerItemsGapSmall;
+    } else {
+      itemWidth = this.mainService.itemWidthLarge;
+      containerItemsGap = this.mainService.containerItemsGapLarge;
+    }
+    this.sourceContainersWidth = (this.mainService.containersCount - 2) * itemWidth + containerItemsGap * (this.mainService.containersCount - 3);
+  }
 }

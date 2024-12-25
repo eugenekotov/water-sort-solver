@@ -19,10 +19,16 @@ export class MainService {
   public readonly OPACITY_DELAY = 300;
   public static readonly STORAGE_KEY = "water-sort-solver";
 
+  public readonly itemWidthSmall: number = 25;
+  public readonly itemWidthLarge: number = 30;
+  public readonly containerItemsGapSmall: number = 4;
+  public readonly containerItemsGapLarge: number = 6;
+
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
 
-  public containersCount = 14;
+  // TODO: public containersCount = 14;
+  public containersCount = 10;
   sourceContainers: SetupContainer[] = [];
 
   setupContainers1: SetupContainer[] = [];
@@ -157,9 +163,10 @@ export class MainService {
   public createSourceContainers() {
     this.sourceContainers = [];
     Object.values(Color).forEach((color, index) => {
-      this.sourceContainers.push({ id: 'container' + index, colors: [color, color, color, color] });
+      if (index < this.containersCount - 2) {
+        this.sourceContainers.push({ id: 'container' + index, colors: [color, color, color, color] });
+      }
     });
   }
-
 
 }
