@@ -167,7 +167,7 @@ export class SolutionController {
     this.cancel$.next();
   }
 
-  private tryToResolve(board: Board, stepsCount: number): boolean {
+  private tryToResolve(board: Board, stepCount: number): boolean {
     this.counter++;
     if (board.isResolved()) {
       this.foundSolution();
@@ -177,7 +177,7 @@ export class SolutionController {
     const logcResult = this.tryLogicPatterns(board);
     if (logcResult.stepCount > 0) {
       board = logcResult.board;
-      stepsCount = stepsCount + logcResult.stepCount;
+      stepCount = stepCount + logcResult.stepCount;
       this.oldBoards.add(logcResult.oldBoards);
       this.steps = [...this.steps, ...logcResult.steps];
       if (board.isResolved()) {
@@ -191,10 +191,10 @@ export class SolutionController {
       // Try to find place for each
       for (let iTo = 0; iTo < board.containers.length; iTo++) {
         if (iFrom !== iTo) {
-          if (stepsCount === 0) {
+          if (stepCount === 0) {
             console.log("First level check step " + iFrom + " -> " + iTo);
           }
-          if (this.tryToMove(board, iFrom, iTo, stepsCount)) {
+          if (this.tryToMove(board, iFrom, iTo, stepCount)) {
             return false;
           }
         }
@@ -229,7 +229,7 @@ export class SolutionController {
     return result;
   }
 
-  private tryToMove(board: Board, iFrom: number, iTo: number, stepsCount: number): boolean {
+  private tryToMove(board: Board, iFrom: number, iTo: number, stepCount: number): boolean {
     if (board.containers[iFrom].isEmpty()) {
       // Nothing to take
       return false;
@@ -266,10 +266,10 @@ export class SolutionController {
     }
     this.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[board.containers[iTo].size() - 1].color!));
     this.oldBoards.add(board);
-    const result = this.tryToResolve(board, stepsCount + 1);
+    const result = this.tryToResolve(board, stepCount + 1);
     if (!result) {
-      // console.log("Back to step " + stepsCount);
-      this.removeSteps(stepsCount);
+      // console.log("Back to step " + stepCount);
+      this.removeSteps(stepCount);
     }
     return result;
   }

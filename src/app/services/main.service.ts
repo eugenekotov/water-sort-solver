@@ -14,6 +14,10 @@ type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 export class MainService {
 
   public readonly TRANSITION_DURATION_MS = 500;
+  public static readonly MAX_CONTAINER_COUNT = 14;
+  public static readonly MIN_CONTAINER_COUNT = 4;
+  public static readonly MAX_CONTAINER_COUNT_IN_LINE = 7;
+  public static readonly DEFAULT_CONTAINER_COUNT = 7;
   public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 1000).toString() + "s";
   public readonly CONTAINER_SIZE = 4;
   public readonly OPACITY_DELAY = 300;
@@ -27,8 +31,7 @@ export class MainService {
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
 
-  // TODO: public containersCount = 14;
-  public containersCount = 8;
+  public containerCount = MainService.DEFAULT_CONTAINER_COUNT;
   sourceContainers: SetupContainer[] = [];
 
   setupContainers1: SetupContainer[] = [];
@@ -46,9 +49,9 @@ export class MainService {
   solutionController: SolutionController = new SolutionController();
 
   constructor() {
+    this.loadContainerCount();
     this.createSourceContainers();
     this.createSetupContainers();
-    this.createPlayContainers();
   }
 
   public get mode(): TMode {
@@ -82,7 +85,6 @@ export class MainService {
 
   }
 
-
   setVisible(value: boolean) {
     switch (this._mode) {
       case "setup":
@@ -111,7 +113,8 @@ export class MainService {
 
   public solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.setMode("in-progress").then(_ => {
-      this.fillBoard(setupContainers1, setupContainers2);
+      this.createPlayContainers();
+      this.fillPlayContainers(setupContainers1, setupContainers2);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]);
       if (this.solutionController.solutions.length > 0) {
         this.solutionController.bestSolution = this.solutionController.solutions[0];
@@ -122,23 +125,33 @@ export class MainService {
     });
   }
 
+  private createPlayContainers() {
+    this.playContainers1 = [];
+    this.playContainers2 = [];
+    if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
+      for (let i = 0; i < this.containerCount; i++) {
+        this.playContainers1.push(new PlayContainer(i));
+      }
+    } else {
+      const halfOfContainerCount = Math.ceil(this.containerCount / 2);
+      for (let i = 0; i < halfOfContainerCount; i++) {
+        this.playContainers1.push(new PlayContainer(i));
+      }
+      for (let i = halfOfContainerCount; i < this.containerCount; i++) {
+        this.playContainers2.push(new PlayContainer(i));
+      }
+    }
+  }
+
+
   public stopProgress() {
     // TODO: implement progress interaption
     this.setMode("setup");
   }
 
-  private createPlayContainers() {
-    const halfContainersCount = Math.ceil(this.containersCount / 2);
-    for (let i = 0; i < halfContainersCount; i++) {
-      this.playContainers1.push(new PlayContainer(i));
-    }
-    for (let i = halfContainersCount; i < this.containersCount; i++) {
-      this.playContainers2.push(new PlayContainer(i));
-    }
-  }
 
-  public fillBoard(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
-    this.clearContainers();
+  public fillPlayContainers(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
+    this.clearPlayContainers();
     setupContainers1.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
     });
@@ -147,28 +160,58 @@ export class MainService {
     });
   }
 
-  private clearContainers() {
+  private clearPlayContainers() {
     this.playContainers1.forEach(container => container.clear());
     this.playContainers2.forEach(container => container.clear());
   }
 
   private createSetupContainers() {
-    const halfContainersCount = Math.ceil(this.containersCount / 2);
-    for (let i = 0; i < halfContainersCount; i++) {
+    this.setupContainers1 = [];
+    this.setupContainers2 = [];
+    for (let i = 0; i < this.containerCount; i++) {
       this.setupContainers1.push({ id: 'source-container' + i, colors: [] });
     }
-    for (let i = halfContainersCount; i < this.containersCount; i++) {
-      this.setupContainers2.push({ id: 'source-container' + i, colors: [] });
+    this.balanceSetupContainers();
+  }
+
+  public balanceSetupContainers() {
+    if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
+      this.setupContainers1 = [...this.setupContainers1, ...this.setupContainers2];
+      this.setupContainers2 = [];
+    } else {
+      const allContainers = [...this.setupContainers1, ...this.setupContainers2];
+      this.setupContainers1 = [];
+      this.setupContainers2 = [];
+      const halfOfContainerCount = Math.ceil(this.containerCount / 2);
+      for (let i = 0; i < halfOfContainerCount; i++) {
+        this.setupContainers1.push(allContainers[i]);
+      }
+      for (let i = halfOfContainerCount; i < this.containerCount; i++) {
+        this.setupContainers2.push(allContainers[i]);
+      }
     }
   }
 
   public createSourceContainers() {
     this.sourceContainers = [];
     Object.values(Color).forEach((color, index) => {
-      if (index < this.containersCount - 2) {
+      if (index < this.containerCount - 2) {
         this.sourceContainers.push({ id: 'container' + index, colors: [color, color, color, color] });
       }
     });
   }
+
+  private loadContainerCount() {
+    let loadedValue: number = Number(localStorage.getItem(MainService.STORAGE_KEY + "-containers"));
+    if (!loadedValue || loadedValue < MainService.MIN_CONTAINER_COUNT) {
+      loadedValue = MainService.DEFAULT_CONTAINER_COUNT;
+    }
+    this.containerCount = loadedValue;
+  }
+
+  public saveContainerCount() {
+    localStorage.setItem(MainService.STORAGE_KEY + "-containers", String(this.containerCount));
+  }
+
 
 }

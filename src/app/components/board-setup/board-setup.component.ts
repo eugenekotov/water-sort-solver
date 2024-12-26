@@ -21,7 +21,7 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.mainService.screenChanged$.subscribe(()=> this.calculateSourceContainersWidth());
+    this.subscription = this.mainService.screenChanged$.subscribe(() => this.calculateSourceContainersWidth());
   }
 
   ngOnDestroy(): void {
@@ -140,6 +140,67 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
       itemWidth = this.mainService.itemWidthLarge;
       containerItemsGap = this.mainService.containerItemsGapLarge;
     }
-    this.sourceContainersWidth = (this.mainService.containersCount - 2) * itemWidth + containerItemsGap * (this.mainService.containersCount - 3);
+    this.sourceContainersWidth = (this.mainService.containerCount - 2) * itemWidth + containerItemsGap * (this.mainService.containerCount - 3);
   }
+
+  addContainer() {
+    if (this.mainService.containerCount < MainService.MAX_CONTAINER_COUNT) {
+      this.mainService.containerCount++;
+      this.addSourceContainer();
+      this.addSetupContainer();
+      this.mainService.saveContainerCount();
+    }
+  }
+
+  private addSetupContainer() {
+    this.mainService.setupContainers2.push({ id: 'source-container' + (this.mainService.containerCount - 1), colors: [] });
+    this.mainService.balanceSetupContainers();
+  }
+
+
+  private addSourceContainer() {
+    const color = Object.values(Color)[this.mainService.containerCount - 3];
+    this.mainService.sourceContainers.push({ id: 'container' + (this.mainService.containerCount - 3), colors: [color, color, color, color] });
+  }
+
+  removeContainer() {
+    if (MainService.MIN_CONTAINER_COUNT < this.mainService.containerCount) {
+      this.mainService.containerCount--;
+      this.removeSourceContainer();
+      this.removeSetupContainer();
+      this.mainService.saveContainerCount();
+    }
+  }
+
+  private removeSourceContainer() {
+    const color = Object.values(Color)[this.mainService.containerCount - 2];
+    this.mainService.sourceContainers.pop();
+    // remove color from setup containers
+    [...this.mainService.setupContainers1, ...this.mainService.setupContainers2].forEach(container => {
+      let i = 0;
+      while (i < container.colors.length) {
+        if (container.colors[i] === color) {
+          container.colors.splice(i, 1);
+        } else {
+          i++;
+        }
+      }
+    });
+  }
+
+  private removeSetupContainer() {
+    let container;
+    if (this.mainService.setupContainers2.length > 0) {
+      container = this.mainService.setupContainers2.pop();
+    } else {
+      container = this.mainService.setupContainers1.pop();
+    }
+    // move colors back to source
+    container!.colors.forEach(color => {
+      const index = Object.values(Color).indexOf(color);
+      this.mainService.sourceContainers[index].colors.push(color);
+    });
+    this.mainService.balanceSetupContainers();
+  }
+
 }
