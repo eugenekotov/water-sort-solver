@@ -116,8 +116,8 @@ export class MainService {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]);
-      if (this.solutionController.solutions.length > 0) {
-        this.solutionController.bestSolution = this.solutionController.solutions[0];
+      if (this.solutionController.solutionCount() > 0) {
+        this.solutionController.bestSolution!.steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> "+ step.iTo));
         this.setMode("solve");
       } else {
         this.setMode("no-solution");

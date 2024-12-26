@@ -25,6 +25,10 @@ export class Step {
     step.notes = this.notes;
     return step;
   }
+
+  public equals(step: Step) {
+    return this.iFrom === step.iFrom && this.iTo === step.iTo && this.color === step.color;
+  }
 }
 
 export class Solution {
@@ -34,6 +38,52 @@ export class Solution {
     this.steps = [];
     steps.forEach(step => this.steps.push(step.clone()));
   }
+
+  public equals(solution: Solution) {
+    if (this.steps.length !== solution.steps.length) {
+      return false;
+    }
+    for (let i = 0; i < this.steps.length; i++) {
+      if (!this.steps[i].equals(solution.steps[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+export class Solutions {
+
+  private solutions: Solution[] = [];
+
+  clear() {
+    this.solutions = [];
+  }
+
+  size(): number {
+    return this.solutions.length;
+  }
+
+  add(solution: Solution) {
+    this.solutions.push(solution);
+  }
+
+  getBestSolution(): Solution | undefined {
+    let result: Solution | undefined = undefined;
+    if (this.size() > 0) {
+      result = this.solutions[0];
+      console.log("Best solution contains " + result.steps.length + " steps.")
+      this.solutions.forEach(solution => {
+        console.log(solution.steps.length);
+        if (solution.steps.length < result!.steps.length) {
+          result = solution;
+          console.log("Best solution contains " + result.steps.length + " steps.")
+        }
+      });
+    }
+    return result;
+  }
+
 }
 
 export class SolutionController {
@@ -41,11 +91,9 @@ export class SolutionController {
   private cancel$ = new Subject<void>();
   private oldBoards: BoardsSet = new BoardsSet();
   private steps: Step[] = [];
-  solutions: Solution[] = [];
-  bestSolution: Solution;
-  solutionCount = 0;
-  counter: number = 0;
-  logicControllers: ILogicController[] = [];
+  private solutions: Solutions = new Solutions();
+  bestSolution: Solution | undefined;
+  private logicControllers: ILogicController[] = [];
 
   constructor() {
     this.logicControllers.push(new Logic1To3());
@@ -55,26 +103,16 @@ export class SolutionController {
 
   solve(containers: PlayContainer[]): void {
     this.oldBoards.clear();
+    this.solutions.clear();
     this.steps = [];
-    this.counter = 0;
     this.tryToResolve(new Board(containers).clone(), 0);
-    console.log("Found " + this.solutions.length + " solutions");
-    this.getBestSolution();
+    console.log("Found " + this.solutionCount() + " solutions");
+    this.bestSolution = this.solutions.getBestSolution();
   }
 
-  private getBestSolution(): void {
-    if (this.solutions.length > 0) {
-      this.bestSolution = this.solutions[0];
-      this.solutions.forEach(solution => {
-        console.log(solution.steps.length);
-        if (solution.steps.length < this.bestSolution!.steps.length) {
-          this.bestSolution = solution;
-        }
-      });
-    }
-  }
 
-  private optimizeSolution(steps: Step[]): Step[] {
+  private optimizeSolution(solution: Solution): Solution {
+    const steps = solution.steps;
     let count1 = 0;
     let count2 = 0;
     let count3 = 0;
@@ -91,7 +129,7 @@ export class SolutionController {
         let j = i + 1;
         while (j < steps.length && (steps[i].iFrom !== steps[j].iTo || steps[i].iTo !== steps[j].iFrom)) {
           if (steps[i].iFrom === steps[j].iFrom || steps[i].iFrom === steps[j].iTo ||
-              steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
+            steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
             break;
           }
           j++;
@@ -123,7 +161,7 @@ export class SolutionController {
           while (i < k) {
             // TODO: improve logic
             if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
-                || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
+              || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
               used = true;
               break;
             }
@@ -160,18 +198,17 @@ export class SolutionController {
     console.log("Optimization 1 - " + count1);
     console.log("Optimization 2 - " + count2);
     console.log("Optimization 3 - " + count3);
-    return steps;
+    return solution;
   }
 
   cancel() {
     this.cancel$.next();
   }
 
-  private tryToResolve(board: Board, stepCount: number): boolean {
-    this.counter++;
+  private tryToResolve(board: Board, stepCount: number) {
     if (board.isResolved()) {
       this.foundSolution();
-      return false;
+      return;
     }
 
     const logcResult = this.tryLogicPatterns(board);
@@ -182,7 +219,7 @@ export class SolutionController {
       this.steps = [...this.steps, ...logcResult.steps];
       if (board.isResolved()) {
         this.foundSolution();
-        return false;
+        return;
       }
     }
 
@@ -194,19 +231,16 @@ export class SolutionController {
           if (stepCount === 0) {
             console.log("First level check step " + iFrom + " -> " + iTo);
           }
-          if (this.tryToMove(board, iFrom, iTo, stepCount)) {
-            return false;
-          }
+          this.tryToMove(board, iFrom, iTo, stepCount);
         }
       }
     }
-    return false;
   }
 
   private foundSolution() {
-    this.solutionCount++;
     // TODO: check is the solution unique
-    this.solutions.push(new Solution(this.optimizeSolution(this.steps)));
+    const solution = this.optimizeSolution(new Solution(this.steps));
+    this.solutions.add(solution);
   }
 
   private tryLogicPatterns(board: Board): LogicResult {
@@ -229,31 +263,31 @@ export class SolutionController {
     return result;
   }
 
-  private tryToMove(board: Board, iFrom: number, iTo: number, stepCount: number): boolean {
+  private tryToMove(board: Board, iFrom: number, iTo: number, stepCount: number) {
     if (board.containers[iFrom].isEmpty()) {
       // Nothing to take
-      return false;
+      return;
     }
     if (board.containers[iTo].isFull()) {
       // No place to put
-      return false;
+      return;
     }
     if (!board.containers[iTo].isEmpty() && board.containers[iFrom].peek() != board.containers[iTo].peek()) {
       // Not suitable color
-      return false;
+      return;
     }
     if (board.containers[iFrom].size() == 1 && board.containers[iTo].isEmpty()) {
       // Stupid move;
-      return false;
+      return;
     }
     if (board.containers[iFrom].hasOnlyThreeOfOneColor()) {
       // Stupid move;
-      return false;
+      return;
     }
     if (board.containers[iFrom].hasOnlyOneColor() && board.containers[iTo].isEmpty()) {
       // if we have only one color and move to empty container
       // Stupid move;
-      return false;
+      return;
     }
 
     // We can try to move
@@ -262,16 +296,12 @@ export class SolutionController {
     if (this.oldBoards.contains(board)) {
       // We already tried it
       // console.log("We already tried it!");
-      return false;
+      return;
     }
     this.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[board.containers[iTo].size() - 1].color!));
     this.oldBoards.add(board);
-    const result = this.tryToResolve(board, stepCount + 1);
-    if (!result) {
-      // console.log("Back to step " + stepCount);
-      this.removeSteps(stepCount);
-    }
-    return result;
+    this.tryToResolve(board, stepCount + 1);
+    this.removeSteps(stepCount);
   }
 
   private move(board: Board, iFrom: number, iTo: number): Board {
@@ -284,6 +314,10 @@ export class SolutionController {
     while (this.steps.length > stepCount) {
       this.steps.pop();
     }
+  }
+
+  public solutionCount(): number {
+    return this.solutions.size();
   }
 
 }

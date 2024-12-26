@@ -2,7 +2,7 @@
 
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-    <p>Solution consists of {{mainService.solutionController.bestSolution.steps.length}} steps</p>
+    <p>Solution consists of {{mainService.solutionController.bestSolution!.steps.length}} steps</p>
     <p>Current step: {{completeStepIndex}}</p>
   </div>
   <div class="relative-container">
@@ -51,13 +51,13 @@
         <button mat-raised-button class="button button-small" (click)="backClick()"
           [disabled]="playing || stepIndex === 0">Step back</button>
         <button mat-raised-button class="button button-small" (click)="nextClick()"
-          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution.steps.length">Next step</button>
+          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Next step</button>
       </div>
       <div class="buttons-container buttons-container-small">
         <button mat-raised-button class="button button-small" (click)="playBackClick()"
           [disabled]="playing || stepIndex === 0">Play back</button>
         <button mat-raised-button class="button button-small mr-1" (click)="playClick()"
-          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution.steps.length">Play forward</button>
+          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Play forward</button>
         <button mat-raised-button class="button button-small" (click)="stopClick()"
           [disabled]="!playing || stopping">Stop</button>
       </div>
@@ -74,12 +74,12 @@
         [disabled]="playing || stepIndex === 0">Step
         back</button>
       <button mat-raised-button class="button button-large mr-1" (click)="nextClick()"
-        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution.steps.length">Next step</button>
+        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Next step</button>
       <button mat-raised-button class="button button-large" (click)="playBackClick()"
         [disabled]="playing || stepIndex === 0">Play
         back</button>
       <button mat-raised-button class="button button-large mr-1" (click)="playClick()"
-        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution.steps.length">Play forward</button>
+        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Play forward</button>
       <button mat-raised-button class="button button-large mr-1" (click)="stopClick()"
         [disabled]="!playing || stopping">Stop</button>
       <button mat-raised-button class="button button-large" (click)="setupClick()" [disabled]="playing">Setup
