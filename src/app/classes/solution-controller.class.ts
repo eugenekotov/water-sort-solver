@@ -65,7 +65,9 @@ export class Solutions {
   }
 
   add(solution: Solution) {
-    this.solutions.push(solution);
+    if (!this.solutions.some(existsSolution => existsSolution.equals(solution))) {
+      this.solutions.push(solution);
+    }
   }
 
   getBestSolution(): Solution | undefined {
