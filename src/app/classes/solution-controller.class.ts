@@ -72,12 +72,12 @@ export class Solutions {
     let result: Solution | undefined = undefined;
     if (this.size() > 0) {
       result = this.solutions[0];
-      console.log("Best solution contains " + result.steps.length + " steps.")
+      // console.log("Best solution contains " + result.steps.length + " steps.")
       this.solutions.forEach(solution => {
-        console.log(solution.steps.length);
+        // console.log(solution.steps.length);
         if (solution.steps.length < result!.steps.length) {
           result = solution;
-          console.log("Best solution contains " + result.steps.length + " steps.")
+          // console.log("Best solution contains " + result.steps.length + " steps.")
         }
       });
     }
@@ -87,6 +87,8 @@ export class Solutions {
 }
 
 export class SolutionController {
+
+  private readonly REQUIRED_SOLUTION_COUNT = 10;
 
   private cancel$ = new Subject<void>();
   private oldBoards: BoardsSet = new BoardsSet();
@@ -106,99 +108,8 @@ export class SolutionController {
     this.solutions.clear();
     this.steps = [];
     this.tryToResolve(new Board(containers).clone(), 0);
-    console.log("Found " + this.solutionCount() + " solutions");
+    // console.log("Found " + this.solutionCount() + " solutions");
     this.bestSolution = this.solutions.getBestSolution();
-  }
-
-
-  private optimizeSolution(solution: Solution): Solution {
-    const steps = solution.steps;
-    let count1 = 0;
-    let count2 = 0;
-    let count3 = 0;
-    let i = 0;
-    let optimized = true;
-    while (optimized) {
-      // Optimize case 1 -> 2, ..., 2-> 1
-      // steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
-      optimized = false;
-      i = 0;
-      let j = 0;
-      while (i < steps.length - 1) {
-        const checkingStep = steps[i];
-        let j = i + 1;
-        while (j < steps.length && (steps[i].iFrom !== steps[j].iTo || steps[i].iTo !== steps[j].iFrom)) {
-          if (steps[i].iFrom === steps[j].iFrom || steps[i].iFrom === steps[j].iTo ||
-            steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
-            break;
-          }
-          j++;
-        }
-        if (j < steps.length && (steps[i].iFrom === steps[j].iTo && steps[i].iTo === steps[j].iFrom)) {
-          // found back step, remove both
-          steps.splice(j, 1);
-          steps.splice(i, 1);
-          // console.log("remove steps " + j + ", " + i);
-          optimized = true;
-          count1++;
-        } else {
-          i++;
-        }
-      }
-
-      // Optimize case 1 -> 2, ..., 2 -> 3 to 1 -> 3
-      i = 0;
-      while (i < steps.length - 1) {
-        // try to find second part
-        let j = i + 1;
-        while (j < steps.length && steps[i].iTo !== steps[j].iFrom) {
-          j++;
-        }
-        if (j < steps.length && steps[i].iTo === steps[j].iFrom) {
-          // We found, lets check that these containers was not used
-          let k = j - 1;
-          let used = false;
-          while (i < k) {
-            // TODO: improve logic
-            if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
-              || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
-              used = true;
-              break;
-            }
-            k--;
-
-          }
-          if (used === false) {
-            steps[i].iTo = steps[j].iTo;
-            steps[i].notes = "Updated by optimization 2";
-            steps.splice(j, 1);
-            // console.log("remove step " + j);
-            optimized = true;
-            count2++;
-          } else {
-            i++;
-          }
-        } else {
-          i++;
-        }
-      }
-
-      // Optimize case 1 -> 1
-      i = 0;
-      while (i < steps.length - 1) {
-        if (steps[i].iFrom === steps[i].iTo) {
-          steps.splice(i, 1);
-          optimized = true;
-          count3++;
-        } else {
-          i++;
-        }
-      }
-    }
-    console.log("Optimization 1 - " + count1);
-    console.log("Optimization 2 - " + count2);
-    console.log("Optimization 3 - " + count3);
-    return solution;
   }
 
   cancel() {
@@ -228,10 +139,12 @@ export class SolutionController {
       // Try to find place for each
       for (let iTo = 0; iTo < board.containers.length; iTo++) {
         if (iFrom !== iTo) {
-          if (stepCount === 0) {
-            console.log("First level check step " + iFrom + " -> " + iTo);
-          }
+          // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
           this.tryToMove(board, iFrom, iTo, stepCount);
+          if (this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
+            // It is enought
+            return;
+          }
         }
       }
     }
@@ -318,6 +231,96 @@ export class SolutionController {
 
   public solutionCount(): number {
     return this.solutions.size();
+  }
+
+  private optimizeSolution(solution: Solution): Solution {
+    const steps = solution.steps;
+    let count1 = 0;
+    let count2 = 0;
+    let count3 = 0;
+    let i = 0;
+    let optimized = true;
+    while (optimized) {
+      // Optimize case 1 -> 2, ..., 2-> 1
+      // steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
+      optimized = false;
+      i = 0;
+      let j = 0;
+      while (i < steps.length - 1) {
+        const checkingStep = steps[i];
+        let j = i + 1;
+        while (j < steps.length && (steps[i].iFrom !== steps[j].iTo || steps[i].iTo !== steps[j].iFrom)) {
+          if (steps[i].iFrom === steps[j].iFrom || steps[i].iFrom === steps[j].iTo ||
+            steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
+            break;
+          }
+          j++;
+        }
+        if (j < steps.length && (steps[i].iFrom === steps[j].iTo && steps[i].iTo === steps[j].iFrom)) {
+          // found back step, remove both
+          steps.splice(j, 1);
+          steps.splice(i, 1);
+          // console.log("remove steps " + j + ", " + i);
+          optimized = true;
+          count1++;
+        } else {
+          i++;
+        }
+      }
+
+      // Optimize case 1 -> 2, ..., 2 -> 3 to 1 -> 3
+      i = 0;
+      while (i < steps.length - 1) {
+        // try to find second part
+        let j = i + 1;
+        while (j < steps.length && steps[i].iTo !== steps[j].iFrom) {
+          j++;
+        }
+        if (j < steps.length && steps[i].iTo === steps[j].iFrom) {
+          // We found, lets check that these containers was not used
+          let k = j - 1;
+          let used = false;
+          while (i < k) {
+            // TODO: improve logic
+            if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
+              || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
+              used = true;
+              break;
+            }
+            k--;
+
+          }
+          if (used === false) {
+            steps[i].iTo = steps[j].iTo;
+            steps[i].notes = "Updated by optimization 2";
+            steps.splice(j, 1);
+            // console.log("remove step " + j);
+            optimized = true;
+            count2++;
+          } else {
+            i++;
+          }
+        } else {
+          i++;
+        }
+      }
+
+      // Optimize case 1 -> 1
+      i = 0;
+      while (i < steps.length - 1) {
+        if (steps[i].iFrom === steps[i].iTo) {
+          steps.splice(i, 1);
+          optimized = true;
+          count3++;
+        } else {
+          i++;
+        }
+      }
+    }
+    // console.log("Optimization 1 - " + count1);
+    // console.log("Optimization 2 - " + count2);
+    // console.log("Optimization 3 - " + count3);
+    return solution;
   }
 
 }
