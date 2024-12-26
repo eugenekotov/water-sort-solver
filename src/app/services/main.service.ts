@@ -165,7 +165,7 @@ export class MainService {
     this.playContainers2.forEach(container => container.clear());
   }
 
-  private createSetupContainers() {
+  public createSetupContainers() {
     this.setupContainers1 = [];
     this.setupContainers2 = [];
     for (let i = 0; i < this.containerCount; i++) {

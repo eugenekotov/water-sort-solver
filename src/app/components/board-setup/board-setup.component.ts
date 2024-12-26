@@ -116,13 +116,18 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
   }
 
   loadClick() {
+    // TODO: confirm lost current data
     const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
     const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
     const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
     if (sourceContainersString && containersString1 && containersString2) {
-      this.mainService.sourceContainers = JSON.parse(sourceContainersString!);
-      this.mainService.setupContainers1 = JSON.parse(containersString1!);
-      this.mainService.setupContainers2 = JSON.parse(containersString2!);
+      const sourceContainers = JSON.parse(sourceContainersString);
+      const setupContainers1 = JSON.parse(containersString1);
+      const setupContainers2 = JSON.parse(containersString2);
+      this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
+      this.mainService.sourceContainers = sourceContainers;
+      this.mainService.setupContainers1 = setupContainers1;
+      this.mainService.setupContainers2 = setupContainers2;
     }
   }
 
