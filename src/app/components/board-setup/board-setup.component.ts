@@ -153,14 +153,14 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
   }
 
   private addSetupContainer() {
-    this.mainService.setupContainers2.push({ id: 'source-container' + (this.mainService.containerCount - 1), colors: [] });
+    this.mainService.setupContainers2.push({ id: 'setup-container' + (this.mainService.containerCount - 1), colors: [] });
     this.mainService.balanceSetupContainers();
   }
 
 
   private addSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceContainers.push({ id: 'container' + (this.mainService.containerCount - 3), colors: [color, color, color, color] });
+    this.mainService.sourceContainers.push({ id: 'source-container' + (this.mainService.containerCount - 3), colors: [color, color, color, color] });
   }
 
   removeContainer() {

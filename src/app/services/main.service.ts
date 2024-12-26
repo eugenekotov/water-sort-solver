@@ -169,7 +169,7 @@ export class MainService {
     this.setupContainers1 = [];
     this.setupContainers2 = [];
     for (let i = 0; i < this.containerCount; i++) {
-      this.setupContainers1.push({ id: 'source-container' + i, colors: [] });
+      this.setupContainers1.push({ id: 'setup-container' + i, colors: [] });
     }
     this.balanceSetupContainers();
   }
@@ -196,7 +196,7 @@ export class MainService {
     this.sourceContainers = [];
     Object.values(Color).forEach((color, index) => {
       if (index < this.containerCount - 2) {
-        this.sourceContainers.push({ id: 'container' + index, colors: [color, color, color, color] });
+        this.sourceContainers.push({ id: 'source-container' + index, colors: [color, color, color, color] });
       }
     });
   }
