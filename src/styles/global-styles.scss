@@ -85,6 +85,7 @@
 .buttons-container-large {
   margin: $margin-large;
   gap: math.div($margin-large, 2);
+  flex-wrap: wrap;
 }
 
 .button {

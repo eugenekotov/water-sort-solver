@@ -2,8 +2,8 @@
 
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-    <p>Solution consists of {{mainService.solutionController.bestSolution!.steps.length}} steps</p>
-    <p>Current step: {{completeStepIndex}}</p>
+    <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solutionController.bestSolution!.steps.length} }}</p>
+    <p>{{ "SOLVE.STEP" | translate: {step: completeStepIndex} }}</p>
   </div>
   <div class="relative-container">
     <ng-container *ngIf="mainService.isMobile">
@@ -38,7 +38,7 @@
 
   <div class="speed-small">
     <div class="speed-small-2 shadow-inset">
-    <label>Speed</label>
+    <label>{{ "SOLVE.SPEED" | translate }}</label>
     <mat-slider [min]="minSpeed" [max]="maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="speed">
       <input matSliderThumb >
     </mat-slider>
@@ -48,42 +48,28 @@
   <ng-container *ngIf="mainService.isMobile">
     <div>
       <div class="buttons-container buttons-container-small">
-        <button mat-raised-button class="button button-small" (click)="backClick()"
-          [disabled]="playing || stepIndex === 0">Step back</button>
-        <button mat-raised-button class="button button-small" (click)="nextClick()"
-          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Next step</button>
+        <button mat-raised-button class="button button-small" (click)="backClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
+        <button mat-raised-button class="button button-small" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
-        <button mat-raised-button class="button button-small" (click)="playBackClick()"
-          [disabled]="playing || stepIndex === 0">Play back</button>
-        <button mat-raised-button class="button button-small mr-1" (click)="playClick()"
-          [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Play forward</button>
-        <button mat-raised-button class="button button-small" (click)="stopClick()"
-          [disabled]="!playing || stopping">Stop</button>
+        <button mat-raised-button class="button button-small" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.PLAY_BACK" | translate }}</button>
+        <button mat-raised-button class="button button-small mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
+        <button mat-raised-button class="button button-small" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
-        <button mat-raised-button class="button button-small" (click)="setupClick()" [disabled]="playing">Setup
-          board</button>
+        <button mat-raised-button class="button button-small" (click)="setupClick()" [disabled]="playing">{{ "SETUP_BOARD" | translate }}</button>
       </div>
     </div>
   </ng-container>
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
-      <button mat-raised-button class="button button-large" (click)="backClick()"
-        [disabled]="playing || stepIndex === 0">Step
-        back</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="nextClick()"
-        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Next step</button>
-      <button mat-raised-button class="button button-large" (click)="playBackClick()"
-        [disabled]="playing || stepIndex === 0">Play
-        back</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="playClick()"
-        [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">Play forward</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="stopClick()"
-        [disabled]="!playing || stopping">Stop</button>
-      <button mat-raised-button class="button button-large" (click)="setupClick()" [disabled]="playing">Setup
-        board</button>
+      <button mat-raised-button class="button button-large" (click)="backClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
+      <button mat-raised-button class="button button-large" (click)="playBackClick()"  [disabled]="playing || stepIndex === 0">{{ "SOLVE.PLAY_BACK" | translate }}</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
+      <button mat-raised-button class="button button-large" (click)="setupClick()" [disabled]="playing">{{ "SETUP_BOARD" | translate }}</button>
     </div>
   </ng-container>
 

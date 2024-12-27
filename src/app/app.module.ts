@@ -13,6 +13,14 @@ import { MovingItemComponent } from './components/moving-item/moving-item.compon
 import { BoardInProgressComponent } from './components/board-in-progress/board-in-progress.component';
 import { BoardNoSolutionComponent } from './components/board-no-solution/board-no-solution.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -31,6 +39,14 @@ import { MatSliderModule } from '@angular/material/slider';
     DragDropModule,
     MatButtonModule,
     MatSliderModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

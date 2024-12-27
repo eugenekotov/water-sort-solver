@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { MainService } from './services/main.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,10 @@ import { MainService } from './services/main.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(public mainService: MainService) {
+  constructor(public mainService: MainService, private translate: TranslateService) {
+    const browserLang = this.translate.getBrowserLang();
+    this.translate.setDefaultLang('uk');
+    this.translate.use(browserLang?.match(/en|uk/) ? browserLang : 'en');
   }
 
   @HostListener('window:resize', [])

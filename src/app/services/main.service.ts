@@ -5,8 +5,10 @@ import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
 import { SolutionController } from '../classes/solution-controller.class';
 import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
+type TLang = "en" | "uk";
 
 @Injectable({
   providedIn: 'root'
@@ -48,17 +50,19 @@ export class MainService {
 
   solutionController: SolutionController = new SolutionController();
 
-  constructor() {
+  constructor(private translate: TranslateService) {
     this.loadContainerCount();
     this.createSourceContainers();
     this.createSetupContainers();
+    // Set language
+    this.translate.setDefaultLang("en");
   }
 
-  public get mode(): TMode {
+  get mode(): TMode {
     return this._mode;
   }
 
-  public setMode(mode: TMode): Promise<void> {
+  setMode(mode: TMode): Promise<void> {
     return new Promise<void>(resolve => {
       this.setVisible(false);
       setTimeout(() => {
@@ -73,16 +77,19 @@ export class MainService {
     });
   }
 
-  public get isMobile(): boolean {
+  get isMobile(): boolean {
     return this._isMobile;
   }
 
-  public set isMobile(value: boolean) {
+  set isMobile(value: boolean) {
     if (this._isMobile !== value) {
       this._isMobile = value;
       this.screenChanged$.next();
     }
+  }
 
+  changeLanguage(lang: TLang) {
+    this.translate.use(lang);
   }
 
   setVisible(value: boolean) {

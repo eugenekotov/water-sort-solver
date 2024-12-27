@@ -1,8 +1,8 @@
 <div class="view-container" [ngStyle]="mainService.visibleNoSolution ? {'opacity' : 1} : {'opacity' : 0}">
   <div class="text-container">
-    Oops, the play board has no solution :(
+    {{ "NO_SOLUTION" | translate}}
   </div>
   <div class="buttons-container" [ngClass]="mainService.isMobile ? 'buttons-container-small' : 'buttons-container-large'">
-    <button mat-raised-button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" (click)="setupClick()">Setup board</button>
+    <button mat-raised-button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
   </div>
 </div>

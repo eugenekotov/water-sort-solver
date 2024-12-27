@@ -1,7 +1,7 @@
 <div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
     <div class="text-containers-parent">
       <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
-        Create your own game board by moving colored squares to the containers below
+        {{ 'SETUP.TITLE_1' | translate }}
       </div>
     </div>
     <div class="source-containers-parent">
@@ -79,34 +79,24 @@
     </ng-container>
 
   <ng-container *ngIf="mainService.isMobile">
-
     <div class="buttons-container buttons-container-small">
-      <button mat-raised-button class="button button-small" (click)="clearClick()" [disabled]="filling">Clear
-        board</button>
-      <button mat-raised-button class="button button-small" (click)="fillRandomly()" [disabled]="filling">Fill
-        randomly</button>
+      <button mat-raised-button class="button button-small" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+      <button mat-raised-button class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
     </div>
-
-
     <div class="buttons-container buttons-container-small">
-      <button mat-raised-button class="button button-small" (click)="saveClick()" [disabled]="filling">Save</button>
-      <button mat-raised-button class="button button-small mr-1" (click)="loadClick()"
-        [disabled]="filling">Load</button>
-      <button mat-raised-button class="button button-small" (click)="solveClick()" [disabled]="filling">Solve</button>
+      <button mat-raised-button class="button button-small" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+      <button mat-raised-button class="button button-small mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
+      <button mat-raised-button class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
     </div>
-
   </ng-container>
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
-      <button mat-raised-button class="button button-large" (click)="clearClick()" [disabled]="filling">Clear
-        board</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">Fill
-        randomly</button>
-      <button mat-raised-button class="button button-large" (click)="saveClick()" [disabled]="filling">Save</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="loadClick()"
-        [disabled]="filling">Load</button>
-      <button mat-raised-button class="button button-large" (click)="solveClick()" [disabled]="filling">Solve</button>
+      <button mat-raised-button class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
+      <button mat-raised-button class="button button-large" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+      <button mat-raised-button class="button button-large mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
+      <button mat-raised-button class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
     </div>
 
   </ng-container>
