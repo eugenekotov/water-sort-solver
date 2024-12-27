@@ -24,14 +24,14 @@
   text-align: center;
 }
 
+.header-text-small {
+  margin: $margin-small;
+  width: 250px;
+}
+
 .header-text-large {
   margin: $margin-large;
   width: 350px;
-}
-
-.header-text-small {
-  margin: $margin;
-  width: 250px;
 }
 
 .source-containers {
@@ -49,7 +49,7 @@
 }
 
 .source-containers-small {
-  padding: math.div($item-size, 4);
+  padding: math.div($item-size-small, 4);
   height: 4 * $item-size-small + $container-items-gap-small * 3;
   // width: 12 * $item-size-small + $container-items-gap-small * 11; // width calculats in .ts
   gap: $container-items-gap-small;

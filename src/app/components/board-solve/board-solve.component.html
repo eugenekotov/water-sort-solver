@@ -8,12 +8,12 @@
   <div class="relative-container">
     <ng-container *ngIf="mainService.isMobile">
       <div class="play-containers-small">
-        <div class="containers containers-small">
+        <div class="containers containers-large">
           <app-container *ngFor="let container of mainService.playContainers1" [container]="container"
             [attr.id]="getContainerId(container.index)">
           </app-container>
         </div>
-        <div class="containers containers-small">
+        <div class="containers containers-large">
           <app-container *ngFor="let container of mainService.playContainers2" [container]="container"
             [attr.id]="getContainerId(container.index)">
           </app-container>

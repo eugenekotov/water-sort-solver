@@ -41,8 +41,8 @@
 
 .container-small {
   border-radius: $container-border-radius-small;
-  // border-bottom-left-radius: $container-border-radius;
-  // border-bottom-right-radius: $container-border-radius;
+  // border-bottom-left-radius: $container-border-radius-small;
+  // border-bottom-right-radius: $container-border-radius-small;
   width: $item-size-small;
   height: $item-size-small * 4 + $container-items-gap-small * 3;
   padding: $container-items-gap-small;
@@ -51,8 +51,8 @@
 
 .container-large {
   border-radius: $container-border-radius-large;
-  // border-bottom-left-radius: $container-border-radius;
-  // border-bottom-right-radius: $container-border-radius;
+  // border-bottom-left-radius: $container-border-radius-large;
+  // border-bottom-right-radius: $container-border-radius-large;
   width: $item-size-large;
   height: $item-size-large * 4 + $container-items-gap-large * 3;
   padding: $container-items-gap-large;
@@ -143,5 +143,5 @@
 }
 
 .mr-1 {
-  margin-right: $margin !important;
+  margin-right: $margin-1 !important;
 }
