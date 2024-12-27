@@ -1,0 +1,23 @@
+{
+  "SETUP": {
+    "TITLE_1": "Create your own game board by dragging colored squares to the containers below",
+    "CLEAR": "Clear",
+    "FILL_RANDOM": "Fill randomly",
+    "SAVE": "Save",
+    "LOAD": "Load",
+    "SOLVE": "Solve"
+  },
+  "IN_PROGRESS": "In progress...",
+  "NO_SOLUTION": "Oops, the play board has no solution :(",
+  "SETUP_BOARD": "Setup board",
+  "SOLVE": {
+    "SOLUTION_COUNT": "Solution consists of {{count}} steps",
+    "STEP": "Current step: {{step}}",
+    "SPEED": "Speed",
+    "STEP_BACK": "Step back",
+    "NEXT_STEP": "Next step",
+    "PLAY_BACK": "Play back",
+    "PLAY_FORWARD": "Play forward",
+    "STOP": "Stop"
+  }
+}
