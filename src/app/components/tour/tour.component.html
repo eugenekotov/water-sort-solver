@@ -1,23 +1,12 @@
-<div class="tour" *ngIf="tourService.tourVisible">
+<div class="tour" *ngIf="tourService.tourVisible" [ngStyle]="{'opacity': tourService.tourOpacity}">
 
 </div>
 
 <div class="tour-container" *ngIf="tourService.tourVisible">
-  <app-tour-item top="100px" left="200px" width="300px" [step]="0" arrow="up">
-    <div style="margin: 5px 30px;">
-      This is tour item content
-    </div>
-  </app-tour-item>
 
-  <app-tour-item top="50px" left="100px" width="200px" [step]="1" arrow="right">
+  <app-tour-item *ngFor="let item of tourService.tour.tourItems; let index=index" [item]="item" [index]="index">
     <div style="margin: 5px 30px;">
-      This is tour item content. Step 2
-    </div>
-  </app-tour-item>
-
-  <app-tour-item top="300px" left="400px" width="300px" [step]="2"  arrow="down" [lastStep]="true">
-    <div style="margin: 5px 30px;">
-      Last step This is tour item content
+      {{item.text | translate}}
     </div>
   </app-tour-item>
 

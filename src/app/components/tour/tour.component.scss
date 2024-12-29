@@ -8,7 +8,7 @@
   height: 100%;
   position: absolute;
   background-color: colors.$tour-background-color;
-  opacity: 0.4;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .tour-container {

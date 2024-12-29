@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
-import { TArrow, TourService } from 'src/app/services/tour.service';
+import { TArrow, TourItem, TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-tour-item',
@@ -9,12 +9,8 @@ import { TArrow, TourService } from 'src/app/services/tour.service';
 })
 export class TourItemComponent implements OnInit {
 
-  @Input() top: string | undefined;
-  @Input() left: string | undefined;
-  @Input() width: string | undefined;
-  @Input() step!: number;
-  @Input() lastStep: boolean = false;
-  @Input() arrow!: TArrow;
+  @Input() index: number;
+  @Input() item: TourItem;
 
   constructor(public tourService: TourService, public mainService: MainService) { }
 
@@ -23,26 +19,9 @@ export class TourItemComponent implements OnInit {
 
   getStyle() {
     const result: any = {};
-    if (this.top) {
-      result['top'] = this.top;
-    }
-    if (this.left) {
-      result['left'] = this.left;
-    }
-    if (this.width) {
-      result['width'] = this.width;
-    }
-    return result;
-  }
-
-  getArrayStyle() {
-    const result: any = {};
-    if (this.top) {
-      result['top'] = this.top;
-    }
-    if (this.left) {
-      result['left'] = this.left;
-    }
+    result['top'] = this.item.top;
+    result['left'] = this.item.left;
+    result['width'] = this.item.width;
     return result;
   }
 
@@ -51,13 +30,24 @@ export class TourItemComponent implements OnInit {
   }
 
   _next() {
-    if (!this.lastStep) {
+    if (!this.lastStep()) {
       this.tourService.tourStep++;
     }
   }
 
-  _prior () {
-    this.tourService.tourStep--;
+  _prior() {
+    if (!this.firstStep()) {
+      this.tourService.tourStep--;
+    }
+  }
+
+
+  firstStep(): boolean {
+    return this.tourService.tourStep === 0;
+  }
+
+  lastStep(): boolean {
+    return this.tourService.tourStep === this.tourService.tour.tourItems.length - 1;
   }
 
 }

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MainService } from 'src/app/services/main.service';
-import { TourService } from 'src/app/services/tour.service';
+import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-board-setup',
@@ -16,9 +16,11 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
   filling: boolean = false;
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
+  tour: Tour;
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
+    this.createTour();
   }
 
   ngOnInit(): void {
@@ -207,6 +209,40 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
       this.mainService.sourceContainers[index].colors.push(color);
     });
     this.mainService.balanceSetupContainers();
+  }
+
+  private createTour() {
+    this.tour = new Tour();
+
+    const tourItem1 = new TourItem();
+    tourItem1.top = "-40px";
+    tourItem1.left = "-10px";
+    tourItem1.width = "300px";
+    tourItem1.arrow = "right-down";
+    tourItem1.text = "This is colors. You may drag them and drop to containers below"
+    tourItem1.delay = 2000;
+
+    this.tour.tourItems.push(tourItem1);
+
+    const tourItem2 = new TourItem();
+    tourItem2.top = "200px";
+    tourItem2.left = "500px";
+    tourItem2.width = "400px";
+    tourItem2.arrow = "left";
+    tourItem2.text = "These buttons to add or remove colors"
+    tourItem2.delay = 2000;
+    this.tour.tourItems.push(tourItem2);
+
+    const tourItem3 = new TourItem();
+    tourItem3.top = "180px";
+    tourItem3.left = "0px";
+    tourItem3.width = "500px";
+    tourItem3.arrow = "down";
+    tourItem3.text = "These are containers. The application will sort colors in containers"
+    tourItem3.delay = 2000;
+    this.tour.tourItems.push(tourItem3);
+
+
   }
 
 }
