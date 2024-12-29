@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { TourService } from 'src/app/services/tour.service';
+import { MainService } from 'src/app/services/main.service';
+import { TArrow, TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-tour-item',
@@ -10,11 +11,12 @@ export class TourItemComponent implements OnInit {
 
   @Input() top: string | undefined;
   @Input() left: string | undefined;
+  @Input() width: string | undefined;
   @Input() step!: number;
   @Input() lastStep: boolean = false;
-  @Output() stopTour: EventEmitter<void> = new EventEmitter<void>();
+  @Input() arrow!: TArrow;
 
-  constructor(public tourService: TourService) { }
+  constructor(public tourService: TourService, public mainService: MainService) { }
 
   ngOnInit(): void {
   }
@@ -26,6 +28,9 @@ export class TourItemComponent implements OnInit {
     }
     if (this.left) {
       result['left'] = this.left;
+    }
+    if (this.width) {
+      result['width'] = this.width;
     }
     return result;
   }
@@ -43,7 +48,6 @@ export class TourItemComponent implements OnInit {
 
   _stopTour() {
     this.tourService.stopTour();
-    this.stopTour.emit();
   }
 
   _next() {

@@ -1,14 +1,11 @@
 import { Injectable } from '@angular/core';
 
-export class Tour {
-
-}
+export type TArrow = "up" | "right-up" | "right" | "right-down" | "down" | "left-down" | "left" | "left-up";
 
 @Injectable({
   providedIn: 'root'
 })
 export class TourService {
-
 
   tourVisible: boolean = true;
   tourStep: number = 0;
