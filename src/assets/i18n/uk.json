@@ -19,5 +19,9 @@
     "PLAY_BACK": "Назад",
     "PLAY_FORWARD": "Вперед",
     "STOP": "Стоп"
+  },
+  "TOUR": {
+    "PRIOR": "Назад",
+    "NEXT": "Далі"
   }
 }

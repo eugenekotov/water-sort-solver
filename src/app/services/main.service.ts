@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
 import { Color } from '../classes/model/colors.class';
-import { Item } from '../classes/model/item.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
 import { SolutionController } from '../classes/solution-controller.class';
-import { Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 
+// TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 type TLang = "en" | "uk";
 

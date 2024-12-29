@@ -1,0 +1,26 @@
+@use 'src/styles/variables' as *;
+@use 'src/styles/colors' as colors;
+
+.tour-item {
+  opacity: 0.9;
+  background-color: colors.$tour-tooltip-background-color;
+  border: 2px solid colors.$tour-tooltip-border-color;
+  border-radius: 10px;
+  max-width: 300px;
+  color: colors.$tour-tooltip-color;
+}
+
+.close {
+  color: colors.$color-04;
+  margin: 5px;
+}
+
+.prior-next {
+  font-size: 14px;
+  font-weight: 400;
+  color: colors.$tour-next-color;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+

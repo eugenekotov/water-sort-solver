@@ -1,0 +1,27 @@
+<div *ngIf="step===tourService.tourStep" style="position: relative;" [ngStyle]="getStyle()">
+  <div style="position: relative; border: 1px solid red; max-width: 300px;">
+    Стрілка
+  </div>
+
+  <div class="tour-item">
+    <div style="display: flex; justify-content: end;">
+      <div style="cursor: pointer;" (click)="_stopTour()"><mat-icon class="close">cancel</mat-icon>
+      </div>
+    </div>
+    <ng-content></ng-content>
+    <div style="display: flex; justify-content: end;">
+      <div [ngStyle]="lastStep ? {'opacity': 0, 'cursor': 'default'} : {'opacity': 1, 'cursor': 'pointer'}"
+        class="prior-next" (click)="_prior()">
+        {{ 'TOUR.PRIOR' | translate }}
+      </div>
+      <div [ngStyle]="lastStep ? {'opacity': 0, 'cursor': 'default'} : {'opacity': 1, 'cursor': 'pointer'}"
+        class="prior-next" (click)="_next()">
+        {{ 'TOUR.NEXT' | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div style="position: relative; border: 1px solid red; max-width: 300px;">
+    Стрілка
+  </div>
+</div>

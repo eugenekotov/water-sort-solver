@@ -16,6 +16,10 @@ import { MatSliderModule } from '@angular/material/slider';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TourItemComponent } from './components/tour-item/tour-item.component';
+import { MatIconModule } from '@angular/material/icon';
+import { TourComponent } from './components/tour/tour.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -32,6 +36,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MovingItemComponent,
     BoardInProgressComponent,
     BoardNoSolutionComponent,
+    TourItemComponent,
+    TourComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +53,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       }
     }),
     HttpClientModule,
+    MatTooltipModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -3,10 +3,27 @@
 @use 'sass:math';
 
 .view-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
+
+.help {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: end;
+}
+
+.help-button-small {
+  margin: $margin-small;
+}
+
+.help-button-large {
+  margin: $margin-large;
+}
+
 
 .text-containers-parent {
   display: flex;
@@ -73,9 +90,11 @@
 }
 
 .setup-containers-small {
+  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  justify-content: center;
+  gap: 20px;
   // margin-bottom: $margin-small * 2;
 }
 

@@ -19,5 +19,9 @@
     "PLAY_BACK": "Play back",
     "PLAY_FORWARD": "Play forward",
     "STOP": "Stop"
+  },
+  "TOUR": {
+    "PRIOR": "Prior",
+    "NEXT": "Next"
   }
 }

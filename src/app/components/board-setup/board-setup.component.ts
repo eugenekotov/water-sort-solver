@@ -1,9 +1,10 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MainService } from 'src/app/services/main.service';
+import { TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-board-setup',
@@ -16,7 +17,7 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
 
-  constructor(public mainService: MainService) {
+  constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
   }
 

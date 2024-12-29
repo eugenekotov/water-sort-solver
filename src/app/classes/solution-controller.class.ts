@@ -153,7 +153,6 @@ export class SolutionController {
   }
 
   private foundSolution() {
-    // TODO: check is the solution unique
     const solution = this.optimizeSolution(new Solution(this.steps));
     this.solutions.add(solution);
   }
