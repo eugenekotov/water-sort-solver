@@ -25,29 +25,4 @@ export class TourItemComponent implements OnInit {
     return result;
   }
 
-  _stopTour() {
-    this.tourService.stopTour();
-  }
-
-  _next() {
-    if (!this.lastStep()) {
-      this.tourService.tourStep++;
-    }
-  }
-
-  _prior() {
-    if (!this.firstStep()) {
-      this.tourService.tourStep--;
-    }
-  }
-
-
-  firstStep(): boolean {
-    return this.tourService.tourStep === 0;
-  }
-
-  lastStep(): boolean {
-    return this.tourService.tourStep === this.tourService.tour.tourItems.length - 1;
-  }
-
 }

@@ -7,6 +7,12 @@
   width: 100%;
   height: 100%;
   position: absolute;
+  // background-color: colors.$tour-background-color;
+  // transition: opacity 0.5s ease-in-out;
+}
+
+.tour-block {
+  position: absolute;
   background-color: colors.$tour-background-color;
   transition: opacity 0.5s ease-in-out;
 }

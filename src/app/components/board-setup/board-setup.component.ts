@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MainService } from 'src/app/services/main.service';
@@ -11,7 +11,7 @@ import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
   templateUrl: './board-setup.component.html',
   styleUrls: ['./board-setup.component.scss']
 })
-export class BoardSetupComponent implements OnInit, OnDestroy {
+export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filling: boolean = false;
   sourceContainersWidth: number;
@@ -20,11 +20,17 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
-    this.createTour();
   }
 
   ngOnInit(): void {
-    this.subscription = this.mainService.screenChanged$.subscribe(() => this.calculateSourceContainersWidth());
+    this.subscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => {
+      this.calculateSourceContainersWidth();
+      this.createTour();
+    });
+  }
+
+  ngAfterViewInit(): void {
+    this.createTour();
   }
 
   ngOnDestroy(): void {
@@ -221,6 +227,8 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
     tourItem1.arrow = "right-down";
     tourItem1.text = "This is colors. You may drag them and drop to containers below"
     tourItem1.delay = 2000;
+    tourItem1.element = document.getElementById("source-containers")!;
+
 
     this.tour.tourItems.push(tourItem1);
 
@@ -238,7 +246,7 @@ export class BoardSetupComponent implements OnInit, OnDestroy {
     tourItem3.left = "0px";
     tourItem3.width = "500px";
     tourItem3.arrow = "down";
-    tourItem3.text = "These are containers. The application will sort colors in containers"
+    tourItem3.text = "These are containers. The application will sort colors in the containers"
     tourItem3.delay = 2000;
     this.tour.tourItems.push(tourItem3);
 

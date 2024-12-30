@@ -12,7 +12,7 @@
   </div>
 
   <div class="source-containers-parent">
-    <div class="source-containers shadow-inset"
+    <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'" style="width: 'sourcecontainersWidth';">
 
       <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"

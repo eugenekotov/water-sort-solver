@@ -26,13 +26,13 @@
       <ng-content></ng-content>
     </div>
     <div style="display: flex; justify-content: end;">
-      <div *ngIf="!firstStep()" class="tour-button" (click)="_prior()">
+      <div *ngIf="!tourService.firstStep()" class="tour-button" (click)="tourService.prior()">
         {{ 'TOUR.PRIOR' | translate }}
       </div>
-      <div *ngIf="!lastStep()" class="tour-button" (click)="_next()">
+      <div *ngIf="!tourService.lastStep()" class="tour-button" (click)="tourService.next()">
         {{ 'TOUR.NEXT' | translate }}
       </div>
-      <div class="tour-button" (click)="_stopTour()">
+      <div class="tour-button" (click)="tourService.stopTour()">
         {{ 'TOUR.FINISH' | translate }}
       </div>
     </div>
