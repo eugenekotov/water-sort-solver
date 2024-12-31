@@ -21,8 +21,15 @@
   gap: 4rem 1rem;
 }
 
-.containers-large {
-  // margin-top: $margin-large * 2;
+// TODO: fix it
+.containers-2-small {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem 0.5rem;
+}
+
+.containers-2-large {
+  display: flex;
   gap: 4rem 0.5rem;
 }
 

@@ -1,23 +1,25 @@
+
+<!-- Dark background -->
 <div id="tour" class="tour" *ngIf="tourService.tourVisible" [ngStyle]="{'opacity': tourService.tourOpacity}">
   <!-- top -->
-  <div class="tour-block" [ngStyle]="{ 'top': '0px', 'left': '0px','width': '100%', 'height': tourService.top + 'px' }">
+  <div class="tour-block"
+    [ngStyle]="{ 'top': '0px', 'left': '0px','width': '100%', 'height': tourService.blockTop + 'px' }">
   </div>
   <!-- left -->
   <div class="tour-block"
-    [ngStyle]="{ 'top': tourService.top + 'px', 'left': '0px','width': tourService.left + 'px', 'height': tourService.height + 'px' }">
+    [ngStyle]="{ 'top': tourService.blockTop + 'px', 'left': '0px','width': tourService.blockLeft + 'px', 'height': tourService.blockHeight + 'px' }">
   </div>
   <!-- right -->
   <div class="tour-block"
-    [ngStyle]="{ 'top': tourService.top + 'px', 'left': (tourService.left + tourService.width) + 'px' ,'width': (tourService.wholeWidth - tourService.left - tourService.width) + 'px', 'height': tourService.height + 'px' }">
+    [ngStyle]="{ 'top': tourService.blockTop + 'px', 'left': (tourService.blockLeft + tourService.blockWidth) + 'px' ,'width': (tourService.wholeWidth - tourService.blockLeft - tourService.blockWidth) + 'px', 'height': tourService.blockHeight + 'px' }">
   </div>
   <!-- bottom -->
   <div class="tour-block"
-    [ngStyle]="{ 'top': (tourService.top + tourService.height) + 'px', 'left': '0px','width': '100%', 'height': (tourService.wholeHeight - tourService.top - tourService.height) + 'px' }">
+    [ngStyle]="{ 'top': (tourService.blockTop + tourService.blockHeight) + 'px', 'left': '0px','width': '100%', 'height': (tourService.wholeHeight - tourService.blockTop - tourService.blockHeight) + 'px' }">
   </div>
 </div>
 
 <div class="tour-container" *ngIf="tourService.tourVisible">
-
   <app-tour-item *ngFor="let item of tourService.tour?.tourItems; let index=index" [item]="item" [index]="index">
     <div style="margin: 5px 30px;">
       {{item.text | translate}}

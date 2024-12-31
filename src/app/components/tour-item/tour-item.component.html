@@ -1,61 +1,17 @@
-<div *ngIf="index===tourService.tourStep" class="tour-item-container"
-  [ngClass]="mainService.isMobile ? 'tour-item-container-small' : 'tour-item-container-large'" [ngStyle]="getStyle()">
-
-  <div>
-    <img *ngIf="item.arrow==='left-up'" src="assets/images/arrow-left-up.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
+<!-- <div *ngIf="index===tourService.tourStep" class="tour-item" [ngStyle]="getStyle()"> -->
+<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="getStyle()">
+  <div style="margin-top: 25px;">
+    <ng-content></ng-content>
   </div>
-
-  <div style="display: flex; justify-content: center;">
-    <img *ngIf="item.arrow==='up'" src="assets/images/arrow-up.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div>
-    <img *ngIf="item.arrow==='right-up'" src="assets/images/arrow-right-up.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div>
-    <img *ngIf="item.arrow==='left'" src="assets/images/arrow-left.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div class="tour-item">
-    <div  style="margin-top: 25px;">
-      <ng-content></ng-content>
+  <div style="display: flex; justify-content: end;">
+    <div *ngIf="!tourService.firstStep()" class="tour-button" (click)="tourService.prior()">
+      {{ 'TOUR.PRIOR' | translate }}
     </div>
-    <div style="display: flex; justify-content: end;">
-      <div *ngIf="!tourService.firstStep()" class="tour-button" (click)="tourService.prior()">
-        {{ 'TOUR.PRIOR' | translate }}
-      </div>
-      <div *ngIf="!tourService.lastStep()" class="tour-button" (click)="tourService.next()">
-        {{ 'TOUR.NEXT' | translate }}
-      </div>
-      <div class="tour-button" (click)="tourService.stopTour()">
-        {{ 'TOUR.FINISH' | translate }}
-      </div>
+    <div *ngIf="!tourService.lastStep()" class="tour-button" (click)="tourService.next()">
+      {{ 'TOUR.NEXT' | translate }}
+    </div>
+    <div class="tour-button" (click)="tourService.stopTour()">
+      {{ 'TOUR.FINISH' | translate }}
     </div>
   </div>
-
-  <div>
-    <img *ngIf="item.arrow==='right'" src="assets/images/arrow-right.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div>
-    <img *ngIf="item.arrow==='left-down'" src="assets/images/arrow-left-down.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div style="display: flex; justify-content: center;">
-    <img *ngIf="item.arrow==='down'" src="assets/images/arrow-down.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
-  <div>
-    <img *ngIf="item.arrow==='right-down'" src="assets/images/arrow-right-down.png" alt="Arrow"
-      [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'">
-  </div>
-
 </div>

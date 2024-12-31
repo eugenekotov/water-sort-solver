@@ -221,36 +221,45 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tour = new Tour();
 
     const tourItem1 = new TourItem();
-    tourItem1.top = "-40px";
-    tourItem1.left = "-10px";
-    tourItem1.width = "300px";
+    tourItem1.top = 0;
+    tourItem1.left = 0;
+    tourItem1.width = 300;
     tourItem1.arrow = "right-down";
     tourItem1.text = "This is colors. You may drag them and drop to containers below"
     tourItem1.delay = 2000;
     tourItem1.element = document.getElementById("source-containers")!;
 
-
     this.tour.tourItems.push(tourItem1);
 
     const tourItem2 = new TourItem();
-    tourItem2.top = "200px";
-    tourItem2.left = "500px";
-    tourItem2.width = "400px";
+    tourItem2.top = 0;
+    tourItem2.left = 0;
+    tourItem2.width = 300;
     tourItem2.arrow = "left";
     tourItem2.text = "These buttons to add or remove colors"
     tourItem2.delay = 2000;
+    tourItem2.element = document.getElementById("buttons-add-remove")!;
     this.tour.tourItems.push(tourItem2);
 
     const tourItem3 = new TourItem();
-    tourItem3.top = "180px";
-    tourItem3.left = "0px";
-    tourItem3.width = "500px";
+    tourItem3.top = 0;
+    tourItem3.left = 0;
+    tourItem3.width = 300;
     tourItem3.arrow = "down";
     tourItem3.text = "These are containers. The application will sort colors in the containers"
     tourItem3.delay = 2000;
+    tourItem3.element = document.getElementById("containers")!;
     this.tour.tourItems.push(tourItem3);
 
-
+    const tourItem4 = new TourItem();
+    tourItem4.top = 0;
+    tourItem4.left = 0;
+    tourItem4.width = 300;
+    tourItem4.arrow = "down";
+    tourItem4.text = "Clear containers to start from scratch"
+    tourItem4.delay = 2000;
+    tourItem4.element = document.getElementById("button-clear")!;
+    this.tour.tourItems.push(tourItem4);
   }
 
 }

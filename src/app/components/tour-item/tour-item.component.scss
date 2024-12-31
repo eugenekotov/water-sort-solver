@@ -1,29 +1,14 @@
 @use 'src/styles/variables' as *;
 @use 'src/styles/colors' as colors;
 
-.tour-item-container {
-  position: relative;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-}
-
-.tour-item-container-small {
-  grid-template-rows: 30px 1fr 30px;
-  grid-template-columns: 30px 1fr 30px;
-}
-
-.tour-item-container-large {
-  grid-template-rows: 50px 1fr 50px;
-  grid-template-columns: 40px 1fr 40px;
-}
-
 .tour-item {
+  position: absolute;
   opacity: 0.9;
   background-color: colors.$tour-tooltip-background-color;
   border: 2px solid colors.$tour-tooltip-border-color;
   border-radius: 10px;
   color: colors.$tour-tooltip-color;
+  transition: opacity 1.5s ease-in-out;
 }
 
 .tour-button {
@@ -38,10 +23,10 @@
 
 .arrow-small {
   height: 30px;
-  z-index: 1;
+  // z-index: 1;
 }
 
 .arrow-large {
   height: 40px;
-  z-index: 1;
+  // z-index: 1;
 }

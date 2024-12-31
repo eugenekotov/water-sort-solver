@@ -25,7 +25,7 @@
         </div>
       </div>
     </div>
-    <div style="display: flex; gap: 0.5rem; margin: 10px;">
+    <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 10px;">
       <button mat-mini-fab class="fab-button" (click)="addContainer()">+</button>
       <button mat-mini-fab class="fab-button" (click)="removeContainer()">-</button>
     </div>
@@ -33,26 +33,28 @@
 
   <ng-container *ngIf="mainService.isMobile">
     <div class="setup-containers-small">
-      <div class="containers containers-small">
-        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
-          class="container container-small" cdkDropList [cdkDropListData]="container.colors"
-          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
+      <div id="containers" class="containers-2-small">
+        <div class="containers containers-small">
+          <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
+            class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+            [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+            [cdkDropListEnterPredicate]="canDrop(container)">
 
-          <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
-            [ngStyle]="getItemStyle(color)" cdkDrag>
+            <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+              [ngStyle]="getItemStyle(color)" cdkDrag>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="containers containers-small">
-        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
-          class="container container-small" cdkDropList [cdkDropListData]="container.colors"
-          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
+        <div class="containers containers-small">
+          <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
+            class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+            [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+            [cdkDropListEnterPredicate]="canDrop(container)">
 
-          <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
-            [ngStyle]="getItemStyle(color)" cdkDrag>
+            <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+              [ngStyle]="getItemStyle(color)" cdkDrag>
+            </div>
           </div>
         </div>
       </div>
@@ -60,23 +62,25 @@
   </ng-container>
 
   <ng-container *ngIf="!mainService.isMobile">
-    <div class="containers containers-large">
-      <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
-        class="container container-large" cdkDropList [cdkDropListData]="container.colors"
-        [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-        [cdkDropListEnterPredicate]="canDrop(container)">
+    <div class="containers">
+      <div id="containers" class="containers-2-large">
+        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
+          class="container container-large" cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
 
-        <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
-          [ngStyle]="getItemStyle(color)" cdkDrag>
+          <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
         </div>
-      </div>
-      <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
-        class="container container-large" cdkDropList [cdkDropListData]="container.colors"
-        [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-        [cdkDropListEnterPredicate]="canDrop(container)">
+        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
+          class="container container-large" cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
 
-        <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
-          [ngStyle]="getItemStyle(color)" cdkDrag>
+          <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +89,7 @@
   <ng-container *ngIf="mainService.isMobile">
     <div>
       <div class="buttons-container buttons-container-small">
-        <button mat-raised-button class="button button-small" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+        <button id="button-clear" mat-raised-button class="button button-small" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
         <button mat-raised-button class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
@@ -98,7 +102,7 @@
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
-      <button mat-raised-button class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+      <button id="button-clear" mat-raised-button class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
       <button mat-raised-button class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       <button mat-raised-button class="button button-large" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
       <button mat-raised-button class="button button-large mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
