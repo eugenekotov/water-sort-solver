@@ -3,6 +3,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
+import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
@@ -24,8 +25,10 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => {
-      this.calculateSourceContainersWidth();
-      this.createTour();
+      setTimeout(() => {
+        this.calculateSourceContainersWidth();
+        this.createTour();
+      }, 1000);
     });
   }
 
@@ -91,13 +94,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
     while (sourceContainers.length > 0) {
-      const sourceIndex = this.getRandomInt(0, sourceContainers.length - 1);
+      const sourceIndex = getRandomInt(0, sourceContainers.length - 1);
       const color = sourceContainers[sourceIndex].colors.pop();
       await this.pause(10);
       const setupContainers = [
         ...this.mainService.setupContainers1.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE),
         ...this.mainService.setupContainers2.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE)];
-      const setupIndex = this.getRandomInt(0, setupContainers.length - 3);
+      const setupIndex = getRandomInt(0, setupContainers.length - 3);
       setupContainers[setupIndex].colors.splice(0, 0, color!);
       sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
       await this.pause(20);
@@ -107,12 +110,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async pause(delay: number): Promise<void> {
     return new Promise<void>(resolve => setTimeout(resolve, delay));
-  }
-
-  private getRandomInt(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   saveClick() {
@@ -224,7 +221,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     tourItem1.top = 0;
     tourItem1.left = 0;
     tourItem1.width = 300;
-    tourItem1.arrow = "right-down";
     tourItem1.text = "This is colors. You may drag them and drop to containers below"
     tourItem1.delay = 2000;
     tourItem1.element = document.getElementById("source-containers")!;
@@ -235,7 +231,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     tourItem2.top = 0;
     tourItem2.left = 0;
     tourItem2.width = 300;
-    tourItem2.arrow = "left";
     tourItem2.text = "These buttons to add or remove colors"
     tourItem2.delay = 2000;
     tourItem2.element = document.getElementById("buttons-add-remove")!;
@@ -245,7 +240,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     tourItem3.top = 0;
     tourItem3.left = 0;
     tourItem3.width = 300;
-    tourItem3.arrow = "down";
     tourItem3.text = "These are containers. The application will sort colors in the containers"
     tourItem3.delay = 2000;
     tourItem3.element = document.getElementById("containers")!;
@@ -255,7 +249,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     tourItem4.top = 0;
     tourItem4.left = 0;
     tourItem4.width = 300;
-    tourItem4.arrow = "down";
     tourItem4.text = "Clear containers to start from scratch"
     tourItem4.delay = 2000;
     tourItem4.element = document.getElementById("button-clear")!;

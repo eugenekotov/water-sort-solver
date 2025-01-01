@@ -5,6 +5,7 @@ import { Color } from '../classes/model/colors.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
 import { SolutionController } from '../classes/solution-controller.class';
+import { TourService } from './tour.service';
 
 // TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
@@ -50,7 +51,7 @@ export class MainService {
 
   solutionController: SolutionController = new SolutionController();
 
-  constructor(private translate: TranslateService) {
+  constructor(private translate: TranslateService, private tourService: TourService) {
     this.loadContainerCount();
     this.createSourceContainers();
     this.createSetupContainers();
@@ -82,8 +83,10 @@ export class MainService {
   }
 
   set isMobile(value: boolean) {
+    // TODO: is not working when switch to mobile
     if (this._isMobile !== value) {
       this._isMobile = value;
+      this.tourService.terminateTour();
       this.screenChanged$.next();
     }
   }

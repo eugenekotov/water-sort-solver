@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
-import { TArrow, TourItem, TourService } from 'src/app/services/tour.service';
+import { TourItem, TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-tour-item',

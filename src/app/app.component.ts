@@ -9,6 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class AppComponent implements AfterViewInit {
 
+  // TODO: Add select language component
+
   constructor(public mainService: MainService, private translate: TranslateService) {
     const browserLang = this.translate.getBrowserLang();
     this.translate.setDefaultLang('uk');
