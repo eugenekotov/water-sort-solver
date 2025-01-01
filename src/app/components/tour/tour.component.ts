@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { MainService } from 'src/app/services/main.service';
 import { Tour, TourService } from 'src/app/services/tour.service';
 
 @Component({
@@ -8,6 +9,6 @@ import { Tour, TourService } from 'src/app/services/tour.service';
 })
 export class TourComponent {
 
-  constructor(public tourService: TourService) { }
+  constructor(public mainService: MainService, public tourService: TourService) { }
 
 }

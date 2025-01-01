@@ -7,24 +7,11 @@ import { TArrow, TourItem, TourService } from 'src/app/services/tour.service';
   templateUrl: './tour-item.component.html',
   styleUrls: ['./tour-item.component.scss']
 })
-export class TourItemComponent implements OnInit {
+export class TourItemComponent {
 
   @Input() index: number;
   @Input() item: TourItem;
 
   constructor(public tourService: TourService, public mainService: MainService) { }
-
-  ngOnInit(): void {
-  }
-
-  getStyle() {
-    const result: any = {};
-    result['top'] = this.item.top + 'px';
-    result['left'] = this.item.left + 'px';
-    result['width'] = this.item.width + 'px';
-    result['opacity'] = this.item.opacity;
-    result['transition'] = 'opacity 1.5s ease-in-out';
-    return result;
-  }
 
 }

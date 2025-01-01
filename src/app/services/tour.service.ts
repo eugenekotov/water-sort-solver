@@ -22,12 +22,20 @@ export class Tour {
 })
 export class TourService {
 
+  readonly TOUR_OPACITY = 0.4;
+  readonly TOUR_DELAY = 500;
   readonly TOUR_ITEM_OPACITY = 0.9;
+  readonly ARROW_OPACITY = 0.9;
 
   tour: Tour | undefined;
   tourVisible: boolean = false;
   tourOpacity: number = 0;
+  arrowOpacity: number = 0;
   tourStep: number | undefined = undefined;
+
+
+  itemTop: number = 0;
+  itemLeft: number = 0;
 
   blockTop: number = 0;
   blockLeft: number = 0;
@@ -42,28 +50,25 @@ export class TourService {
   startTour(tour: Tour) {
     this.tour = tour;
     this.tourStep = undefined;
-    this.tourOpacity = 0;
     this.tourVisible = true;
     setTimeout(() => {
-      this.tourOpacity = 0.4;
-      setTimeout(() => {
-        this.tourStep = 0;
-        this.showItem(this.getCurrentItem());
-      }, 500);
+      this.tourOpacity = this.TOUR_OPACITY;
+      this.arrowOpacity = this.ARROW_OPACITY
+      this.tourStep = 0;
+      this.showItem(this.getCurrentItem());
     }, 0);
   }
 
   stopTour() {
-    setTimeout(() => {
-      this.tourOpacity = 0;
+    this.hideItem(this.getCurrentItem()).then(() => {
       setTimeout(() => {
         this.tourVisible = false;
         this.tour = undefined;
-      }, 500);
-    }, 0);
+      }, this.TOUR_DELAY);
+    });
   }
 
-  private getCurrentItem(): TourItem {
+  getCurrentItem(): TourItem {
     return this.tour!.tourItems[this.tourStep!];
   }
 
@@ -72,37 +77,43 @@ export class TourService {
   }
 
   next() {
-    setTimeout(() => {
-      this.hideItem(this.getCurrentItem());
+    this.hideItem(this.getCurrentItem()).then(() => {
       setTimeout(() => {
         this.tourStep!++;
         this.showItem(this.getCurrentItem());
       }, 0);
-    }, 0);
+    });
   }
 
   prior() {
-    setTimeout(() => {
-      this.hideItem(this.getCurrentItem());
+    this.hideItem(this.getCurrentItem()).then(() => {
       setTimeout(() => {
         this.tourStep!--;
         this.showItem(this.getCurrentItem());
       }, 0);
-    }, 0);
+    });
   }
 
   lastStep(): boolean {
     return this.tour !== undefined && this.tourStep === (this.tour.tourItems?.length - 1);
   }
 
-  private hideItem(item: TourItem) {
-    item.opacity = 0;
+  private hideItem(item: TourItem): Promise<void> {
+    return new Promise<void>(resolve => {
+      item.opacity = 0;
+      this.tourOpacity = 0;
+      this.arrowOpacity = 0;
+      setTimeout(() => resolve(), this.TOUR_DELAY);
+    }
+    );
   }
 
   private showItem(item: TourItem) {
+    this.setElementsPositions(item.element);
     setTimeout(() => {
-      this.setElementsPositions(item.element);
-      setTimeout(() => item.opacity = this.TOUR_ITEM_OPACITY, 0);
+      this.tourOpacity = this.TOUR_OPACITY;
+      this.arrowOpacity = this.ARROW_OPACITY;
+      item.opacity = this.TOUR_ITEM_OPACITY;
     }, 0);
   }
 
@@ -124,12 +135,33 @@ export class TourService {
     setTimeout(() => {
       const tourItemElement = document.getElementById("item-" + this.tourStep!)!;
       const tourItemRect: DOMRect = tourItemElement.getBoundingClientRect();
-      console.log(tourItemRect);
-      this.tour!.tourItems[this.tourStep!].top = this.blockTop - tourItemRect.height;
-      this.tour!.tourItems[this.tourStep!].left = this.blockLeft;
+
+      this.itemTop = this.blockTop - tourItemRect.height;
+      this.itemLeft = this.blockLeft;
+
+      this.tour!.tourItems[this.tourStep!].top = this.itemTop;
+      this.tour!.tourItems[this.tourStep!].left = this.itemLeft;
     }, 0);
+  }
 
+  getItemStyle() {
+    const result: any = {};
+    const item = this.getCurrentItem();
+    result['top'] = item.top + 'px';
+    result['left'] = item.left + 'px';
+    result['width'] = item.width + 'px';
+    result['opacity'] = item.opacity;
+    result['transition'] = 'opacity ' + this.TOUR_DELAY + 'ms ease-in-out';
+    return result;
+  }
 
+  getArrowStyle() {
+    const result: any = {};
+    result['top'] = this.blockTop + 'px';
+    result['left'] = this.blockLeft + 'px';
+    result['transition'] = 'opacity ' + this.TOUR_DELAY + 'ms ease-in-out';
+    result['opacity'] = this.arrowOpacity;
+    return result;
   }
 
 }

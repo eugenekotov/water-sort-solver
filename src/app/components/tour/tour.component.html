@@ -1,6 +1,6 @@
-
 <!-- Dark background -->
-<div id="tour" class="tour" *ngIf="tourService.tourVisible" [ngStyle]="{'opacity': tourService.tourOpacity}">
+<div id="tour" class="tour" *ngIf="tourService.tourVisible"
+  [ngStyle]="{'transition': 'opacity '+ tourService.TOUR_DELAY + 'ms ease-in-out', 'opacity': tourService.tourOpacity}">
   <!-- top -->
   <div class="tour-block"
     [ngStyle]="{ 'top': '0px', 'left': '0px','width': '100%', 'height': tourService.blockTop + 'px' }">
@@ -25,5 +25,9 @@
       {{item.text | translate}}
     </div>
   </app-tour-item>
+
+  <div id="arrow" class="arrow" [ngClass]="mainService.isMobile ? 'arrow-small' : 'arrow-large'" [ngStyle]="tourService.getArrowStyle()">
+    <img src="\assets\images\arrow-down.png" alt="arrow" width="35px" height="35px">
+  </div>
 
 </div>

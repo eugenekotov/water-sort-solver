@@ -1,6 +1,5 @@
-<!-- <div *ngIf="index===tourService.tourStep" class="tour-item" [ngStyle]="getStyle()"> -->
-<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="getStyle()">
-  <div style="margin-top: 25px;">
+<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="tourService.getItemStyle()">
+  <div class="content-container">
     <ng-content></ng-content>
   </div>
   <div style="display: flex; justify-content: end;">
