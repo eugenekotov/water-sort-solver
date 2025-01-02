@@ -4,13 +4,13 @@
     (click)="selectUk()">
 
     <img class="image" [ngClass]="mainService.isMobile ? 'image-small' : 'image-large'"
-      src="\water-sort-solver\assets\images\ukraine.png" alt="Ukraine">
+      src="assets\images\ukraine.png" alt="Ukraine">
   </div>
   <div class="lang-flag-container shadow"
     [ngClass]="{'current-lang': mainService.currentLanguage() === 'en', 'lang-flag-container-small': mainService.isMobile, 'lang-flag-container-large': !mainService.isMobile }"
     (click)="selectEn()">
 
     <img class="image" [ngClass]="mainService.isMobile ? 'image-small' : 'image-large'"
-      src="\assets\images\english.png" alt="English">
+      src="assets\images\english.png" alt="English">
   </div>
 </div>
