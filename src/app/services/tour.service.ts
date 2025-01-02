@@ -4,11 +4,11 @@ import { getRandomInt } from '../classes/utils.class';
 type TPositionX = "right" | "right-half" | "left" | "left-half";
 type TPositionY = "above" | "above-half" | "below" | "below-half";
 
-class TPosition {
+class Position {
 
   constructor(public x: TPositionX | undefined, public y: TPositionY | undefined) { }
 
-  equals(position: TPosition): boolean {
+  equals(position: Position): boolean {
     return this.x === position.x && this.y === position.y;
   }
 
@@ -44,7 +44,7 @@ export class TourItem {
   left: number;
   width: number;
   text: string;
-  delay: number;
+  delay: number = 2000;
   opacity: number = 0;
   element: HTMLElement;
 
@@ -77,19 +77,18 @@ export class TourService {
   readonly TOUR_OPACITY = 0.4;
   readonly TOUR_DELAY = 500;
   readonly TOUR_ITEM_OPACITY = 0.9;
-  readonly ARROW_OPACITY = 0.9;
+  readonly ARROW_OPACITY = 1;
 
   tour: Tour | undefined;
   tourVisible: boolean = false;
   tourOpacity: number = 0;
   arrowOpacity: number = 0;
+  arrowRotate: number = 0;
   tourStep: number | undefined = undefined;
 
   mainRect: Rect = new Rect();
   blockRect: Rect = new Rect();
-
-  arrowTop: number = 0;
-  arrowLeft: number = 0;
+  arrowRect: Rect = new Rect();
 
   constructor() { }
 
@@ -177,61 +176,190 @@ export class TourService {
   private calculatePositions(element: HTMLElement) {
     this.mainRect = this.getMainRect();
     this.blockRect = this.getBlockRect(element);
-    const arrowRect = this.getArrowRect();
+    this.arrowRotate = 0;
     setTimeout(() => {
+      this.arrowRect = this.getArrowRect();
       const itemRect = this.getItemRect();
-      const position = this.getItemPosition(itemRect, arrowRect, this.mainRect);
-      console.log(position);
-      // set Position
-      switch (position.x) {
-        case undefined:
-          itemRect.left = this.blockRect.left + this.blockRect.width / 2 - itemRect.width / 2;
-          break;
-
-        case "left":
-          itemRect.left = this.blockRect.left - itemRect.width - arrowRect.width;
-          break;
-
-        case "left-half":
-          itemRect.left = this.blockRect.left - itemRect.width / 2;
-          break;
-
-        case "right":
-          itemRect.left = this.blockRect.left + this.blockRect.width + arrowRect.width;
-          break;
-
-        case "right-half":
-          itemRect.left = this.blockRect.left + this.blockRect.width - itemRect.width / 2;
-          break;
-        default:
-          const _n: never = position.x;
-          break;
-      }
-
-      switch (position.y) {
-        case undefined:
-          itemRect.top = this.blockRect.top + this.blockRect.height / 2 - itemRect.height / 2;
-          break;
-        case "above":
-          itemRect.top = this.blockRect.top - itemRect.height - arrowRect.height;
-          break;
-        case "above-half":
-          itemRect.top = this.blockRect.top - (itemRect.height + arrowRect.height) / 2;
-          break;
-        case "below":
-          itemRect.top = this.blockRect.top + this.blockRect.height + arrowRect.height;
-          break;
-        case "below-half":
-          itemRect.top = this.blockRect.top + this.blockRect.height + (itemRect.height + arrowRect.height) / 2;
-          break;
-        default:
-          const _n: never = position.y;
-          break;
-      }
-      //
-      this.getCurrentItem().top = itemRect.top;
-      this.getCurrentItem().left = itemRect.left;
+      const position = this.calculateItemPosition(itemRect, this.arrowRect, this.mainRect);
+      // const position = new Position("left", "above-half");
+      // console.log(position);
+      this.setItemPosition(position, itemRect);
+      this.setArrowAngle(position);
     }, 0);
+  }
+
+  private setArrowAngle(position: Position): void {
+    switch (position.x) {
+      case undefined:
+        switch (position.y) {
+          case undefined:
+            throw new Error("Cannot calculate arrow angle");
+          case "above":
+            this.arrowRotate = 180;
+            break;
+          case "above-half":
+            throw new Error("Cannot calculate arrow angle");
+          case "below":
+            this.arrowRotate = 0;
+            break;
+          case "below-half":
+            throw new Error("Cannot calculate arrow angle");
+          default:
+            const _n: never = position.y;
+            break;
+        }
+        break;
+
+      case "left":
+        switch (position.y) {
+          case undefined:
+            this.arrowRotate = 90;
+            break;
+          case "above":
+            this.arrowRotate = 135;
+            break;
+          case "above-half":
+            this.arrowRotate = 90 + 22;
+            break;
+          case "below":
+            this.arrowRotate = 45;
+            break;
+          case "below-half":
+            this.arrowRotate = 45 + 22;
+            break;
+          default:
+            const _n: never = position.y;
+            break;
+        }
+        break;
+
+      case "left-half":
+        switch (position.y) {
+          case undefined:
+            throw new Error("Cannot calculate arrow angle");
+          case "above":
+            this.arrowRotate = 135 + 22;
+            break;
+          case "above-half":
+            throw new Error("Cannot calculate arrow angle");
+          case "below":
+            this.arrowRotate = 22;
+            break;
+          case "below-half":
+            throw new Error("Cannot calculate arrow angle");
+          default:
+            const _n: never = position.y;
+            break;
+        }
+        break;
+
+      case "right":
+        switch (position.y) {
+          case undefined:
+            this.arrowRotate = 270;
+            break;
+          case "above":
+            this.arrowRotate = 225;
+            break;
+          case "above-half":
+            this.arrowRotate = 225 + 22;
+            break;
+          case "below":
+            this.arrowRotate = 315;
+            break;
+          case "below-half":
+            this.arrowRotate = 315 - 22;
+            break;
+          default:
+            const _n: never = position.y;
+            break;
+        }
+        break;
+
+      case "right-half":
+        switch (position.y) {
+          case undefined:
+            throw new Error("Cannot calculate arrow angle");
+          case "above":
+            this.arrowRotate = 180 + 22;
+            break;
+          case "above-half":
+            throw new Error("Cannot calculate arrow angle");
+          case "below":
+            this.arrowRotate = 360-22;
+            break;
+          case "below-half":
+            throw new Error("Cannot calculate arrow angle");
+          default:
+            const _n: never = position.y;
+            break;
+        }
+        break;
+      default:
+        const _n: never = position.x;
+        break;
+    }
+  }
+
+  private setItemPosition(position: Position, itemRect: Rect): void {
+    switch (position.x) {
+      case undefined:
+        itemRect.left = this.blockRect.left + this.blockRect.width / 2 - itemRect.width / 2;
+        this.arrowRect.left = this.blockRect.left + this.blockRect.width / 2 - this.arrowRect.width / 2;
+        break;
+
+      case "left":
+        itemRect.left = this.blockRect.left - itemRect.width - this.arrowRect.width;
+        this.arrowRect.left = this.blockRect.left - this.arrowRect.width;
+        break;
+
+      case "left-half":
+        itemRect.left = this.blockRect.left - itemRect.width / 2;
+        this.arrowRect.left = itemRect.left + itemRect.width / 2 - this.arrowRect.width / 4;
+        break;
+
+      case "right":
+        itemRect.left = this.blockRect.left + this.blockRect.width + this.arrowRect.width;
+        this.arrowRect.left = this.blockRect.left + this.blockRect.width;
+        break;
+
+      case "right-half":
+        itemRect.left = this.blockRect.left + this.blockRect.width - itemRect.width / 2;
+        this.arrowRect.left = itemRect.left + itemRect.width / 2 - this.arrowRect.width * 3 / 4;
+        break;
+      default:
+        const _n: never = position.x;
+        break;
+    }
+
+    switch (position.y) {
+      case undefined:
+        itemRect.top = this.blockRect.top + this.blockRect.height / 2 - itemRect.height / 2;
+        this.arrowRect.top = this.blockRect.top + this.blockRect.height / 2 - this.arrowRect.height / 2;
+        break;
+      case "above":
+        itemRect.top = this.blockRect.top - itemRect.height - this.arrowRect.height;
+        this.arrowRect.top = this.blockRect.top - this.arrowRect.height;
+        break;
+      case "above-half":
+        itemRect.top = this.blockRect.top - itemRect.height / 2;
+        this.arrowRect.top = itemRect.top + itemRect.height / 2 - this.arrowRect.height / 4;
+        break;
+      case "below":
+        itemRect.top = this.blockRect.top + this.blockRect.height + this.arrowRect.height;
+        this.arrowRect.top = this.blockRect.top + this.blockRect.height;
+        break;
+      case "below-half":
+        itemRect.top = this.blockRect.top + this.blockRect.height - itemRect.height / 2;
+        this.arrowRect.top = itemRect.top + itemRect.height / 2 - this.arrowRect.height * 3 / 4;
+        break;
+      default:
+        const _n: never = position.y;
+        break;
+    }
+    //
+    this.getCurrentItem().top = itemRect.top;
+    this.getCurrentItem().left = itemRect.left;
   }
 
   private getMainRect(): Rect {
@@ -258,7 +386,7 @@ export class TourService {
     return new Rect().set(this.blockRect.top - tourItemRect.height, this.blockRect.left, tourItemRect.width, tourItemRect.height);
   }
 
-  private getItemPosition(itemRect: Rect, arrowRect: Rect, mainRect: Rect): TPosition {
+  private calculateItemPosition(itemRect: Rect, arrowRect: Rect, mainRect: Rect): Position {
     // Looking for position
     const positionsX = new Set<TPositionX>();
     const positionsY = new Set<TPositionY>();
@@ -287,21 +415,21 @@ export class TourService {
       positionsX.add("right-half");
     }
 
-    const positions: TPosition[] = [];
+    const positions: Position[] = [];
     positionsX.forEach(posX => {
       if (posX === "left" || posX === "right") {
-        positions.push(new TPosition(posX, undefined));
-        positionsY.forEach(posY => positions.push(new TPosition(posX, posY)));
+        positions.push(new Position(posX, undefined));
+        positionsY.forEach(posY => positions.push(new Position(posX, posY)));
       }
     });
 
     positionsY.forEach(posY => {
       if (posY === "above" || posY === "below") {
-        positions.push(new TPosition(undefined, posY));
+        positions.push(new Position(undefined, posY));
         positionsX.forEach(posX => {
-          const position = new TPosition(posX, posY);
+          const position = new Position(posX, posY);
           if (!positions.some(pos => pos.equals(position))) {
-            positions.push(new TPosition(posX, posY));
+            positions.push(new Position(posX, posY));
           }
         });
       }
@@ -332,9 +460,10 @@ export class TourService {
 
   getArrowStyle() {
     const result: any = {};
-    result['top'] = this.arrowTop + 'px';
-    result['left'] = this.arrowLeft + 'px';
+    result['top'] = this.arrowRect.top + 'px';
+    result['left'] = this.arrowRect.left + 'px';
     result['opacity'] = this.arrowOpacity;
+    result['rotate'] = this.arrowRotate + 'deg';
     result['transition'] = 'opacity ' + this.TOUR_DELAY + 'ms ease-in-out';
     return result;
   }
