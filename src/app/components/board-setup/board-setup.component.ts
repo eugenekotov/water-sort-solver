@@ -225,19 +225,19 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tour.tourItems.push(new TourItem().setWidth(200).setText("These are containers. The application will sort colors in the containers")
       .setElement(document.getElementById("containers")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Clear containers to start from scratch")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Clear containers to start from scratch")
       .setElement(document.getElementById("button-clear")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Fill play board randomly")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Fill play board randomly")
       .setElement(document.getElementById("button-fill")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Save current board to continue later")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Save current board to continue later")
       .setElement(document.getElementById("button-save")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Load saved play board to continue")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Load saved play board to continue")
       .setElement(document.getElementById("button-load")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Try to sort color in containers")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Try to sort color in containers")
       .setElement(document.getElementById("button-solve")!));
 
     }
