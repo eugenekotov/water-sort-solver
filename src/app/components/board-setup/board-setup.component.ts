@@ -216,7 +216,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private createTour() {
     this.tour = new Tour();
-    this.tour.tourItems.push(new TourItem().setWidth(200).setText("This is colors. You may drag them and drop to containers below")
+    this.tour.tourItems.push(new TourItem().setWidth(200).setText("These are colors. You may drag them and drop to containers below")
       .setElement(document.getElementById("source-containers")!));
 
     this.tour.tourItems.push(new TourItem().setWidth(200).setText("These buttons to add or remove colors")
