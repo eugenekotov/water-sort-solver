@@ -35,6 +35,14 @@
   // margin: $margin-large;
 }
 
+.containers-small {
+  gap: 6px;
+}
+
+.containers-large {
+  gap: 10px;
+}
+
 .speed-small {
   display: flex;
   justify-content: center;

@@ -9,7 +9,7 @@ import { TourService } from './tour.service';
 
 // TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
-type TLang = "en" | "uk";
+export type TLang = "en" | "uk";
 
 @Injectable({
   providedIn: 'root'
@@ -55,8 +55,7 @@ export class MainService {
     this.loadContainerCount();
     this.createSourceContainers();
     this.createSetupContainers();
-    // Set language
-    this.translate.setDefaultLang("en");
+    this.setLanguage();
   }
 
   get mode(): TMode {
@@ -93,6 +92,11 @@ export class MainService {
 
   changeLanguage(lang: TLang) {
     this.translate.use(lang);
+    this.saveLang(lang);
+  }
+
+  currentLanguage(): TLang {
+    return this.translate.currentLang as TLang;
   }
 
   setVisible(value: boolean) {
@@ -121,7 +125,7 @@ export class MainService {
     }
   }
 
-  public solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
+  solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.setMode("in-progress").then(_ => {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
@@ -220,8 +224,30 @@ export class MainService {
     this.containerCount = loadedValue;
   }
 
-  public saveContainerCount() {
+  saveContainerCount() {
     localStorage.setItem(MainService.STORAGE_KEY + "-containers", String(this.containerCount));
+  }
+
+  private setLanguage() {
+    this.translate.setDefaultLang('en');
+    let lang = this.loadLang();
+    if (!lang) {
+      const browserLang = this.translate.getBrowserLang();
+      lang = (browserLang?.match(/en|uk/) ? browserLang : 'en') as TLang;
+    }
+    this.changeLanguage(lang);
+  }
+
+  private saveLang(lang: TLang) {
+    localStorage.setItem(MainService.STORAGE_KEY + "-lang", lang as string);
+  }
+
+  private loadLang(): TLang | undefined {
+    const value = localStorage.getItem(MainService.STORAGE_KEY + "-lang");
+    if (value) {
+      return value as TLang;
+    }
+    return undefined;
   }
 
 

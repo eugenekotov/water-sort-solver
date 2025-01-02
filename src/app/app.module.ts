@@ -20,6 +20,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TourItemComponent } from './components/tour-item/tour-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { TourComponent } from './components/tour/tour.component';
+import { LangBarComponent } from './components/lang-bar/lang-bar.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -38,6 +39,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     BoardNoSolutionComponent,
     TourItemComponent,
     TourComponent,
+    LangBarComponent,
   ],
   imports: [
     BrowserModule,
