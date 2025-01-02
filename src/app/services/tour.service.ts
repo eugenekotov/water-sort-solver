@@ -47,6 +47,22 @@ export class TourItem {
   delay: number;
   opacity: number = 0;
   element: HTMLElement;
+
+  setWidth(width: number): TourItem {
+    this.width = width;
+    return this;
+  }
+
+  setText(text: string): TourItem {
+    this.text = text;
+    return this;
+  }
+
+  setElement(element: HTMLElement): TourItem {
+    this.element = element;
+    return this;
+  }
+
 }
 
 export class Tour {
@@ -164,31 +180,28 @@ export class TourService {
     const arrowRect = this.getArrowRect();
     setTimeout(() => {
       const itemRect = this.getItemRect();
-      const arrowIndent = 10;
-      const width = itemRect.height + arrowRect.width;
-      const height = itemRect.height + arrowRect.height;
-      const position = this.getItemPosition(width + arrowIndent, height + arrowIndent, this.mainRect);
+      const position = this.getItemPosition(itemRect, arrowRect, this.mainRect);
       console.log(position);
       // set Position
       switch (position.x) {
         case undefined:
-          itemRect.left = this.blockRect.left + this.blockRect.width / 2 - width / 2;
+          itemRect.left = this.blockRect.left + this.blockRect.width / 2 - itemRect.width / 2;
           break;
 
         case "left":
-          itemRect.left = this.blockRect.left - width;
+          itemRect.left = this.blockRect.left - itemRect.width - arrowRect.width;
           break;
 
         case "left-half":
-          itemRect.left = this.blockRect.left - width / 2;
+          itemRect.left = this.blockRect.left - itemRect.width / 2;
           break;
 
         case "right":
-          itemRect.left = this.blockRect.left + this.blockRect.width;
+          itemRect.left = this.blockRect.left + this.blockRect.width + arrowRect.width;
           break;
 
         case "right-half":
-          itemRect.left = this.blockRect.left + this.blockRect.width - width / 2;
+          itemRect.left = this.blockRect.left + this.blockRect.width - itemRect.width / 2;
           break;
         default:
           const _n: never = position.x;
@@ -197,19 +210,19 @@ export class TourService {
 
       switch (position.y) {
         case undefined:
-          itemRect.top = this.blockRect.top + this.blockRect.height / 2 - height / 2;
+          itemRect.top = this.blockRect.top + this.blockRect.height / 2 - itemRect.height / 2;
           break;
         case "above":
-          itemRect.top = this.blockRect.top - height;
+          itemRect.top = this.blockRect.top - itemRect.height - arrowRect.height;
           break;
         case "above-half":
-          itemRect.top = this.blockRect.top - height / 2;
+          itemRect.top = this.blockRect.top - (itemRect.height + arrowRect.height) / 2;
           break;
         case "below":
           itemRect.top = this.blockRect.top + this.blockRect.height + arrowRect.height;
           break;
         case "below-half":
-          itemRect.top = this.blockRect.top + this.blockRect.height - height / 2 + arrowRect.height;
+          itemRect.top = this.blockRect.top + this.blockRect.height + (itemRect.height + arrowRect.height) / 2;
           break;
         default:
           const _n: never = position.y;
@@ -245,32 +258,32 @@ export class TourService {
     return new Rect().set(this.blockRect.top - tourItemRect.height, this.blockRect.left, tourItemRect.width, tourItemRect.height);
   }
 
-  private getItemPosition(width: number, height: number, mainRect: Rect): TPosition {
+  private getItemPosition(itemRect: Rect, arrowRect: Rect, mainRect: Rect): TPosition {
     // Looking for position
     const positionsX = new Set<TPositionX>();
     const positionsY = new Set<TPositionY>();
-    if (this.blockRect.top > height) {
+    if (this.blockRect.top > itemRect.height + arrowRect.height) {
       positionsY.add("above");
     }
-    if (this.blockRect.top > height / 2) {
+    if (this.blockRect.top > (itemRect.height + arrowRect.height) / 2) {
       positionsY.add("above-half");
     }
-    if (mainRect.height - this.blockRect.top - this.blockRect.height > height) {
+    if (mainRect.height - this.blockRect.top - this.blockRect.height > itemRect.height + arrowRect.height) {
       positionsY.add("below");
     }
-    if (mainRect.height - this.blockRect.top - this.blockRect.height > height / 2) {
+    if (mainRect.height - this.blockRect.top - this.blockRect.height > (itemRect.height + arrowRect.height) / 2) {
       positionsY.add("below-half");
     }
-    if (this.blockRect.left > width) {
+    if (this.blockRect.left > itemRect.width + arrowRect.width) {
       positionsX.add("left");
     }
-    if (this.blockRect.left > width / 2) {
+    if (this.blockRect.left > (itemRect.width + arrowRect.width) / 2) {
       positionsX.add("left-half");
     }
-    if (mainRect.width - this.blockRect.left - this.blockRect.width > width) {
+    if (mainRect.width - this.blockRect.left - this.blockRect.width > itemRect.width + arrowRect.width) {
       positionsX.add("right");
     }
-    if (mainRect.width - this.blockRect.left - this.blockRect.width > width / 2) {
+    if (mainRect.width - this.blockRect.left - this.blockRect.width > (itemRect.width + arrowRect.width) / 2) {
       positionsX.add("right-half");
     }
 

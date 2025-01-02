@@ -90,12 +90,12 @@
     <div>
       <div class="buttons-container buttons-container-small">
         <button id="button-clear" mat-raised-button class="button button-small" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
-        <button mat-raised-button class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
+        <button id="button-fill" mat-raised-button class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
-        <button mat-raised-button class="button button-small" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
-        <button mat-raised-button class="button button-small mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
-        <button mat-raised-button class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
+        <button id="button-save" mat-raised-button class="button button-small" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+        <button id="button-load" mat-raised-button class="button button-small mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
+        <button id="button-solve" mat-raised-button class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
       </div>
     </div>
   </ng-container>
@@ -103,10 +103,10 @@
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
       <button id="button-clear" mat-raised-button class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
-      <button mat-raised-button class="button button-large" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
-      <button mat-raised-button class="button button-large mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
-      <button mat-raised-button class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
+      <button id="button-fill" mat-raised-button class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
+      <button id="button-save" mat-raised-button class="button button-large" (click)="saveClick()" [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+      <button id="button-load" mat-raised-button class="button button-large mr-1" (click)="loadClick()" [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
+      <button id="button-solve" mat-raised-button class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
     </div>
   </ng-container>
 

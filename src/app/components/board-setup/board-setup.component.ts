@@ -216,43 +216,30 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private createTour() {
     this.tour = new Tour();
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("This is colors. You may drag them and drop to containers below")
+      .setElement(document.getElementById("source-containers")!));
 
-    const tourItem1 = new TourItem();
-    tourItem1.top = 0;
-    tourItem1.left = 0;
-    tourItem1.width = 300;
-    tourItem1.text = "This is colors. You may drag them and drop to containers below"
-    tourItem1.delay = 2000;
-    tourItem1.element = document.getElementById("source-containers")!;
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("These buttons to add or remove colors")
+      .setElement(document.getElementById("buttons-add-remove")!));
 
-    this.tour.tourItems.push(tourItem1);
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("These are containers. The application will sort colors in the containers")
+      .setElement(document.getElementById("containers")!));
 
-    const tourItem2 = new TourItem();
-    tourItem2.top = 0;
-    tourItem2.left = 0;
-    tourItem2.width = 300;
-    tourItem2.text = "These buttons to add or remove colors"
-    tourItem2.delay = 2000;
-    tourItem2.element = document.getElementById("buttons-add-remove")!;
-    this.tour.tourItems.push(tourItem2);
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Clear containers to start from scratch")
+      .setElement(document.getElementById("button-clear")!));
 
-    const tourItem3 = new TourItem();
-    tourItem3.top = 0;
-    tourItem3.left = 0;
-    tourItem3.width = 300;
-    tourItem3.text = "These are containers. The application will sort colors in the containers"
-    tourItem3.delay = 2000;
-    tourItem3.element = document.getElementById("containers")!;
-    this.tour.tourItems.push(tourItem3);
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Fill play board randomly")
+      .setElement(document.getElementById("button-fill")!));
 
-    const tourItem4 = new TourItem();
-    tourItem4.top = 0;
-    tourItem4.left = 0;
-    tourItem4.width = 300;
-    tourItem4.text = "Clear containers to start from scratch"
-    tourItem4.delay = 2000;
-    tourItem4.element = document.getElementById("button-clear")!;
-    this.tour.tourItems.push(tourItem4);
-  }
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Save current board to continue later")
+      .setElement(document.getElementById("button-save")!));
+
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Load saved play board t continue")
+      .setElement(document.getElementById("button-load")!));
+
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("Try to sort color in containers")
+      .setElement(document.getElementById("button-solve")!));
+
+    }
 
 }
