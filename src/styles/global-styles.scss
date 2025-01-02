@@ -132,8 +132,12 @@
     0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
-.fab-button {
-  font-size: 20px;
+.fab-button-small {
+  font-size: 14px !important;
+}
+
+.fab-button-large {
+  font-size: 20px !important;
 }
 
 .mr-1 {

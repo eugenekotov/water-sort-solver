@@ -4,7 +4,7 @@
 
     <app-lang-bar></app-lang-bar>
 
-    <button mat-mini-fab class="fab-button" [ngClass]="mainService.isMobile ? 'help-button-small' : 'help-button-large'"
+    <button mat-mini-fab [ngClass]="mainService.isMobile ? 'help-button-small fab-button-small' : 'help-button-large fab-button-large'"
       (click)="tourService.startTour(tour)">?</button>
   </div>
 
@@ -30,8 +30,8 @@
       </div>
     </div>
     <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 10px;">
-      <button mat-mini-fab class="fab-button" (click)="addContainer()">+</button>
-      <button mat-mini-fab class="fab-button" (click)="removeContainer()">-</button>
+      <button mat-mini-fab [ngClass]="mainService.isMobile ? 'fab-button-small' : 'fab-button-large'" (click)="addContainer()">+</button>
+      <button mat-mini-fab [ngClass]="mainService.isMobile ? 'fab-button-small' : 'fab-button-large'" (click)="removeContainer()">-</button>
     </div>
   </div>
 
