@@ -287,7 +287,7 @@ export class TourService {
           case "above-half":
             throw new Error("Cannot calculate arrow angle");
           case "below":
-            this.arrowRotate = 360-22;
+            this.arrowRotate = 360 - 22;
             break;
           case "below-half":
             throw new Error("Cannot calculate arrow angle");
@@ -372,7 +372,7 @@ export class TourService {
   private getBlockRect(element: HTMLElement): Rect {
     const rect: DOMRect = element.getBoundingClientRect();
     const blockIndent = 5;
-    return new Rect().set(rect.top - blockIndent, rect.left - blockIndent, rect.width + blockIndent * 2, rect.height + blockIndent * 2);
+    return new Rect().set(Math.max(rect.top - blockIndent, 0), Math.max(rect.left - blockIndent, 0), Math.max(rect.width + blockIndent * 2, 0), Math.max(rect.height + blockIndent * 2, 0));
   }
 
   private getArrowRect(): Rect {
