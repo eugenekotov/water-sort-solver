@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
@@ -216,28 +216,28 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private createTour() {
     this.tour = new Tour();
-    this.tour.tourItems.push(new TourItem().setWidth(200).setText("These are colors. You may drag them and drop to containers below")
+    this.tour.tourItems.push(new TourItem().setWidth(350).setText("SETUP.TOUR.COLORS")
       .setElement(document.getElementById("source-containers")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(200).setText("These buttons to add or remove colors")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_ADD")
       .setElement(document.getElementById("buttons-add-remove")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(200).setText("These are containers. The application will sort colors in the containers")
+    this.tour.tourItems.push(new TourItem().setWidth(300).setText("SETUP.TOUR.CONTAINERS")
       .setElement(document.getElementById("containers")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Clear containers to start from scratch")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_CLEAR")
       .setElement(document.getElementById("button-clear")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Fill play board randomly")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_FILL")
       .setElement(document.getElementById("button-fill")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Save current board to continue later")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_SAVE")
       .setElement(document.getElementById("button-save")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Load saved play board to continue")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_LOAD")
       .setElement(document.getElementById("button-load")!));
 
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("Try to sort color in containers")
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_SOLVE")
       .setElement(document.getElementById("button-solve")!));
 
     }

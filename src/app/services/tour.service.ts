@@ -179,6 +179,7 @@ export class TourService {
       this.arrowRect = this.getArrowRect();
       const itemRect = this.getItemRect();
       const position = this.calculateItemPosition(itemRect, this.arrowRect, this.mainRect);
+      // TODO: Position can be incorrect, check it. For example position: left, undefined for botton Save on mobile
       // const position = new Position("left", "above-half");
       // console.log(position);
       this.setItemPosition(position, itemRect);
