@@ -114,7 +114,6 @@ export class TourService {
   }
 
   terminateTour() {
-    console.log("terminateTour!");
     this.tourVisible = false;
     setTimeout(() => {
       this.tour = undefined;
@@ -172,8 +171,6 @@ export class TourService {
     }, 0);
   }
 
-  // TODO: handle changing browser zoom
-  // TODO: handle resize browser
   private calculatePositions(element: HTMLElement) {
     this.mainRect = this.getMainRect();
     this.blockRect = this.getBlockRect(element);

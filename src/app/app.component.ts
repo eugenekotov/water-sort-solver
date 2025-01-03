@@ -1,10 +1,13 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MainService } from './services/main.service';
+import { TourService } from './services/tour.service';
 
 
 // TODO: prevent reloading page with unsaved data
-// TODO: bug. isMobile. tour. first step, second step, beck to fist step.
+// TODO: fat buttons style
+// TODO: dark schema
+// TODO: full screen on mobile
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,11 +15,12 @@ import { MainService } from './services/main.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(public mainService: MainService, private translate: TranslateService) {
+  constructor(public mainService: MainService, private tourService: TourService) {
   }
 
   @HostListener('window:resize', [])
   onResize() {
+    this.tourService.terminateTour();
     this.checkScreenSize();
   }
 

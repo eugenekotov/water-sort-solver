@@ -85,7 +85,6 @@ export class MainService {
     // TODO: is not working when switch to mobile
     if (this._isMobile !== value) {
       this._isMobile = value;
-      this.tourService.terminateTour();
       this.screenChanged$.next();
     }
   }
