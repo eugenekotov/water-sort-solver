@@ -5,7 +5,17 @@
     "FILL_RANDOM": "Fill randomly",
     "SAVE": "Save",
     "LOAD": "Load",
-    "SOLVE": "Solve"
+    "SOLVE": "Solve",
+    "TOUR": {
+      "COLORS": "These colored squares are meant to fill the containers below. You can fill the containers by dragging the squares into them or by using the 'Fill randomly' button",
+      "B_ADD": "Use these buttons to add or remove colors",
+      "CONTAINERS": "These are containers. The application will sort the colors into them",
+      "B_CLEAR": "Clear containers to start from scratch",
+      "B_FILL": "Fill play board randomly",
+      "B_SAVE": "Save current board to continue later",
+      "B_LOAD": "Load saved play board to continue",
+      "B_SOLVE": "Solve the game. This means trying to sort the colors into the containers"
+    }
   },
   "IN_PROGRESS": "In progress...",
   "NO_SOLUTION": "Oops, the play board has no solution :(",
