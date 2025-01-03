@@ -50,7 +50,7 @@
           </div>
         </div>
 
-        <div class="containers containers-small">
+        <div *ngIf="mainService.setupContainers2.length > 0" class="containers containers-small">
           <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
             class="container container-small" cdkDropList [cdkDropListData]="container.colors"
             [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"

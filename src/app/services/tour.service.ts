@@ -173,6 +173,7 @@ export class TourService {
   }
 
   // TODO: handle changing browser zoom
+  // TODO: handle resize browser
   private calculatePositions(element: HTMLElement) {
     this.mainRect = this.getMainRect();
     this.blockRect = this.getBlockRect(element);
