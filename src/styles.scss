@@ -21,13 +21,10 @@ $water-sort-solver-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$water-sort-solver-theme: mat.define-light-theme((
-  color: (
-    primary: $water-sort-solver-primary,
-    accent: $water-sort-solver-accent,
-    warn: $water-sort-solver-warn,
-  )
-));
+$water-sort-solver-theme: mat.define-light-theme((color: (primary: $water-sort-solver-primary,
+        accent: $water-sort-solver-accent,
+        warn: $water-sort-solver-warn,
+      )));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -36,5 +33,13 @@ $water-sort-solver-theme: mat.define-light-theme((
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

@@ -97,8 +97,6 @@ export class TourService {
     this.tourStep = undefined;
     this.tourVisible = true;
     setTimeout(() => {
-      this.tourOpacity = this.TOUR_OPACITY;
-      this.arrowOpacity = this.ARROW_OPACITY
       this.tourStep = 0;
       this.showItem(this.getCurrentItem());
     }, 0);
@@ -114,11 +112,11 @@ export class TourService {
   }
 
   terminateTour() {
-    this.tourVisible = false;
+    this.tour = undefined;
+    this.tourOpacity = 0;
+    this.arrowOpacity = 0;
     setTimeout(() => {
-      this.tour = undefined;
-      this.tourOpacity = 0;
-      this.arrowOpacity = 0;
+      this.tourVisible = false;
     }, 0);
   }
 
@@ -165,9 +163,11 @@ export class TourService {
   private showItem(item: TourItem) {
     setTimeout(() => {
       this.calculatePositions(item.element);
-      this.tourOpacity = this.TOUR_OPACITY;
-      this.arrowOpacity = this.ARROW_OPACITY;
-      item.opacity = this.TOUR_ITEM_OPACITY;
+      setTimeout(() => {
+        this.tourOpacity = this.TOUR_OPACITY;
+        this.arrowOpacity = this.ARROW_OPACITY;
+        item.opacity = this.TOUR_ITEM_OPACITY;
+      }, 0);
     }, 0);
   }
 
