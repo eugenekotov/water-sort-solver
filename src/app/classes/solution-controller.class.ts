@@ -282,7 +282,6 @@ export class SolutionController {
           let k = j - 1;
           let used = false;
           while (i < k) {
-            // TODO: improve logic
             if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
               || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
               used = true;

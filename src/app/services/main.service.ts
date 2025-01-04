@@ -82,7 +82,6 @@ export class MainService {
   }
 
   set isMobile(value: boolean) {
-    // TODO: is not working when switch to mobile
     if (this._isMobile !== value) {
       this._isMobile = value;
       this.screenChanged$.next();

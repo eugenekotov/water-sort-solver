@@ -29,7 +29,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   private checkScreenSize() {
-    this.mainService.isMobile = window.innerWidth <= 768;
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile !== this.mainService.isMobile) {
+      this.mainService.isMobile = isMobile;
+    }
   }
 
   ngAfterViewInit(): void {

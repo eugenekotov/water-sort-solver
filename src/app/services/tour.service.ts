@@ -112,12 +112,12 @@ export class TourService {
   }
 
   terminateTour() {
-    this.tour = undefined;
-    this.tourOpacity = 0;
-    this.arrowOpacity = 0;
-    setTimeout(() => {
-      this.tourVisible = false;
-    }, 0);
+    if (this.tourVisible) {
+      this.tour = undefined;
+      this.tourOpacity = 0;
+      this.arrowOpacity = 0;
+      setTimeout(() => this.tourVisible = false, 0);
+    }
   }
 
   getCurrentItem(): TourItem {
