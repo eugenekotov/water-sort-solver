@@ -33,6 +33,7 @@ export class MainService {
 
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
+  public screenResized$: Subject<void> = new Subject<void>();
 
   public containerCount = MainService.DEFAULT_CONTAINER_COUNT;
   sourceContainers: SetupContainer[] = [];

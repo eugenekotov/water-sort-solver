@@ -91,6 +91,7 @@ export class Solutions {
 export class SolutionController {
 
   private readonly REQUIRED_SOLUTION_COUNT = 10;
+  private readonly TIME_LIMIT = 10000;
 
   private cancel$ = new Subject<void>();
   private oldBoards: BoardsSet = new BoardsSet();
@@ -98,6 +99,7 @@ export class SolutionController {
   private solutions: Solutions = new Solutions();
   bestSolution: Solution | undefined;
   private logicControllers: ILogicController[] = [];
+  private canFinish: boolean = false;
 
   constructor() {
     this.logicControllers.push(new Logic1To3());
@@ -106,12 +108,21 @@ export class SolutionController {
   }
 
   solve(containers: PlayContainer[]): void {
+    this.startTimer();
     this.oldBoards.clear();
     this.solutions.clear();
     this.steps = [];
     this.tryToResolve(new Board(containers).clone(), 0);
     // console.log("Found " + this.solutionCount() + " solutions");
     this.bestSolution = this.solutions.getBestSolution();
+  }
+
+  private startTimer() {
+    this.canFinish = false;
+    setTimeout(()=>{
+      console.log("Time limit");
+      this.canFinish = true;
+    }, this.TIME_LIMIT);
   }
 
   cancel() {
@@ -143,7 +154,8 @@ export class SolutionController {
         if (iFrom !== iTo) {
           // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
           this.tryToMove(board, iFrom, iTo, stepCount);
-          if (this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
+          console.log(this.solutionCount());
+          if (this.canFinish && this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
             // It is enought
             return;
           }

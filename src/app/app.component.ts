@@ -20,6 +20,7 @@ export class AppComponent implements AfterViewInit {
   onResize() {
     this.tourService.terminateTour();
     this.checkScreenSize();
+    this.mainService.screenResized$.next();
   }
 
   ngOnInit() {

@@ -100,7 +100,7 @@
       </div>
       <div class="buttons-container buttons-container-small">
         <button id="button-save" mat-raised-button class="button button-small" (click)="saveClick()"
-          [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+          [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
         <button id="button-load" mat-raised-button class="button button-small mr-1" (click)="loadClick()"
           [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
         <button id="button-solve" mat-raised-button class="button button-small" (click)="solveClick()"
@@ -116,7 +116,7 @@
       <button id="button-fill" mat-raised-button class="button button-large mr-1" (click)="fillRandomly()"
         [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       <button id="button-save" mat-raised-button class="button button-large" (click)="saveClick()"
-        [disabled]="filling">{{ "SETUP.SAVE" | translate }}</button>
+        [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
       <button id="button-load" mat-raised-button class="button button-large mr-1" (click)="loadClick()"
         [disabled]="filling">{{ "SETUP.LOAD" | translate }}</button>
       <button id="button-solve" mat-raised-button class="button button-large" (click)="solveClick()"

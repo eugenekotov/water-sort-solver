@@ -40,7 +40,7 @@ class Position {
 export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playContainers: PlayContainer[] = [];
-  private screenChangedSubscription: Subscription | undefined = undefined;
+  private screenResizedSubscription: Subscription | undefined = undefined;
 
   private itemsElements: HTMLElement[] = [];
   private parentMovingElementRect: any;
@@ -68,20 +68,20 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.playContainers = [...this.mainService.playContainers1, ...this.mainService.playContainers2];
-    this.screenChangedSubscription = this.mainService.screenChanged$.subscribe(() => {
-      setTimeout(() => this.onScreenChanged(), 500);
+    this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
+      setTimeout(() => this.onScreenResized(), 500);
     });
-    this.onScreenChanged();
+    this.onScreenResized();
   }
 
-  private onScreenChanged() {
+  private onScreenResized() {
     this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
   ngOnDestroy(): void {
-    if (this.screenChangedSubscription) {
-      this.screenChangedSubscription.unsubscribe();
+    if (this.screenResizedSubscription) {
+      this.screenResizedSubscription.unsubscribe();
     }
   }
 
