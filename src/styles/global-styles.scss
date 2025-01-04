@@ -1,5 +1,4 @@
 @use 'src/styles/variables' as *;
-@use 'src/styles/colors' as colors;
 @use 'sass:math';
 
 
@@ -83,7 +82,7 @@
 }
 
 .button {
-  color: colors.$text-color !important;
+  color: var(--text-color) !important;
 }
 
 .button-small {
@@ -107,7 +106,7 @@
 }
 
 // button:disabled {
-//   color: colors.$text-color-disabled;
+//   color: var(--text-color-disabled);
 // }
 
 .shadow {

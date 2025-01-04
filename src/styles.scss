@@ -43,3 +43,65 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+// Themes
+
+
+:root {
+  --color-00: rgb(250, 250, 250);
+  --color-01: rgb(245, 245, 245);
+  --color-02: rgb(240, 240, 240);
+  --color-03: rgb(220, 220, 220);
+  --color-04: rgb(200, 200, 200);
+  --color-05: rgb(180, 180, 180);
+  --color-06: rgb(160, 160, 160);
+  --color-07: rgb(140, 140, 140);
+  --color-08: rgb(120, 120, 120);
+  --color-09: rgb(100, 100, 100);
+  --color-10: rgb(80, 80, 80);
+  --color-11: rgb(60, 60, 60);
+  --color-12: rgb(40, 40, 40);
+
+  --main-background-color: var(--color-00);
+  --text-color: var(--color-09);
+
+  --text-color-disabled: var(--color-05);
+
+  --tour-background-color: var(--color-10);
+  --tour-tooltip-border-color: var(--color-05);
+  --tour-tooltip-background-color: white;
+  --tour-tooltip-color: var(--color-11);
+  --tour-next-color: green;
+  --lang-border-color: rgba(0, 0, 199, 0.692);
+  --lang-background-color: var(--color-03);
+}
+
+.dark-theme {
+
+  --color-00:rgb(52, 58, 64);
+  --color-01: rgb(40, 40, 40);
+  --color-02: rgb(50, 50, 50);
+  --color-03: rgb(70, 70, 70);
+  --color-04: rgb(90, 90, 90);
+  --color-05: rgb(110, 110, 110);
+  --color-06: rgb(130, 130, 130);
+  --color-07: rgb(150, 150, 150);
+  --color-08: rgb(170, 170, 170);
+  --color-09: rgb(190, 190, 190);
+  --color-10: rgb(210, 210, 210);
+  --color-11: rgb(230, 230, 230);
+  --color-12: rgb(250, 250, 250);
+
+  --main-background-color: var(--color-00);
+  // --main-background-color: #343a40;
+  --text-color: var(--color-09);
+  --text-color-disabled: var(--color-06);
+  --tour-background-color: var(--color-01);
+  --tour-tooltip-border-color: var(--color-06);
+  --tour-tooltip-background-color: var(--color-02);
+  --tour-tooltip-color: var(--color-11);
+  --tour-next-color: lightgreen;
+
+  --lang-border-color: rgba(0, 0, 255, 0.5);
+  --lang-background-color: var(--color-02);
+}

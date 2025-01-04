@@ -1,5 +1,4 @@
 @use 'src/styles/variables' as *;
-@use 'src/styles/colors' as colors;
 
 .tour {
   position: absolute;
@@ -12,7 +11,7 @@
 
 .tour-block {
   position: absolute;
-  background-color: colors.$tour-background-color;
+  background-color: var(--tour-background-color);
 }
 
 .tour-container {

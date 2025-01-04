@@ -155,7 +155,7 @@ export class SolutionController {
           // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
           this.tryToMove(board, iFrom, iTo, stepCount);
           console.log(this.solutionCount());
-          if (this.canFinish && this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
+          if (this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
             // It is enought
             return;
           }

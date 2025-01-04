@@ -1,5 +1,4 @@
 @use 'src/styles/variables' as *;
-@use 'src/styles/colors' as colors;
 
 .lang-container {
   display: flex;
@@ -16,7 +15,7 @@
 }
 
 .lang-flag-container {
-  border: 1px solid colors.$main-background-color;
+  border: 1px solid var(--main-background-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,8 +23,8 @@
 }
 
 .lang-flag-container:active {
-  background-color: colors.$color-03;
-  border: 1px solid colors.$lang-border-color;
+  background-color: var(--lang-background-color);
+  border: 1px solid var(--lang-border-color);
 }
 
 .lang-flag-container-small {
@@ -39,7 +38,7 @@
 }
 
 .current-lang {
-  border: 1px solid colors.$lang-border-color;
+  border: 1px solid var(--lang-border-color);
 }
 
 .image {

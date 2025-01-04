@@ -1,19 +1,18 @@
 @use 'src/styles/variables' as *;
-@use 'src/styles/colors' as colors;
 
 .tour-item {
   position: absolute;
-  background-color: colors.$tour-tooltip-background-color;
-  border: 2px solid colors.$tour-tooltip-border-color;
+  background-color: var(--tour-tooltip-background-color);
+  border: 2px solid var(--tour-tooltip-border-color);
   border-radius: 10px;
-  color: colors.$tour-tooltip-color;
+  color: var(--tour-tooltip-color);
 }
 
 .tour-button {
   cursor: pointer;
   font-size: 14px;
   font-weight: 400;
-  color: colors.$tour-next-color;
+  color: var(--tour-next-color);
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;

@@ -30,8 +30,7 @@
             "styles": [
               "src/styles/global-styles.scss",
               "src/styles.scss",
-              "src/styles/variables.scss",
-              "src/styles/colors.scss"
+              "src/styles/variables.scss"
             ],
             "scripts": []
           },
