@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, HostListener } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { MainService } from './services/main.service';
 import { TourService } from './services/tour.service';
 
@@ -7,7 +6,6 @@ import { TourService } from './services/tour.service';
 // TODO: prevent reloading page with unsaved data
 // TODO: fat buttons style
 // TODO: dark schema
-// TODO: full screen on mobile
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
