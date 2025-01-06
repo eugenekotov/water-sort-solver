@@ -8,7 +8,7 @@
   justify-content: space-between;
 }
 
-.help {
+.title-container {
   width: 100%;
   position: absolute;
   display: flex;
@@ -16,14 +16,19 @@
   align-items: center;
 }
 
-.help-button-small {
+.title-buttons {
+  display: flex;
+}
+
+.title-buttons-small {
+  gap: 3px;
   margin: $margin-small;
 }
 
-.help-button-large {
+.title-buttons-large {
+  gap: 0.5rem;
   margin: $margin-large;
 }
-
 
 .text-containers-parent {
   display: flex;

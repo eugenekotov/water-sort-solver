@@ -65,6 +65,13 @@ body {
   --main-background-color: var(--color-00);
   --text-color: var(--color-09);
 
+  //--button-background-color: var(--main-background-color);
+  --button-background-color: white;
+  --button-text-color: var(--text-color);
+  --button-active-background-color: var(--color-03);
+  --button-disabled-background-color: var(--color-02);
+  --button-disabled-text-color: var(--color-06);
+
   --text-color-disabled: var(--color-05);
 
   --tour-background-color: var(--color-10);
@@ -78,7 +85,7 @@ body {
 
 .dark-theme {
 
-  --color-00:rgb(52, 58, 64);
+  --color-00: rgb(52, 58, 64);
   --color-01: rgb(40, 40, 40);
   --color-02: rgb(50, 50, 50);
   --color-03: rgb(70, 70, 70);

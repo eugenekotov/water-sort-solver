@@ -11,6 +11,8 @@ import { TourService } from './tour.service';
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
 export type TLang = "en" | "uk";
 
+type TTheme = "light-theme" | "dark-theme";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,6 +33,7 @@ export class MainService {
   public readonly containerItemsGapSmall: number = 4;
   public readonly containerItemsGapLarge: number = 6;
 
+  private theme: TTheme = "light-theme";
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
   public screenResized$: Subject<void> = new Subject<void>();
@@ -247,6 +250,12 @@ export class MainService {
       return value as TLang;
     }
     return undefined;
+  }
+
+  changeTheme() {
+    document.body.classList.remove(this.theme);
+    this.theme = this.theme === "dark-theme" ? "light-theme" : "dark-theme";
+    document.body.classList.add(this.theme);
   }
 
 

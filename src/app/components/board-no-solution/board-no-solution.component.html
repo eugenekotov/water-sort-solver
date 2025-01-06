@@ -3,6 +3,6 @@
     {{ "NO_SOLUTION" | translate}}
   </div>
   <div class="buttons-container" [ngClass]="mainService.isMobile ? 'buttons-container-small' : 'buttons-container-large'">
-    <button mat-raised-button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
+    <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
   </div>
 </div>

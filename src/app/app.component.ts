@@ -24,7 +24,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    document.body.classList.toggle("dark-theme");
     this.checkScreenSize();
   }
 

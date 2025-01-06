@@ -5,7 +5,7 @@
   <div class="buttons-container"
     [ngClass]="mainService.isMobile ? 'buttons-container-small' : 'buttons-container-large'">
 
-    <button mat-raised-button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+    <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
       (click)="cancelClick()">{{ "CANCEL" | translate}}</button>
   </div>
 
