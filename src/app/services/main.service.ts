@@ -160,7 +160,6 @@ export class MainService {
     }
   }
 
-
   public stopProgress() {
     // TODO: implement progress interaption
     this.setMode("setup");
@@ -253,9 +252,27 @@ export class MainService {
   }
 
   changeTheme() {
-    document.body.classList.remove(this.theme);
     this.theme = this.theme === "dark-theme" ? "light-theme" : "dark-theme";
-    document.body.classList.add(this.theme);
+    this.applyTheme();
+    this.saveTheme();
+  }
+
+  private applyTheme() {
+    if (this.theme === "dark-theme") {
+      document.body.classList.add("dark-theme");
+    } else {
+      document.body.classList.remove("dark-theme");
+    }
+  }
+
+  private saveTheme() {
+    localStorage.setItem(MainService.STORAGE_KEY + "-theme", this.theme as string);
+  }
+
+  loadTheme() {
+    const value = localStorage.getItem(MainService.STORAGE_KEY + "-theme");
+    this.theme = value ? value as TTheme : "light-theme";
+    this.applyTheme();
   }
 
 

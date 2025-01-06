@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit } from '@angular/core';
 import { MainService } from './services/main.service';
 import { TourService } from './services/tour.service';
 
@@ -11,7 +11,7 @@ import { TourService } from './services/tour.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(public mainService: MainService, private tourService: TourService) {
   }
@@ -25,6 +25,7 @@ export class AppComponent implements AfterViewInit {
 
   ngOnInit() {
     this.checkScreenSize();
+    this.mainService.loadTheme();
   }
 
   private checkScreenSize() {
