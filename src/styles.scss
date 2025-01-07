@@ -68,8 +68,8 @@ body {
   --button-background-color: white;
   --button-text-color: var(--text-color);
   --button-active-background-color: var(--color-03);
-  --button-disabled-background-color: var(--color-02);
-  --button-disabled-text-color: var(--color-06);
+  --button-disabled-background-color: var(--color-01);
+  --button-disabled-text-color: var(--color-04);
 
   --tour-background-color: var(--color-10);
   --tour-tooltip-border-color: var(--color-05);
@@ -77,10 +77,13 @@ body {
   --tour-tooltip-color: var(--color-11);
   --tour-next-color: green;
   --lang-border-color: rgba(0, 0, 199, 0.692);
-  --lang-background-color: var(--color-03);
+  --lang-background-color: var(--color-04);
 }
 
 .dark-theme {
+  --color-dark-000: rgb(5, 5, 5);
+  --color-dark-001: rgb(10, 10, 10);
+  --color-dark-002: rgb(20, 20, 20);
   --color-dark-00: rgb(52, 58, 64);
   --color-dark-01: rgb(62, 68, 74);
   --color-dark-02: rgb(72, 78, 84);
@@ -101,15 +104,15 @@ body {
   --button-background-color: var(--color-dark-02);
   --button-text-color: var(--text-color);
   --button-active-background-color: var(--color-dark-03);
-  --button-disabled-background-color: var(--color-dark-02);
-  --button-disabled-text-color: var(--color-dark-05);
+  --button-disabled-background-color: var(--color-dark-01);
+  --button-disabled-text-color: var(--color-dark-03);
 
-  --tour-background-color: var(--color-dark-02);
+  --tour-background-color: var(--color-dark-000);
   --tour-tooltip-border-color: var(--color-dark-05);
   --tour-tooltip-background-color: var(--color-dark-01);
   --tour-tooltip-color: var(--color-dark-09);
   --tour-next-color: rgb(110, 253, 110);
 
   --lang-border-color: rgb(150, 250, 255);
-  --lang-background-color: var(--color-dark-03);
+  --lang-background-color: var(--color-dark-05);
 }

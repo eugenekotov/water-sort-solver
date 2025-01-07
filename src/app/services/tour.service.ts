@@ -74,7 +74,8 @@ export class Tour {
 })
 export class TourService {
 
-  readonly TOUR_OPACITY = 0.4;
+  //readonly TOUR_OPACITY = 0.4;
+  readonly TOUR_OPACITY = 0.7;
   readonly TOUR_DELAY = 500;
   readonly TOUR_ITEM_OPACITY = 0.9;
   readonly ARROW_OPACITY = 1;
