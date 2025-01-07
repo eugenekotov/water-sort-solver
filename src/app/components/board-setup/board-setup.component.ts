@@ -19,9 +19,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscription: Subscription | undefined;
   tour: Tour;
   canSave: boolean = false; // TODO: Implement it
+  canLoad: boolean = false;
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
+    this.checkCanLoad();
   }
 
   ngOnInit(): void {
@@ -127,6 +129,14 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.setItem(MainService.STORAGE_KEY + "-source", sourceContainersString);
     localStorage.setItem(MainService.STORAGE_KEY + "-containers-1", containersString1);
     localStorage.setItem(MainService.STORAGE_KEY + "-containers-2", containersString2);
+    this.checkCanLoad();
+  }
+
+  private checkCanLoad() {
+    const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
+    const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
+    const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
+    this.canLoad = (sourceContainersString !== null && containersString1 !== null && containersString2 !== null);
   }
 
   loadClick() {
@@ -134,7 +144,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
     const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
     const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
-    if (sourceContainersString && containersString1 && containersString2) {
+    if (sourceContainersString !== null && containersString1 !== null && containersString2 !== null) {
       const sourceContainers = JSON.parse(sourceContainersString);
       const setupContainers1 = JSON.parse(containersString1);
       const setupContainers2 = JSON.parse(containersString2);

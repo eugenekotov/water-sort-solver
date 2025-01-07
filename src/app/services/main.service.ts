@@ -279,7 +279,6 @@ export class MainService {
     let result = 0;
     this.setupContainers1.forEach(container => result = result + container.colors.length);
     this.setupContainers2.forEach(container => result = result + container.colors.length);
-    console.log("count = " + result);
     return result;
   }
 

@@ -138,7 +138,7 @@
       <div class="buttons-container buttons-container-small">
         <button id="button-save" class="button button-small" (click)="saveClick()" [disabled]="filling || !canSave">{{
           "SETUP.SAVE" | translate }}</button>
-        <button id="button-load" class="button button-small mr-1" (click)="loadClick()" [disabled]="filling">{{
+        <button id="button-load" class="button button-small mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
           "SETUP.LOAD" | translate }}</button>
         <button id="button-solve" class="button button-small" (click)="solveClick()" [disabled]="filling">{{
           "SETUP.SOLVE" | translate }}</button>
@@ -154,7 +154,7 @@
         "SETUP.FILL_RANDOM" | translate }}</button>
       <button id="button-save" class="button button-large" (click)="saveClick()" [disabled]="filling || !canSave">{{
         "SETUP.SAVE" | translate }}</button>
-      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling">{{
+      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
         "SETUP.LOAD" | translate }}</button>
       <button id="button-solve" class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE"
         | translate }}</button>
