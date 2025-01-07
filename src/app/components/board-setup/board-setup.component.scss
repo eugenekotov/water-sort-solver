@@ -48,7 +48,7 @@
 
 .header-text-small {
   margin: $margin-small;
-  width: 200px;
+  width: 170px;
 }
 
 .header-text-large {
@@ -143,4 +143,39 @@
 
 .cdk-drag-animating {
   transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.mat-icon-small {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.mat-icon-large {
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.dark-small {
+  fill: var(--button-text-color);
+  width: 16px;
+  height: 16px;
+}
+
+.dark-large {
+  fill: var(--button-text-color);
+  width: 20px;
+  height: 20px;
+}
+
+.light-small {
+  fill: var(--button-text-color);
+  width: 24px;
+  height: 24px;
+}
+
+.light-large {
+  fill: var(--button-text-color);
+  width: 24px;
+  height: 24px;
 }

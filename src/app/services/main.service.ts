@@ -33,7 +33,7 @@ export class MainService {
   public readonly containerItemsGapSmall: number = 4;
   public readonly containerItemsGapLarge: number = 6;
 
-  private theme: TTheme = "light-theme";
+  theme: TTheme = "light-theme";
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
   public screenResized$: Subject<void> = new Subject<void>();
