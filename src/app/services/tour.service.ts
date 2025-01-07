@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { getRandomInt } from '../classes/utils.class';
 
-type TPositionX = "right" | "right-half" | "left" | "left-half";
-type TPositionY = "above" | "above-half" | "below" | "below-half";
+type TPositionX = "right" | "right-half" | "middle" | "left" | "left-half";
+type TPositionY = "above" | "above-half" | "middle" | "below" | "below-half";
 
 class Position {
 
-  constructor(public x: TPositionX | undefined, public y: TPositionY | undefined) { }
+  constructor(public x: TPositionX, public y: TPositionY) { }
 
   equals(position: Position): boolean {
     return this.x === position.x && this.y === position.y;
@@ -180,9 +180,6 @@ export class TourService {
       this.arrowRect = this.getArrowRect();
       const itemRect = this.getItemRect();
       const position = this.calculateItemPosition(itemRect, this.arrowRect, this.mainRect);
-      // TODO: Position can be incorrect, check it. For example position: left, undefined for botton Save on mobile
-      // const position = new Position("left", "above-half");
-      // console.log(position);
       this.setItemPosition(position, itemRect);
       this.setArrowAngle(position);
     }, 0);
@@ -190,9 +187,9 @@ export class TourService {
 
   private setArrowAngle(position: Position): void {
     switch (position.x) {
-      case undefined:
+      case "middle":
         switch (position.y) {
-          case undefined:
+          case "middle":
             throw new Error("Cannot calculate arrow angle");
           case "above":
             this.arrowRotate = 180;
@@ -212,7 +209,7 @@ export class TourService {
 
       case "left":
         switch (position.y) {
-          case undefined:
+          case "middle":
             this.arrowRotate = 90;
             break;
           case "above":
@@ -235,7 +232,7 @@ export class TourService {
 
       case "left-half":
         switch (position.y) {
-          case undefined:
+          case "middle":
             throw new Error("Cannot calculate arrow angle");
           case "above":
             this.arrowRotate = 135 + 22;
@@ -255,7 +252,7 @@ export class TourService {
 
       case "right":
         switch (position.y) {
-          case undefined:
+          case "middle":
             this.arrowRotate = 270;
             break;
           case "above":
@@ -278,7 +275,7 @@ export class TourService {
 
       case "right-half":
         switch (position.y) {
-          case undefined:
+          case "middle":
             throw new Error("Cannot calculate arrow angle");
           case "above":
             this.arrowRotate = 180 + 22;
@@ -303,7 +300,7 @@ export class TourService {
 
   private setItemPosition(position: Position, itemRect: Rect): void {
     switch (position.x) {
-      case undefined:
+      case "middle":
         itemRect.left = this.blockRect.left + this.blockRect.width / 2 - itemRect.width / 2;
         this.arrowRect.left = this.blockRect.left + this.blockRect.width / 2 - this.arrowRect.width / 2;
         break;
@@ -333,7 +330,7 @@ export class TourService {
     }
 
     switch (position.y) {
-      case undefined:
+      case "middle":
         itemRect.top = this.blockRect.top + this.blockRect.height / 2 - itemRect.height / 2;
         this.arrowRect.top = this.blockRect.top + this.blockRect.height / 2 - this.arrowRect.height / 2;
         break;
@@ -396,6 +393,9 @@ export class TourService {
     if (this.blockRect.top > (itemRect.height + arrowRect.height) / 2) {
       positionsY.add("above-half");
     }
+    if ((this.blockRect.top + this.blockRect.height / 2 > (itemRect.height / 2)) && (mainRect.height - this.blockRect.top - this.blockRect.height / 2 > (itemRect.height / 2))) {
+      positionsY.add("middle");
+    }
     if (mainRect.height - this.blockRect.top - this.blockRect.height > itemRect.height + arrowRect.height) {
       positionsY.add("below");
     }
@@ -408,6 +408,11 @@ export class TourService {
     if (this.blockRect.left > (itemRect.width + arrowRect.width) / 2) {
       positionsX.add("left-half");
     }
+
+    if ((this.blockRect.left + this.blockRect.width / 2 > (itemRect.width / 2)) && (mainRect.width - this.blockRect.left - this.blockRect.width / 2 > (itemRect.width / 2))) {
+      positionsX.add("middle");
+    }
+
     if (mainRect.width - this.blockRect.left - this.blockRect.width > itemRect.width + arrowRect.width) {
       positionsX.add("right");
     }
@@ -418,14 +423,12 @@ export class TourService {
     const positions: Position[] = [];
     positionsX.forEach(posX => {
       if (posX === "left" || posX === "right") {
-        positions.push(new Position(posX, undefined));
         positionsY.forEach(posY => positions.push(new Position(posX, posY)));
       }
     });
 
     positionsY.forEach(posY => {
       if (posY === "above" || posY === "below") {
-        positions.push(new Position(undefined, posY));
         positionsX.forEach(posX => {
           const position = new Position(posX, posY);
           if (!positions.some(pos => pos.equals(position))) {

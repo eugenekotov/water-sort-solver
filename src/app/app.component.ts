@@ -4,8 +4,7 @@ import { TourService } from './services/tour.service';
 
 
 // TODO: prevent reloading page with unsaved data
-// TODO: fat buttons style
-// TODO: dark schema
+// TODO: Full screen button
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
