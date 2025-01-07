@@ -51,7 +51,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         event.previousIndex,
         event.currentIndex,
       );
+      this.checkCanSave();
     }
+  }
+
+  private checkCanSave() {
+    this.canSave = this.mainService.getSetupContainersItems() > 0;
   }
 
   getConnectedLists(currentId: string): string[] {
@@ -80,6 +85,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private clearBoard() {
     this.mainService.createSourceContainers();
     this.clearContainers();
+    this.checkCanSave();
   }
 
   private clearContainers() {
@@ -107,6 +113,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.pause(20);
     }
     this.filling = false;
+    this.checkCanSave();
   }
 
   async pause(delay: number): Promise<void> {
