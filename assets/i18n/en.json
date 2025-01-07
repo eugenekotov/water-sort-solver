@@ -18,6 +18,7 @@
     }
   },
   "IN_PROGRESS": "In progress...",
+  "CANCEL": "Cancel",
   "NO_SOLUTION": "Oops, the play board has no solution :(",
   "SETUP_BOARD": "Setup board",
   "SOLVE": {
