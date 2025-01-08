@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { Board } from "./model/board.class";
 import { PlayContainer } from "./model/play-container.class";
 import { ILogicController, LogicResult } from "./logic/logic-controller.interface"
@@ -90,8 +90,8 @@ export class Solutions {
 
 export class SolutionController {
 
-  private readonly REQUIRED_SOLUTION_COUNT = 10;
-  private readonly TIME_LIMIT = 10000;
+  private readonly REQUIRED_SOLUTION_COUNT = 50;
+  private readonly TIME_LIMIT = 2000;
 
   private cancel$ = new Subject<void>();
   private oldBoards: BoardsSet = new BoardsSet();
@@ -100,6 +100,7 @@ export class SolutionController {
   bestSolution: Solution | undefined;
   private logicControllers: ILogicController[] = [];
   private canFinish: boolean = false;
+  private counter: number = 0;
 
   constructor() {
     this.logicControllers.push(new Logic1To3());
@@ -107,19 +108,24 @@ export class SolutionController {
     this.logicControllers.push(new Logic3To1());
   }
 
-  solve(containers: PlayContainer[]): void {
-    this.startTimer();
-    this.oldBoards.clear();
-    this.solutions.clear();
-    this.steps = [];
-    this.tryToResolve(new Board(containers).clone(), 0);
-    // console.log("Found " + this.solutionCount() + " solutions");
-    this.bestSolution = this.solutions.getBestSolution();
+  solve(containers: PlayContainer[]): Observable<void> {
+    return new Observable<void>(observer => {
+      this.startTimer();
+      this.oldBoards.clear();
+      this.solutions.clear();
+      this.steps = [];
+      this.counter = 0;
+      this.tryToResolve(new Board(containers).clone(), 0);
+      // console.log("Found " + this.solutionCount() + " solutions");
+      this.bestSolution = this.solutions.getBestSolution();
+      observer.next();
+      observer.complete();
+    });
   }
 
   private startTimer() {
     this.canFinish = false;
-    setTimeout(()=>{
+    setTimeout(() => {
       console.log("Time limit");
       this.canFinish = true;
     }, this.TIME_LIMIT);
@@ -130,6 +136,8 @@ export class SolutionController {
   }
 
   private tryToResolve(board: Board, stepCount: number) {
+    this.counter++;
+    // console.log("Counter ", this.counter);
     if (board.isResolved()) {
       this.foundSolution();
       return;
@@ -154,11 +162,11 @@ export class SolutionController {
         if (iFrom !== iTo) {
           // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
           this.tryToMove(board, iFrom, iTo, stepCount);
-          console.log(this.solutionCount());
-          if (this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
-            // It is enought
-            return;
-          }
+          // console.log(this.solutionCount());
+          // if (this.solutionCount() >= this.REQUIRED_SOLUTION_COUNT) {
+          //   // It is enought
+          //   return;
+          // }
         }
       }
     }

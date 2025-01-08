@@ -156,6 +156,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   solveClick() {
+    // TODO: Show warning if board is not filled
     this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 

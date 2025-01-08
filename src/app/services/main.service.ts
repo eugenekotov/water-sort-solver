@@ -131,14 +131,13 @@ export class MainService {
     this.setMode("in-progress").then(_ => {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
-      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]);
-      if (this.solutionController.solutionCount() > 0) {
-        // Print solution
-        // this.solutionController.bestSolution!.steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> "+ step.iTo));
-        this.setMode("solve");
-      } else {
-        this.setMode("no-solution");
-      }
+      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe(() => {
+        if (this.solutionController.solutionCount() > 0) {
+          this.setMode("solve");
+        } else {
+          this.setMode("no-solution");
+        }
+      });
     });
   }
 
