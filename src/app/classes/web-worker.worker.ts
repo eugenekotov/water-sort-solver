@@ -1,5 +1,9 @@
 /// <reference lib="webworker" />
 
+import { getLogic1To3 } from "./logic/logic-1to3.class";
+import { getLogic2To2 } from "./logic/logic-2to2.class";
+import { getLogic3To1 } from "./logic/logic-3to1.class";
+import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
 import { boardSetAdd, boardSetContains } from "./model/board-set.class";
 import { Board, boardClone, boardCreate, boardIsResolved } from "./model/board.class";
 import { containerHasOnlyOneColor, containerHasOnlyThreeOfOneColor, containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containerSize, PlayContainer } from "./model/play-container.class";
@@ -13,8 +17,7 @@ class SolutionData {
   solutions: SolutionSet = new SolutionSet();
   bestSolution: Solution | undefined = undefined;
   counter: number = 0;
-  // logicControllers: ILogicController[] = [];
-  // logicFunctions: TLogicFunction[] = [];
+  logicFunctions: TLogicFunction[] = [];
 }
 
 function solve(containers: PlayContainer[]) {
@@ -25,6 +28,9 @@ function solve(containers: PlayContainer[]) {
   solutionData.solutions.solutions = [];
   solutionData.bestSolution = undefined;
   solutionData.counter = 0;
+  solutionData.logicFunctions.push(getLogic1To3());
+  solutionData.logicFunctions.push(getLogic2To2());
+  solutionData.logicFunctions.push(getLogic3To1());
   tryToResolve(solutionData, boardClone(boardCreate(solutionData.containers)), 0);
   if (solutionData.bestSolution === undefined) {
     postSolution(EWorkerResult.NO_SOLUTION, undefined);
@@ -41,17 +47,17 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
     return;
   }
 
-  // const logcResult = tryLogicPatterns(solutionData, board);
-  // if (logcResult.stepCount > 0) {
-  //   board = logcResult.board;
-  //   stepCount = stepCount + logcResult.stepCount;
-  //   boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
-  //   solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-  //   if (boardIsResolved(board)) {
-  //     foundSolution(solutionData);
-  //     return;
-  //   }
-  // }
+  const logcResult = tryLogicPatterns(solutionData, board);
+  if (logcResult.stepCount > 0) {
+    board = logcResult.board;
+    stepCount = stepCount + logcResult.stepCount;
+    boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
+    solutionData.steps = [...solutionData.steps, ...logcResult.steps];
+    if (boardIsResolved(board)) {
+      foundSolution(solutionData);
+      return;
+    }
+  }
 
   // Try to check all options
   for (let iFrom = 0; iFrom < board.containers.length; iFrom++) {
@@ -65,25 +71,25 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
   }
 }
 
-// function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult {
-//   const result = new LogicResult();
-//   let hasStep = true;
-//   while (hasStep) {
-//     hasStep = false;
-//     solutionData.logicFunctions.forEach(logicFunction => {
-//       const logicResult = logicFunction(board);
-//       if (logicResult.stepCount > 0) {
-//         hasStep = true;
-//         board = logicResult.board;
-//         result.stepCount = result.stepCount + logicResult.stepCount;
-//         boardSetAdd(result.oldBoards, logicResult.oldBoards);
-//         result.steps = [...result.steps, ...logicResult.steps];
-//       }
-//     });
-//   }
-//   result.board = board;
-//   return result;
-// }
+function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult {
+  const result = new LogicResult();
+  let hasStep = true;
+  while (hasStep) {
+    hasStep = false;
+    solutionData.logicFunctions.forEach(logicFunction => {
+      const logicResult = logicFunction(board);
+      if (logicResult.stepCount > 0) {
+        hasStep = true;
+        board = logicResult.board;
+        result.stepCount = result.stepCount + logicResult.stepCount;
+        boardSetAdd(result.oldBoards, logicResult.oldBoards);
+        result.steps = [...result.steps, ...logicResult.steps];
+      }
+    });
+  }
+  result.board = board;
+  return result;
+}
 
 function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
   if (containerIsEmpty(board.containers[iFrom])) {

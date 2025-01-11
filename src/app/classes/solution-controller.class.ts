@@ -1,12 +1,7 @@
-import { Observable, Subject, Subscriber } from "rxjs";
-import { getLogic1To3 } from "./logic/logic-1to3.class";
-import { getLogic2To2 } from "./logic/logic-2to2.class";
-import { getLogic3To1 } from "./logic/logic-3to1.class";
-import { TLogicFunction } from "./logic/logic-controller.interface";
+import { Observable, Subscriber } from "rxjs";
 import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
-import { Solution, SolutionSet } from "./model/solution-set.class";
-import { Board } from "./model/board.class";
+import { Solution } from "./model/solution-set.class";
 
 export class Step {
   iFrom: number;
@@ -55,10 +50,6 @@ export class SolutionController {
   tempResult: WorkerResult | undefined;
 
   constructor() {
-    // TODO: add logic
-    // this.solutionData.logicFunctions.push(getLogic1To3());
-    // this.solutionData.logicFunctions.push(getLogic2To2());
-    // this.solutionData.logicFunctions.push(getLogic3To1());
   }
 
   solve(containers: PlayContainer[]): Observable<WorkerResult> {
