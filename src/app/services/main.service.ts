@@ -134,11 +134,18 @@ export class MainService {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
-        if (result.result === EWorkerResult.FIST_SOLUTION) {
+        if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
           this.setMode("solve");
-        } else {
+        } else if (result.result === EWorkerResult.BEST_SOLUTION) {
+          this.solution = result.solution!;
+          this.setMode("solve");
+        } else if (result.result === EWorkerResult.NO_SOLUTION) {
           this.setMode("no-solution");
+        } else if (result.result === EWorkerResult.CANCEL) {
+          this.setMode("setup");
+        } else {
+          const n: never = result.result;
         }
       });
     });

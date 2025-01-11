@@ -6,8 +6,6 @@ import { containerHasOnlyOneColor, containerHasOnlyThreeOfOneColor, containerIsE
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
-const REQUIRED_SOLUTION_COUNT = 10;
-
 class SolutionData {
   containers: PlayContainer[] = [];
   oldBoards: Board[] = [];
@@ -19,7 +17,7 @@ class SolutionData {
   // logicFunctions: TLogicFunction[] = [];
 }
 
-function solve(containers: PlayContainer[]): SolutionData {
+function solve(containers: PlayContainer[]) {
   const solutionData = new SolutionData();
   solutionData.containers = containers;
   solutionData.oldBoards = [];
@@ -28,14 +26,16 @@ function solve(containers: PlayContainer[]): SolutionData {
   solutionData.bestSolution = undefined;
   solutionData.counter = 0;
   tryToResolve(solutionData, boardClone(boardCreate(solutionData.containers)), 0);
-  // console.log("Found " + this.solutionCount() + " solutions");
-  solutionData.bestSolution = solutionSetGetBest(solutionData.solutions);
-  return solutionData;
+  if (solutionData.bestSolution === undefined) {
+    postSolution(EWorkerResult.NO_SOLUTION, undefined);
+  } else {
+    postSolution(EWorkerResult.BEST_SOLUTION, solutionData.bestSolution);
+  }
 }
 
 function tryToResolve(solutionData: SolutionData, board: Board, stepCount: number) {
   solutionData.counter++;
-  console.log("Counter ", solutionData.counter);
+  // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
   if (boardIsResolved(board)) {
     foundSolution(solutionData);
     return;
@@ -60,11 +60,6 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
         tryToMove(solutionData, board, iFrom, iTo, stepCount);
-        // console.log(this.solutionCount());
-        if (solutionData.solutions.solutions.length >= REQUIRED_SOLUTION_COUNT) {
-          // It is enought
-          return;
-        }
       }
     }
   }
@@ -145,14 +140,23 @@ function removeSteps(solutionData: SolutionData, stepCount: number) {
 
 function foundSolution(solutionData: SolutionData) {
   const solution = optimizeSolution(solutionCreate(solutionData.steps));
-  solutionSetAdd(solutionData.solutions, solution);
-  if (solutionData.solutions.solutions.length === 1) {
-    const result: WorkerResult = {
-      result: EWorkerResult.FIST_SOLUTION,
-      solution: solution
+  if (solutionSetAdd(solutionData.solutions, solution)) {
+    if (solutionData.bestSolution === undefined) {
+      solutionData.bestSolution = solution;
+      postSolution(EWorkerResult.SOLUTION, solution);
+    } else if (solution.steps.length < solutionData.bestSolution.steps.length) {
+      solutionData.bestSolution = solution;
+      postSolution(EWorkerResult.SOLUTION, solution);
     }
-    postMessage(result);
   }
+}
+
+function postSolution(workerResult: EWorkerResult, solution: Solution | undefined) {
+  const result: WorkerResult = {
+    result: workerResult,
+    solution: solution
+  }
+  postMessage(result);
 }
 
 function optimizeSolution(solution: Solution): Solution {
@@ -244,27 +248,6 @@ function optimizeSolution(solution: Solution): Solution {
   return solution;
 }
 
-function solutionSetGetBest(solutions: SolutionSet): Solution | undefined {
-  let result: Solution | undefined = undefined;
-  if (solutions.solutions.length > 0) {
-    result = solutions.solutions[0];
-    // console.log("Best solution contains " + result.steps.length + " steps.")
-    solutions.solutions.forEach(solution => {
-      // console.log(solution.steps.length);
-      if (solution.steps.length < result!.steps.length) {
-        result = solution;
-        // console.log("Best solution contains " + result.steps.length + " steps.")
-      }
-    });
-  }
-  return result;
-}
-
 addEventListener('message', ({ data }) => {
-  const resultData: SolutionData = solve(data as PlayContainer[]);
-  const result: WorkerResult = {
-    result: resultData.solutions.solutions.length > 0 ? EWorkerResult.BEST_SOLUTION : EWorkerResult.NO_SOLUTION,
-    solution: resultData.bestSolution
-  }
-  postMessage(result);
+  solve(data as PlayContainer[]);
 });

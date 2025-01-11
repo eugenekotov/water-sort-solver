@@ -34,7 +34,7 @@ export class Step {
 export enum EWorkerResult {
   CANCEL,
   NO_SOLUTION,
-  FIST_SOLUTION,
+  SOLUTION,
   BEST_SOLUTION
 }
 
@@ -46,15 +46,16 @@ export class WorkerResult {
 
 export class SolutionController {
 
-  private readonly TIME_LIMIT = 2000;
+  private readonly TIME_LIMIT = 3000;
 
   private canFinish: boolean = false;
 
   observer: Subscriber<WorkerResult>;
   worker: Worker | undefined;
-  result: WorkerResult | undefined;
+  tempResult: WorkerResult | undefined;
 
   constructor() {
+    // TODO: add logic
     // this.solutionData.logicFunctions.push(getLogic1To3());
     // this.solutionData.logicFunctions.push(getLogic2To2());
     // this.solutionData.logicFunctions.push(getLogic3To1());
@@ -68,10 +69,17 @@ export class SolutionController {
       if (typeof Worker !== undefined) {
         this.worker = new Worker(new URL('./web-worker.worker', import.meta.url));
         this.worker.onmessage = ({ data }) => {
-          this.result = data;
-          console.log(data);
-          observer.next(data);
-          observer.complete();
+          const messageData: WorkerResult = data;
+          if (messageData.result === EWorkerResult.SOLUTION) {
+            this.tempResult = messageData;
+            if (this.canFinish) {
+              this.stopByTimer();
+            }
+          } else {
+            this.worker = undefined;
+            observer.next(messageData);
+            observer.complete();
+          }
         };
         this.worker.postMessage(containers);
       } else {
@@ -80,12 +88,24 @@ export class SolutionController {
     });
   }
 
-  startTimer() {
+  private startTimer() {
     this.canFinish = false;
     setTimeout(() => {
-      console.log("Time limit");
       this.canFinish = true;
+      if (this.tempResult) {
+        this.stopByTimer();
+      }
     }, this.TIME_LIMIT);
+  }
+
+  private stopByTimer() {
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = undefined;
+      this.tempResult!.result = EWorkerResult.SOLUTION;
+      this.observer.next(this.tempResult);
+      this.observer.complete();
+    }
   }
 
   cancel() {

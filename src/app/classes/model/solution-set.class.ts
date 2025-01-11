@@ -31,8 +31,10 @@ export function solutionEquals(solution1: Solution, solution2: Solution) {
   return true;
 }
 
-export function solutionSetAdd(solutions: SolutionSet, solution: Solution) {
+export function solutionSetAdd(solutions: SolutionSet, solution: Solution): boolean {
   if (!solutions.solutions.some(existsSolution => solutionEquals(existsSolution, solution))) {
     solutions.solutions.push(solution);
+    return true;
   }
+  return false;
 }

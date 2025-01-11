@@ -18,7 +18,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
   tour: Tour;
-  canSave: boolean = false; // TODO: Implement it
+  // TODO: bug. if we cancel solution save disabled
+  canSave: boolean = false;
   canLoad: boolean = false;
 
   constructor(public mainService: MainService, public tourService: TourService) {
