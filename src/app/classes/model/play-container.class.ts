@@ -1,10 +1,10 @@
 import { Color } from "./colors.class";
-import { Item } from "./item.class";
+import { Item, itemCreate } from "./item.class";
 
 export class PlayContainer {
 
   static readonly MAX_SIZE = 4;
-  private resolved = false;
+  resolved = false;
 
   /**
    * Structure Items stores items like stack with indexes
@@ -18,124 +18,125 @@ export class PlayContainer {
    *
    */
 
-  private _size: number = 0;
+  _size: number = 0;
   index: number;
   items: Item[] = [];
 
-  constructor(index: number) {
-    this.index = index;
-    for (let i = 0; i < PlayContainer.MAX_SIZE; i++) {
-      this.items.push(new Item(undefined, index, false));
-    }
-    this.afterChange();
-  }
+}
 
-  public afterChange() {
-    this.calculateSize();
-    this.checkResolved();
+export function containerCreate(index: number): PlayContainer {
+  const container = new PlayContainer();
+  container.index = index;
+  for (let i = 0; i < PlayContainer.MAX_SIZE; i++) {
+    container.items.push(itemCreate(undefined, index, false));
   }
+  containerAfterChange(container);
+  return container;
+}
 
-  public push(color: Color): void {
-    // Search first empty item
-    const size = this.size();
-    if (size == PlayContainer.MAX_SIZE) {
-      throw Error("Size limit exists.");
-    }
-    this.items[size].color = color;
-    this.afterChange();
+export function containerAfterChange(container: PlayContainer) {
+  containerCalculateSize(container);
+  containerCheckResolved(container);
+}
+
+export function containerPush(container: PlayContainer, color: Color): void {
+  // Search first empty item
+  const size = containerSize(container);
+  if (size == PlayContainer.MAX_SIZE) {
+    throw Error("Size limit exists.");
   }
+  container.items[size].color = color;
+  containerAfterChange(container);
+}
 
-  public peek(): Color {
-    const size = this.size();
-    if (size == 0) {
-      throw Error("Container is empty.");
-    }
-    return this.items[size - 1].color!;
+export function containerPeek(container: PlayContainer): Color {
+  const size = containerSize(container);
+  if (size == 0) {
+    throw Error("Container is empty.");
   }
+  return container.items[size - 1].color!;
+}
 
-  public pop(): Color {
-    const size = this.size();
-    if (size == 0) {
-      throw Error("Container is empty.");
-    }
-    const color = this.items[size - 1].color!;
-    this.items[size - 1].color = undefined;
-    this.afterChange();
-    return color;
+export function containerPop(container: PlayContainer): Color {
+  const size = containerSize(container);
+  if (size == 0) {
+    throw Error("Container is empty.");
   }
+  const color = container.items[size - 1].color!;
+  container.items[size - 1].color = undefined;
+  containerAfterChange(container);
+  return color;
+}
 
-  public size(): number {
-    return this._size;
+export function containerSize(container: PlayContainer): number {
+  return container._size;
+}
+
+function containerCalculateSize(container: PlayContainer) {
+  container._size = container.items.findIndex(item => item.color === undefined);
+  if (container._size === -1) {
+    container._size = PlayContainer.MAX_SIZE;
   }
+}
 
-  private calculateSize() {
-    this._size = this.items.findIndex(item => item.color === undefined);
-    if (this._size === -1) {
-      this._size = PlayContainer.MAX_SIZE;
-    }
+export function containerIsEmpty(container: PlayContainer): boolean {
+  return container.items[0].color === undefined;
+}
+
+export function containerIsFull(container: PlayContainer): boolean {
+  return containerSize(container) === PlayContainer.MAX_SIZE;
+}
+
+export function containerClear(container: PlayContainer) {
+  container.items.forEach(item => item.color = undefined);
+}
+
+export function containerIsResolved(container: PlayContainer): boolean {
+  return container.resolved;
+}
+
+function containerCheckResolved(container: PlayContainer): void {
+  if (containerSize(container) !== PlayContainer.MAX_SIZE) {
+    container.resolved = false;
+  } else {
+    container.resolved = container.items.every(item => item.color === containerPeek(container));
   }
+}
 
-  public isEmpty(): boolean {
-    return this.items[0].color === undefined;
+export function containerEquals(container1: PlayContainer, container2: PlayContainer): boolean {
+  if (containerSize(container1) !== containerSize(container2)) {
+    return false;
   }
-
-  public isFull(): boolean {
-    return this.size() === PlayContainer.MAX_SIZE;
-  }
-
-  public clear() {
-    this.items.forEach(item => item.color = undefined);
-  }
-
-  public isResolved(): boolean {
-    return this.resolved;
-  }
-
-  private checkResolved(): void {
-    if (this.size() !== PlayContainer.MAX_SIZE) {
-      this.resolved = false;
-    } else {
-      this.resolved = this.items.every(item => item.color === this.peek());
-    }
-  }
-
-  public equals(container: PlayContainer): boolean {
-    if (this.size() !== container.size()) {
+  for (let i = 0; i < containerSize(container1); i++) {
+    if (container1.items[i].color !== container2.items[i].color) {
       return false;
     }
-    for (let i = 0; i < this.size(); i++) {
-      if (this.items[i].color !== container.items[i].color) {
-        return false;
-      }
-    }
-    return true;
   }
+  return true;
+}
 
-  public hasOnlyThreeOfOneColor(): boolean {
-    return this.size() === 3 && this.items[0].color === this.items[1].color && this.items[0].color === this.items[2].color;
+export function containerHasOnlyThreeOfOneColor(container: PlayContainer): boolean {
+  return containerSize(container) === 3 && container.items[0].color === container.items[1].color && container.items[0].color === container.items[2].color;
+}
+
+export function containerHasOnlyTwoOfOneColor(container: PlayContainer): boolean {
+  return containerSize(container) === 2 && container.items[0].color === container.items[1].color;
+}
+
+export function containerHasOnlyOneOfOneColor(container: PlayContainer): boolean {
+  return containerSize(container) === 1;
+}
+
+export function containerHasOnlyOneColor(container: PlayContainer): boolean {
+  if (containerIsEmpty(container)) {
+    return false;
   }
+  return container.items.every(item => item.color === undefined || item.color === container.items[0].color);
+}
 
-  public hasOnlyTwoOfOneColor(): boolean {
-    return this.size() === 2 && this.items[0].color === this.items[1].color;
-  }
-
-  public hasOnlyOneOfOneColor(): boolean {
-    return this.size() === 1;
-  }
-
-
-  public hasOnlyOneColor(): boolean {
-    if (this.isEmpty()) {
-      return false;
-    }
-    return this.items.every(item => item.color === undefined || item.color === this.items[0].color);
-  }
-
-  public clone() {
-    const newContainer = new PlayContainer(this.index);
-    this.items.forEach((item, index) => newContainer.items[index].color = item.color);
-    newContainer.afterChange();
-    return newContainer;
-  }
-
+export function containerClone(c: PlayContainer): PlayContainer {
+  const newContainer = containerCreate(c.index);
+  c.items.forEach((item, index) => newContainer.items[index].color = item.color);
+  containerAfterChange(newContainer);
+  return newContainer;
 }

@@ -9,10 +9,14 @@ export class Item {
   left: string | undefined;
   transitionDuration: string | undefined;
 
-  constructor(color: Color | undefined, containerIndex: number, hidden: boolean) {
-    this.color = color;
-    this.containerIndex = containerIndex;
-    this.hidden = hidden;
-  }
+}
+
+export function itemCreate(color: Color | undefined, containerIndex: number, hidden: boolean): Item {
+  const item = new Item();
+  item.color = color;
+  item.containerIndex = containerIndex;
+  item.hidden = hidden;
+
+  return item;
 
 }

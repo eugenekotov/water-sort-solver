@@ -2,7 +2,7 @@
 
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-    <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solutionController.bestSolution!.steps.length} }}</p>
+    <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solution!.steps.length} }}</p>
     <p>{{ "SOLVE.STEP" | translate: {step: completeStepIndex} }}</p>
   </div>
   <div class="relative-container">
@@ -49,11 +49,11 @@
     <div>
       <div class="buttons-container buttons-container-small">
         <button class="button button-small" (click)="backClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-        <button class="button button-small" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
+        <button class="button button-small" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
         <button class="button button-small" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.PLAY_BACK" | translate }}</button>
-        <button class="button button-small mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
+        <button class="button button-small mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
         <button class="button button-small" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
@@ -65,9 +65,9 @@
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
       <button class="button button-large" (click)="backClick()" [disabled]="playing || stepIndex === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-      <button class="button button-large mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
+      <button class="button button-large mr-1" (click)="nextClick()" [disabled]="playing || stepIndex>=mainService.solution!.steps.length">{{ "SOLVE.NEXT_STEP" | translate }}</button>
       <button class="button button-large" (click)="playBackClick()"  [disabled]="playing || stepIndex === 0">{{ "SOLVE.PLAY_BACK" | translate }}</button>
-      <button class="button button-large mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solutionController.bestSolution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
+      <button class="button button-large mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=mainService.solution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
       <button class="button button-large mr-1" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
       <button class="button button-large" (click)="setupClick()" [disabled]="playing">{{ "SETUP_BOARD" | translate }}</button>
     </div>

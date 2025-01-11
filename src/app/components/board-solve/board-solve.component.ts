@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { Item } from 'src/app/classes/model/item.class';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
+import { Item, itemCreate } from 'src/app/classes/model/item.class';
+import { containerPeek, containerPop, containerPush, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
@@ -44,7 +44,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private itemsElements: HTMLElement[] = [];
   private parentMovingElementRect: any;
-  stepIndex: number = 0;
+  _stepIndex: number = 0;
   completeStepIndex: number = 0;
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
@@ -57,9 +57,17 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   movingItem: Item; // Item for moving animation
 
 
+  set stepIndex(value: number) {
+    this._stepIndex = value
+  }
+
+  get stepIndex(): number {
+    return this._stepIndex;
+  }
+
   constructor(public mainService: MainService) {
     this.createStepsSubject();
-    this.movingItem = new Item(undefined, 0, true);
+    this.movingItem = itemCreate(undefined, 0, true);
   }
 
   ngOnInit(): void {
@@ -92,12 +100,13 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe({
         next: stepIndex => {
           this.completeStepIndex = stepIndex;
-          if (this.playing && (this.completeStepIndex === 0 || this.completeStepIndex === this.mainService.solutionController.bestSolution!.steps.length)) {
+          if (this.playing && (this.completeStepIndex === 0 || this.completeStepIndex === this.mainService.solution!.steps.length)) {
             this.playing = false;
             this.stopping = false;
           }
         },
-        error: () => {
+        error: (error) => {
+          console.log("error = ", error);
           // Interrupted by button Stop
           stepsSubjectSubscription.unsubscribe();
           this.createStepsSubject();
@@ -140,38 +149,38 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private makeStepForward() {
-    const step: Step = this.mainService.solutionController.bestSolution!.steps[this.stepIndex];
+    const step: Step = this.mainService.solution!.steps[this.stepIndex];
     this.stepIndex++;
     this.stepsSubject$.next(PlayStep.createPlayStep(this.stepIndex, step));
   }
 
   private makeStepBackward() {
     this.stepIndex--;
-    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solutionController.bestSolution!.steps[this.stepIndex].iTo, this.mainService.solutionController.bestSolution!.steps[this.stepIndex].iFrom);
+    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solution!.steps[this.stepIndex].iTo, this.mainService.solution!.steps[this.stepIndex].iFrom);
     this.stepsSubject$.next(step);
   }
 
   private makeStep(step: PlayStep): Observable<number> {
     return new Observable<number>(observer => {
       if (this.stopping) {
-        observer.error();
+        observer.error({ message: "Stop" });
         return;
       }
       // show moving item
-      this.movingItem.color = this.playContainers[step.iFrom].peek();
-      const startPosition = this.getMovingPosition(step.iFrom, this.playContainers[step.iFrom].size() - 1);
+      this.movingItem.color = containerPeek(this.playContainers[step.iFrom]);
+      const startPosition = this.getMovingPosition(step.iFrom, containerSize(this.playContainers[step.iFrom]) - 1);
       this.setMovingPosition(startPosition);
-      this.playContainers[step.iFrom].pop();
+      containerPop(this.playContainers[step.iFrom]);
       this.movingItem.hidden = false;
       // moving
       setTimeout(async () => {
-        const finishPosition = this.getMovingPosition(step.iTo, this.playContainers[step.iTo].size());
+        const finishPosition = this.getMovingPosition(step.iTo, containerSize(this.playContainers[step.iTo]));
         const topPosition = new Position(this.getMovingTopPosition(step.iFrom), startPosition.left);
         const leftPosition = new Position(this.getMovingTopPosition(step.iTo), finishPosition.left);
         await this.moving(startPosition, topPosition);
         await this.moving(topPosition, leftPosition);
         await this.moving(leftPosition, finishPosition);
-        this.playContainers[step.iTo].push(this.movingItem.color!);
+        containerPush(this.playContainers[step.iTo], this.movingItem.color!);
         this.movingItem.hidden = true;
         this.completeStepIndex = step.index;
         await new Promise<void>(resolve => setTimeout(resolve, 100 / (this.speed * 2)));
@@ -227,7 +236,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playClick() {
     this.playing = true;
-    while (this.stepIndex < this.mainService.solutionController.bestSolution!.steps.length) {
+    while (this.stepIndex < this.mainService.solution!.steps.length) {
       this.makeStepForward();
     }
   }

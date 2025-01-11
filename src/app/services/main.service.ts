@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Color } from '../classes/model/colors.class';
-import { PlayContainer } from '../classes/model/play-container.class';
+import { containerAfterChange, containerClear, containerCreate, PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
-import { SolutionController } from '../classes/solution-controller.class';
+import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
+import { Solution } from '../classes/model/solution-set.class';
 
 // TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
@@ -54,6 +55,7 @@ export class MainService {
   playContainers2: PlayContainer[] = [];
 
   solutionController: SolutionController = new SolutionController();
+  solution: Solution;
 
   constructor(private translate: TranslateService, private tourService: TourService) {
     this.loadContainerCount();
@@ -131,8 +133,9 @@ export class MainService {
     this.setMode("in-progress").then(_ => {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
-      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe(() => {
-        if (this.solutionController.solutionCount() > 0) {
+      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
+        if (result.result === EWorkerResult.FIST_SOLUTION) {
+          this.solution = result.solution!;
           this.setMode("solve");
         } else {
           this.setMode("no-solution");
@@ -146,15 +149,15 @@ export class MainService {
     this.playContainers2 = [];
     if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
       for (let i = 0; i < this.containerCount; i++) {
-        this.playContainers1.push(new PlayContainer(i));
+        this.playContainers1.push(containerCreate(i));
       }
     } else {
       const halfOfContainerCount = Math.ceil(this.containerCount / 2);
       for (let i = 0; i < halfOfContainerCount; i++) {
-        this.playContainers1.push(new PlayContainer(i));
+        this.playContainers1.push(containerCreate(i));
       }
       for (let i = halfOfContainerCount; i < this.containerCount; i++) {
-        this.playContainers2.push(new PlayContainer(i));
+        this.playContainers2.push(containerCreate(i));
       }
     }
   }
@@ -166,18 +169,15 @@ export class MainService {
 
 
   public fillPlayContainers(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
-    this.clearPlayContainers();
     setupContainers1.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
+      containerAfterChange(this.playContainers1[containerIndex]);
     });
+
     setupContainers2.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers2[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
+      containerAfterChange(this.playContainers2[containerIndex]);
     });
-  }
-
-  private clearPlayContainers() {
-    this.playContainers1.forEach(container => container.clear());
-    this.playContainers2.forEach(container => container.clear());
   }
 
   public createSetupContainers() {

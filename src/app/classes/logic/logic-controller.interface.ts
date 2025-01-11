@@ -1,31 +1,26 @@
-import { Board } from "../model/board.class";
-import { BoardsSet } from "../model/boards-set.class";
+import { boardSetAdd } from "../model/board-set.class";
+import { Board, boardClone } from "../model/board.class";
+import { containerPop, containerPush, containerSize } from "../model/play-container.class";
 import { Step } from "../solution-controller.class";
 
 export class LogicResult {
   board: Board;
   stepCount: number = 0;
-  oldBoards: BoardsSet = new BoardsSet();
+  oldBoards: Board[] = [];
   steps: Step[] = [];
 }
 
-export interface ILogicController {
-
-  run(board: Board): LogicResult;
-
-}
+export type TLogicFunction = (board: Board) => LogicResult;
 
 export function makeStep(board: Board, iFrom: number, iTo: number, stepCount: number, result: LogicResult): Board {
-  board = board.clone();
+  board = boardClone(board);
   for (let i = 0; i < stepCount; i++) {
-    board.containers[iTo].push(board.containers[iFrom].pop());
-    result.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[board.containers[iTo].size() - 1].color!));
+    containerPush(board.containers[iTo], containerPop(board.containers[iFrom]));
+    result.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[containerSize(board.containers[iTo]) - 1].color!));
   }
   result.board = board;
   result.stepCount = result.stepCount + stepCount;
-  result.oldBoards.add(board);
+  boardSetAdd(result.oldBoards, board);
 
   return board;
 }
-
-
