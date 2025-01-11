@@ -12,7 +12,6 @@ export class BoardInProgressComponent {
   }
 
   cancelClick() {
-    console.log("cancelClick()");
     this.mainService.solutionController.cancel();
   }
 

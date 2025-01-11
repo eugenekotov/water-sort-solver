@@ -24,6 +24,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
+    this.checkCanSave();
     this.checkCanLoad();
   }
 

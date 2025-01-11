@@ -105,8 +105,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
             this.stopping = false;
           }
         },
-        error: (error) => {
-          console.log("error = ", error);
+        error: () => {
           // Interrupted by button Stop
           stepsSubjectSubscription.unsubscribe();
           this.createStepsSubject();

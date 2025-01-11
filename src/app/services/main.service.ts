@@ -169,12 +169,6 @@ export class MainService {
     }
   }
 
-  public stopProgress() {
-    // TODO: implement progress interaption
-    this.setMode("setup");
-  }
-
-
   public fillPlayContainers(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     setupContainers1.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
