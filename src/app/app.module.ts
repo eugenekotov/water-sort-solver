@@ -21,6 +21,7 @@ import { TourItemComponent } from './components/tour-item/tour-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { TourComponent } from './components/tour/tour.component';
 import { LangBarComponent } from './components/lang-bar/lang-bar.component';
+import { BoardPlayComponent } from './components/board-play/board-play.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -40,6 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TourItemComponent,
     TourComponent,
     LangBarComponent,
+    BoardPlayComponent,
   ],
   imports: [
     BrowserModule,

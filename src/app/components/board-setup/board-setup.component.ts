@@ -18,7 +18,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
   tour: Tour;
-  // TODO: bug. if we cancel solution save disabled
   canSave: boolean = false;
   canLoad: boolean = false;
 
@@ -157,9 +156,16 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+
+  playClick() {
+    // TODO: Show warning if board is not filled
+    this.mainService.play(this.mainService.setupContainers1, this.mainService.setupContainers2);
+  }
+
   solveClick() {
     // TODO: Show warning if board is not filled
-    this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
+    // this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
+    this.mainService.play(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 
   private calculateSourceContainersWidth() {

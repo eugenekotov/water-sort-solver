@@ -9,7 +9,7 @@ import { TourService } from './tour.service';
 import { Solution } from '../classes/model/solution-set.class';
 
 // TODO: Add start page
-type TMode = "setup" | "in-progress" | "no-solution" | "solve" | undefined;
+type TMode = "setup" | "in-progress" | "no-solution" | "solve" | "play" | undefined;
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";
@@ -50,6 +50,7 @@ export class MainService {
   visibleInProgress: boolean = false;
   visibleNoSolution: boolean = false;
   visibleSolve: boolean = false;
+  visiblePlay: boolean = false;
 
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
@@ -119,6 +120,10 @@ export class MainService {
 
       case "solve":
         this.visibleSolve = value;
+        break;
+
+      case "play":
+        this.visiblePlay = value;
         break;
 
       case undefined:
@@ -280,6 +285,12 @@ export class MainService {
     this.setupContainers1.forEach(container => result = result + container.colors.length);
     this.setupContainers2.forEach(container => result = result + container.colors.length);
     return result;
+  }
+
+  play(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
+    this.createPlayContainers();
+    this.fillPlayContainers(setupContainers1, setupContainers2);
+    this.setMode("play");
   }
 
 }
