@@ -6,6 +6,7 @@ import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
 import { ContainerComponent } from '../container/container.component';
 import { calculateMovingDuration } from 'src/app/classes/utils.class';
+import { Color } from 'src/app/classes/model/colors.class';
 
 @Component({
   selector: 'app-board-play',
@@ -16,6 +17,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playContainers: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;
+
+  steps: PlayStep[] = [];
 
   private itemsElements: HTMLElement[] = [];
   private parentMovingElementRect: any;
@@ -75,23 +78,75 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private makeAction(container: PlayContainer): Observable<void> {
     return new Observable(observer => {
-      if (container.selected) {
-        // Move colors back down
-        this.moveDown(container, observer);
-        container.selected = false;
-      } else if (!this.hasSelectedContainer()) {
-        // We selected container, move colors up
-        this.moveUp(container, observer);
-        container.selected = true;
-      } else if (containerIsEmpty(container) || (!containerIsFull(container) && containerPeek(container) === this.movingItem.color)) {
-        // Move colors if it is possible
-        this.moveTo(container, observer);
-        this.getSelectedContainer()!.selected = false;
+      const selectedContainer = this.getSelectedContainer();
+      if (selectedContainer) {
+        if (container.selected) {
+          // Move colors back down
+          this.moveDown(container, observer);
+          container.selected = false;
+        } else {
+          if (containerIsEmpty(container) || (!containerIsFull(container) && containerPeek(container) === this.movingItem.color)) {
+            // Move colors if it is possible
+            this.moveTo(container, observer);
+            this.steps.push(new PlayStep(this.steps.length, selectedContainer.index, container.index));
+          } else {
+            this.moveDown(selectedContainer, observer);
+          }
+          selectedContainer.selected = false;
+        }
       } else {
-        observer.next();
-        observer.complete();
+        // No selected container
+        if (!containerIsEmpty(container)) {
+          // try to guess step
+          const containerTo = this.findPossibleStep(container);
+          if (containerTo) {
+            // We can make step
+            this.moveUpTo(container, containerTo, observer);
+            this.steps.push(new PlayStep(this.steps.length, container.index, containerTo.index));
+          } else {
+            // We selected container, move colors up
+            this.moveUp(container, observer);
+            container.selected = true;
+          }
+        } else {
+          observer.next();
+          observer.complete();
+        }
       }
     });
+  }
+
+  private findPossibleStep(container: PlayContainer): PlayContainer | undefined {
+    // do we have this color
+    let possibleContainer: PlayContainer | undefined = undefined;
+    for (let i = 0; i < this.playContainers.length; i++) {
+      if (this.isPossible(this.playContainers[i], container.index, containerPeek(container))) {
+        if (possibleContainer !== undefined) {
+          // we have more the only one option
+          return undefined;
+        } else {
+          possibleContainer = this.playContainers[i];
+        }
+      }
+    }
+    if (possibleContainer === undefined) {
+      // try to find empty container
+      possibleContainer = this.playContainers.find(cont => containerIsEmpty(cont));
+    }
+    return possibleContainer;
+  }
+
+  private isPossible(container: PlayContainer, excludeIndex: number, color: Color): boolean {
+    if (container.index === excludeIndex) {
+      return false;
+    }
+    if (containerIsEmpty(container)) {
+      return false;
+    }
+    if (!containerIsFull(container) && containerPeek(container) === color) {
+      return true;
+    }
+    return false;
   }
 
   private moveUp(container: PlayContainer, observer: Subscriber<void>) {
@@ -136,6 +191,30 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       observer.next();
       observer.complete();
     }, 0);
+  }
+
+  private moveUpTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<void>) {
+    setTimeout(() => {
+      this.movingItem.color = containerPeek(containerFrom);
+      const startPosition = this.getMovingPosition(containerFrom.index, containerSize(containerFrom) - 1);
+      this.setMovingPosition(startPosition);
+      containerPop(containerFrom);
+      this.movingItem.hidden = false;
+      // moving
+      setTimeout(async () => {
+        const topPosition = new Position(this.getMovingTopPosition(containerFrom.index), startPosition.left);
+        const finishPosition = this.getMovingPosition(containerTo.index, containerSize(containerTo));
+        const leftPosition = new Position(this.getMovingTopPosition(containerTo.index), finishPosition.left);
+        await this.moving(startPosition, topPosition);
+        await this.moving(topPosition, leftPosition);
+        await this.moving(leftPosition, finishPosition);
+        containerPush(containerTo, this.movingItem.color!);
+        this.movingItem.hidden = true;
+        observer.next();
+        observer.complete();
+      }, 0);
+    }, 0);
+
   }
 
 
@@ -225,5 +304,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.movingItem.left = `${position.left}px`;
   }
 
+  backClick() {
+
+  }
 
 }

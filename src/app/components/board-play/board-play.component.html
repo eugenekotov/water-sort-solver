@@ -3,7 +3,7 @@
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
     <!-- <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solution!.steps.length} }}</p> -->
-    <p>{{ "SOLVE.STEP" | translate: {step: completeStepIndex} }}</p>
+    <p>{{ "SOLVE.STEP" | translate: {step: steps.length} }}</p>
   </div>
   <div class="relative-container">
     <ng-container *ngIf="mainService.isMobile">
@@ -46,12 +46,14 @@
 
   <ng-container *ngIf="mainService.isMobile">
     <div class="buttons-container buttons-container-small">
+      <button class="button button-large" (click)="backClick()" [disabled]="steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
       <button class="button button-small" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
     </div>
   </ng-container>
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
+      <button class="button button-large" (click)="backClick()" [disabled]="steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
       <button class="button button-large" (click)="setupClick()">{{ "SETUP_BOARD" | translate }}</button>
     </div>
   </ng-container>

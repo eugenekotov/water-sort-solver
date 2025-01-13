@@ -45,7 +45,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private itemsElements: HTMLElement[] = [];
   private parentMovingElementRect: any;
-  _stepIndex: number = 0;
+  stepIndex: number = 0;
   completeStepIndex: number = 0;
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
@@ -56,15 +56,6 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stepsSubject$ = new Subject<PlayStep>();
   movingItem: Item; // Item for moving animation
-
-
-  set stepIndex(value: number) {
-    this._stepIndex = value
-  }
-
-  get stepIndex(): number {
-    return this._stepIndex;
-  }
 
   constructor(public mainService: MainService) {
     this.createStepsSubject();
