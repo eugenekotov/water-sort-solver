@@ -140,3 +140,7 @@ export function containerClone(c: PlayContainer): PlayContainer {
   containerAfterChange(newContainer);
   return newContainer;
 }
+
+export function containersClone(containers: PlayContainer[]): PlayContainer[] {
+  return containers.map(container => containerClone(container));
+}

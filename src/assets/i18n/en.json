@@ -37,5 +37,9 @@
     "PRIOR": "Prior",
     "NEXT": "Next",
     "FINISH": "Finish"
+  },
+  "PLAY": {
+    "TO_START": "From scratch"
   }
+
 }
