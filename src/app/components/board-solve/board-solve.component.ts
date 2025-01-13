@@ -5,6 +5,7 @@ import { containerPeek, containerPop, containerPush, containerSize, PlayContaine
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
+import { calculateMovingDuration } from 'src/app/classes/utils.class';
 
 export class PlayStep {
   index: number;
@@ -22,7 +23,7 @@ export class PlayStep {
   }
 }
 
-class Position {
+export class Position {
   top!: number;
   left!: number;
 
@@ -182,7 +183,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
         containerPush(this.playContainers[step.iTo], this.movingItem.color!);
         this.movingItem.hidden = true;
         this.completeStepIndex = step.index;
-        await new Promise<void>(resolve => setTimeout(resolve, 100 / (this.speed * 2)));
+        await new Promise<void>(resolve => setTimeout(resolve, 0));
         observer.next(step.index);
         observer.complete();
       }, 0);
@@ -191,16 +192,11 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private async moving(from: Position, to: Position): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = this.calculateMovingDuration(from, to);
+      const moving_duration1 = calculateMovingDuration(from, to, this.speed);
       this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
       this.setMovingPosition(to);
       setTimeout(resolve, moving_duration1);
     });
-  }
-
-  private calculateMovingDuration(from: Position, to: Position): number {
-    const way = Math.sqrt(Math.pow(to.top - from.top, 2) + Math.pow(to.left - from.left, 2));
-    return (200 + way * 0.5) * 15 / this.speed;
   }
 
   private getMovingPosition(containerIndex: number, itemIndex: number): Position {

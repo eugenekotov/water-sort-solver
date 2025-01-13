@@ -21,7 +21,7 @@ export class PlayContainer {
   _size: number = 0;
   index: number;
   items: Item[] = [];
-
+  selected: boolean = false;
 }
 
 export function containerCreate(index: number): PlayContainer {

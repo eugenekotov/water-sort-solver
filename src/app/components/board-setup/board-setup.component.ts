@@ -164,8 +164,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   solveClick() {
     // TODO: Show warning if board is not filled
-    // this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
-    this.mainService.play(this.mainService.setupContainers1, this.mainService.setupContainers2);
+    this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 
   private calculateSourceContainersWidth() {
@@ -267,6 +266,9 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_SOLVE")
       .setElement(document.getElementById("button-solve")!));
 
-    }
+    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_PLAY")
+      .setElement(document.getElementById("button-play")!));
+
+  }
 
 }

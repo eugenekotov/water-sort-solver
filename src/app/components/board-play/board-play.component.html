@@ -10,12 +10,12 @@
       <div class="play-containers-small">
         <div class="containers containers-small">
           <app-container *ngFor="let container of mainService.playContainers1" [container]="container"
-            [attr.id]="getContainerId(container.index)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
           </app-container>
         </div>
         <div class="containers containers-small">
           <app-container *ngFor="let container of mainService.playContainers2" [container]="container"
-            [attr.id]="getContainerId(container.index)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
           </app-container>
         </div>
       </div>
@@ -24,10 +24,10 @@
     <ng-container *ngIf="!mainService.isMobile">
       <div class="containers containers-large">
         <app-container *ngFor="let container of mainService.playContainers1; let containerIndex = index"
-          [container]="container" [attr.id]="getContainerId(containerIndex)">
+          [container]="container" [attr.id]="getContainerId(containerIndex)" (click)="onContainerClick(container)">
         </app-container>
         <app-container *ngFor="let container of mainService.playContainers2; let containerIndex = index"
-          [container]="container" [attr.id]="getContainerId(containerIndex)">
+          [container]="container" [attr.id]="getContainerId(containerIndex)" (click)="onContainerClick(container)">
         </app-container>
       </div>
     </ng-container>

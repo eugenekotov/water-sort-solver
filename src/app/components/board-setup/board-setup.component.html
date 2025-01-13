@@ -140,8 +140,8 @@
           "SETUP.SAVE" | translate }}</button>
         <button id="button-load" class="button button-small mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
           "SETUP.LOAD" | translate }}</button>
-        <button id="button-solve" class="button button-small" (click)="solveClick()" [disabled]="filling">{{
-          "SETUP.SOLVE" | translate }}</button>
+        <button id="button-solve" class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
+        <button id="button-play" class="button button-small" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
       </div>
     </div>
   </ng-container>
@@ -156,8 +156,8 @@
         "SETUP.SAVE" | translate }}</button>
       <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
         "SETUP.LOAD" | translate }}</button>
-      <button id="button-solve" class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE"
-        | translate }}</button>
+      <button id="button-solve" class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
+      <button id="button-play" class="button button-large" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
     </div>
   </ng-container>
 
