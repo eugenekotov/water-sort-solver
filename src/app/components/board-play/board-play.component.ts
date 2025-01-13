@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
+import { Color } from 'src/app/classes/model/colors.class';
 import { Item, itemCreate } from 'src/app/classes/model/item.class';
+import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
+import { calculateMovingDuration } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { PlayStep, Position } from '../board-solve/board-solve.component';
-import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
-import { containerClone, containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
 import { ContainerComponent } from '../container/container.component';
-import { calculateMovingDuration } from 'src/app/classes/utils.class';
-import { Color } from 'src/app/classes/model/colors.class';
 
 @Component({
   selector: 'app-board-play',
@@ -99,18 +99,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       } else {
         // No selected container
         if (!containerIsEmpty(container)) {
-          // It is not comfotable!
-          // // try to guess step
-          // const containerTo = this.findPossibleStep(container);
-          // if (containerTo) {
-          //   // We can make step
-          //   this.moveUpTo(container, containerTo, observer);
-          //   this.steps.push(new PlayStep(this.steps.length, container.index, containerTo.index));
-          // } else {
           // We selected container, move colors up
           this.moveUp(container, observer);
           container.selected = true;
-          // }
         } else {
           observer.next();
           observer.complete();
@@ -195,30 +186,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       observer.complete();
     }, 0);
   }
-
-  // It is not comfortable
-  // private moveUpTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<void>) {
-  //   setTimeout(() => {
-  //     this.movingItem.color = containerPeek(containerFrom);
-  //     const startPosition = this.getMovingPosition(containerFrom.index, containerSize(containerFrom) - 1);
-  //     this.setMovingPosition(startPosition);
-  //     containerPop(containerFrom);
-  //     this.movingItem.hidden = false;
-  //     // moving
-  //     setTimeout(async () => {
-  //       const topPosition = new Position(this.getMovingTopPosition(containerFrom.index), startPosition.left);
-  //       const finishPosition = this.getMovingPosition(containerTo.index, containerSize(containerTo));
-  //       const leftPosition = new Position(this.getMovingTopPosition(containerTo.index), finishPosition.left);
-  //       await this.moving(startPosition, topPosition);
-  //       await this.moving(topPosition, leftPosition);
-  //       await this.moving(leftPosition, finishPosition);
-  //       containerPush(containerTo, this.movingItem.color!);
-  //       this.movingItem.hidden = true;
-  //       observer.next();
-  //       observer.complete();
-  //     }, 0);
-  //   }, 0);
-  // }
 
   private async moving(from: Position, to: Position): Promise<void> {
     return new Promise<void>(resolve => {
