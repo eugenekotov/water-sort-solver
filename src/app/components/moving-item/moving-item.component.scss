@@ -1,5 +1,6 @@
 .moving-item {
-  transition-property: left, top;
+  border: 1px solid var(--main-background-color);
+  transition-property: left, top, box-shadow, border-color;
   // transition-duration: 2s; - it is on variables
   transition-timing-function: ease-in-out;
   position: absolute;

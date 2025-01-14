@@ -5,7 +5,7 @@ import { containerPeek, containerPop, containerPush, containerSize, PlayContaine
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
-import { calculateMovingDuration } from 'src/app/classes/utils.class';
+import { calculateMovingDuration, getItemIndex, getMovingPosition } from 'src/app/classes/utils.class';
 
 export class PlayStep {
   index: number;
@@ -44,7 +44,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   private screenResizedSubscription: Subscription | undefined = undefined;
 
   private itemsElements: HTMLElement[] = [];
-  private parentMovingElementRect: any;
+  private parentMovingElementRect: DOMRect;
   stepIndex: number = 0;
   completeStepIndex: number = 0;
   readonly minSpeed = 1;
@@ -159,15 +159,17 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       // show moving item
       this.movingItem.color = containerPeek(this.playContainers[step.iFrom]);
-      const startPosition = this.getMovingPosition(step.iFrom, containerSize(this.playContainers[step.iFrom]) - 1);
+      const indexFrom = getItemIndex(step.iFrom, containerSize(this.playContainers[step.iFrom]) - 1);
+      const startPosition = getMovingPosition(this.itemsElements[indexFrom], this.parentMovingElementRect);
       this.setMovingPosition(startPosition);
       containerPop(this.playContainers[step.iFrom]);
       this.movingItem.hidden = false;
       // moving
       setTimeout(async () => {
-        const finishPosition = this.getMovingPosition(step.iTo, containerSize(this.playContainers[step.iTo]));
-        const topPosition = new Position(this.getMovingTopPosition(step.iFrom), startPosition.left);
-        const leftPosition = new Position(this.getMovingTopPosition(step.iTo), finishPosition.left);
+        const indexTo = getItemIndex(step.iTo, containerSize(this.playContainers[step.iTo]));
+        const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
+        const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
+        const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
         await this.moving(startPosition, topPosition);
         await this.moving(topPosition, leftPosition);
         await this.moving(leftPosition, finishPosition);
@@ -190,16 +192,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private getMovingPosition(containerIndex: number, itemIndex: number): Position {
-    const index = containerIndex * PlayContainer.MAX_SIZE + itemIndex;
-    const itemElement = this.itemsElements[index];
-    const itemRect = itemElement!.getBoundingClientRect();
-    const top = itemRect.top - this.parentMovingElementRect.top;
-    const left = itemRect.left - this.parentMovingElementRect.left;
-    return new Position(top, left);
-  }
-
-  private getMovingTopPosition(containerIndex: number): number {
+  private getMovingTopCoordinate(containerIndex: number): number {
     const index = containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
     const itemElement = this.itemsElements[index];
     const itemRect = itemElement!.getBoundingClientRect();

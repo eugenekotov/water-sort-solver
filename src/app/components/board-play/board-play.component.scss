@@ -16,6 +16,12 @@
   gap: 2rem;
 }
 
+.play-containers-large {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
 .moving-item {
   position: absolute;
   top: 0px;
