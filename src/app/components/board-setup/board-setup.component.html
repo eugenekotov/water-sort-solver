@@ -72,74 +72,47 @@
     </div>
   </div>
 
-  <ng-container *ngIf="mainService.isMobile">
-    <div class="setup-containers-small">
-      <div id="containers" class="containers-2-small">
-        <div class="containers containers-small">
+    <div class="setup-containers" [ngClass]="mainService.isMobile ? 'setup-containers-small' : 'setup-containers-large'">
+      <div id="containers" class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'">
+        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
           <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
-            class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+            class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+            cdkDropList [cdkDropListData]="container.colors"
             [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
             [cdkDropListEnterPredicate]="canDrop(container)">
 
-            <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+            <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
               [ngStyle]="getItemStyle(color)" cdkDrag>
             </div>
           </div>
         </div>
 
-        <div *ngIf="mainService.setupContainers2.length > 0" class="containers containers-small">
+        <div *ngIf="mainService.setupContainers2.length > 0" class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
           <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
-            class="container container-small" cdkDropList [cdkDropListData]="container.colors"
+            class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+            cdkDropList [cdkDropListData]="container.colors"
             [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
             [cdkDropListEnterPredicate]="canDrop(container)">
 
-            <div *ngFor="let color of container.colors" class="item item-small shadow shadow-active"
+            <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
               [ngStyle]="getItemStyle(color)" cdkDrag>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </ng-container>
-
-  <ng-container *ngIf="!mainService.isMobile">
-    <div class="containers">
-      <div id="containers" class="containers-2-large">
-        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
-          class="container container-large" cdkDropList [cdkDropListData]="container.colors"
-          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
-
-          <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
-            [ngStyle]="getItemStyle(color)" cdkDrag>
-          </div>
-        </div>
-        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
-          class="container container-large" cdkDropList [cdkDropListData]="container.colors"
-          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
-
-          <div *ngFor="let color of container.colors" class="item item-large shadow shadow-active"
-            [ngStyle]="getItemStyle(color)" cdkDrag>
-          </div>
-        </div>
-      </div>
-    </div>
-  </ng-container>
 
   <ng-container *ngIf="mainService.isMobile">
     <div>
       <div class="buttons-container buttons-container-small">
-        <button id="button-clear" class="button button-small" (click)="clearClick()" [disabled]="filling">{{
-          "SETUP.CLEAR" | translate }}</button>
-        <button id="button-fill" class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{
-          "SETUP.FILL_RANDOM" | translate }}</button>
+        <button id="button-clear" class="button button-small" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+        <button id="button-fill" class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
-        <button id="button-save" class="button button-small" (click)="saveClick()" [disabled]="filling || !canSave">{{
-          "SETUP.SAVE" | translate }}</button>
-        <button id="button-load" class="button button-small mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
-          "SETUP.LOAD" | translate }}</button>
+        <button id="button-save" class="button button-small" (click)="saveClick()" [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
+        <button id="button-load" class="button button-small" (click)="loadClick()" [disabled]="filling || !canLoad">{{ "SETUP.LOAD" | translate }}</button>
+      </div>
+      <div class="buttons-container buttons-container-small">
         <button id="button-solve" class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
         <button id="button-play" class="button button-small" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
       </div>
@@ -148,14 +121,10 @@
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
-      <button id="button-clear" class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR"
-        | translate }}</button>
-      <button id="button-fill" class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{
-        "SETUP.FILL_RANDOM" | translate }}</button>
-      <button id="button-save" class="button button-large" (click)="saveClick()" [disabled]="filling || !canSave">{{
-        "SETUP.SAVE" | translate }}</button>
-      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{
-        "SETUP.LOAD" | translate }}</button>
+      <button id="button-clear" class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
+      <button id="button-fill" class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
+      <button id="button-save" class="button button-large" (click)="saveClick()" [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
+      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{ "SETUP.LOAD" | translate }}</button>
       <button id="button-solve" class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
       <button id="button-play" class="button button-large" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
     </div>

@@ -94,12 +94,19 @@
   gap: $container-items-gap-large;
 }
 
-.setup-containers-small {
-  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
+.setup-containers {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.setup-containers-small {
+  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
+}
+
+.setup-containers-large {
+  height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
 }
 
 .container {

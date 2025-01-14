@@ -19,15 +19,21 @@
   gap: 4rem 1rem;
 }
 
-.containers-2-small {
+.containers-large {
+  gap: 4rem 1rem;
+}
+
+.containers-2 {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem 0.5rem;
+}
+
+.containers-2-small {
+  gap: 1rem 0.5rem;
 }
 
 .containers-2-large {
-  display: flex;
-  gap: 4rem 0.5rem;
+  gap: 1rem 0.5rem;
 }
 
 .container {
@@ -72,7 +78,7 @@
 
 .buttons-container-small {
   margin: $margin-small;
-  gap: math.div($margin-small, 2);
+  gap: $margin-small;
 }
 
 .buttons-container-large {
