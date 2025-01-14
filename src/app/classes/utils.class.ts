@@ -16,6 +16,10 @@ export function getItemIndex(containerIndex: number, itemIndex: number): number 
   return containerIndex * PlayContainer.MAX_SIZE + itemIndex;
 }
 
+export function getTopItemIndex(containerIndex: number): number {
+  return containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
+}
+
 export function getMovingPosition(itemElement: HTMLElement, parentMovingElementRect: DOMRect): Position {
   const itemRect = itemElement.getBoundingClientRect();
   const top = itemRect.top - parentMovingElementRect.top - 1;

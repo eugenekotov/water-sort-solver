@@ -3,7 +3,7 @@ import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { Item, itemCreate } from 'src/app/classes/model/item.class';
 import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
-import { calculateMovingDuration, getItemIndex, getMovingPosition } from 'src/app/classes/utils.class';
+import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { PlayStep, Position } from '../board-solve/board-solve.component';
 import { ContainerComponent } from '../container/container.component';
@@ -247,11 +247,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getMovingTopCoordinate(containerIndex: number): number {
-    const index = containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
+    const index = getTopItemIndex(containerIndex);
     const itemElement = this.itemsElements[index];
-    const itemRect = itemElement!.getBoundingClientRect();
-    const top = itemRect.top - this.parentMovingElementRect.top - itemRect.height * 2;
-    return top;
+    return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
   }
 
   private setMovingPosition(position: Position) {

@@ -5,7 +5,7 @@ import { containerPeek, containerPop, containerPush, containerSize, PlayContaine
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
-import { calculateMovingDuration, getItemIndex, getMovingPosition } from 'src/app/classes/utils.class';
+import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 
 export class PlayStep {
   index: number;
@@ -193,11 +193,9 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getMovingTopCoordinate(containerIndex: number): number {
-    const index = containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
+    const index = getTopItemIndex(containerIndex);
     const itemElement = this.itemsElements[index];
-    const itemRect = itemElement!.getBoundingClientRect();
-    const top = itemRect.top - this.parentMovingElementRect.top - itemRect.height * 2;
-    return top;
+    return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
   }
 
   private setMovingPosition(position: Position) {
