@@ -110,39 +110,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private findPossibleStep(container: PlayContainer): PlayContainer | undefined {
-    // do we have this color
-    let possibleContainer: PlayContainer | undefined = undefined;
-    for (let i = 0; i < this.playContainers.length; i++) {
-      if (this.isPossible(this.playContainers[i], container.index, containerPeek(container))) {
-        if (possibleContainer !== undefined) {
-          // we have more the only one option
-          return undefined;
-        } else {
-          possibleContainer = this.playContainers[i];
-        }
-      }
-    }
-    if (possibleContainer === undefined) {
-      // try to find empty container
-      possibleContainer = this.playContainers.find(cont => containerIsEmpty(cont));
-    }
-    return possibleContainer;
-  }
-
-  private isPossible(container: PlayContainer, excludeIndex: number, color: Color): boolean {
-    if (container.index === excludeIndex) {
-      return false;
-    }
-    if (containerIsEmpty(container)) {
-      return false;
-    }
-    if (!containerIsFull(container) && containerPeek(container) === color) {
-      return true;
-    }
-    return false;
-  }
-
   private moveUp(container: PlayContainer, observer: Subscriber<void>) {
     setTimeout(() => {
       this.movingItem.color = containerPeek(container);
