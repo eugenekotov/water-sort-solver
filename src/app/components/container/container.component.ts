@@ -10,6 +10,7 @@ import { MainService } from 'src/app/services/main.service';
 export class ContainerComponent {
 
   @Input() container!: PlayContainer;
+  @Input() showActive: boolean = false;
 
   constructor(public mainService: MainService) { }
 

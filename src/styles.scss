@@ -64,12 +64,13 @@ body {
 
   --main-background-color: var(--color-00);
   --text-color: var(--color-09);
+  --container-background-color-active: var(--color-03);
 
   --button-background-color: white;
   --button-text-color: var(--text-color);
-  --button-active-background-color: var(--color-03);
-  --button-disabled-background-color: var(--color-01);
-  --button-disabled-text-color: var(--color-04);
+  --button-background-color-active: var(--color-03);
+  --button-background-color-disabled: var(--color-01);
+  --button-text-color-disabled: var(--color-04);
 
   --tour-background-color: var(--color-10);
   --tour-tooltip-border-color: var(--color-10);
@@ -101,11 +102,14 @@ body {
   --main-background-color: var(--color-dark-00);
   --text-color: var(--color-dark-10);
 
+  --container-background-color-active: var(--color-dark-02);
+
+
   --button-background-color: var(--color-dark-02);
   --button-text-color: var(--text-color);
-  --button-active-background-color: var(--color-dark-03);
-  --button-disabled-background-color: var(--color-dark-01);
-  --button-disabled-text-color: var(--color-dark-03);
+  --button-background-color-active: var(--color-dark-03);
+  --button-background-color-disabled: var(--color-dark-01);
+  --button-text-color-disabled: var(--color-dark-03);
 
   --tour-background-color: var(--color-dark-000);
   --tour-tooltip-border-color: var(--color-dark-05);

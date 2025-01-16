@@ -1,4 +1,8 @@
-<div class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+<div class="container" [ngClass]="{
+  'container-small': mainService.isMobile,
+  'container-large': !mainService.isMobile,
+  'container-active': showActive }">
+
   <app-item *ngFor="let item of container.items; let itemIndex = index"
     [attr.id]="getItemId(container.index, itemIndex)" [item]="item">
   </app-item>
