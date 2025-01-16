@@ -20,17 +20,16 @@ export function getTopItemIndex(containerIndex: number): number {
   return containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
 }
 
-export function getMovingPosition(itemElement: HTMLElement, parentMovingElementRect: DOMRect): Position {
+export function getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
   const itemRect = itemElement.getBoundingClientRect();
-  const top = itemRect.top - parentMovingElementRect.top - 1;
-  const left = itemRect.left - parentMovingElementRect.left - 1;
-  // console.log("getMovingPosition", new Position(top, left));
+  const top = itemRect.top - parentRect.top - 1;
+  const left = itemRect.left - parentRect.left - 1;
   return new Position(top, left);
 }
 
-export function getMovingTopCoordinate(itemElement: HTMLElement, parentMovingElementRect: DOMRect): number {
+export function getMovingTopCoordinate(itemElement: HTMLElement, parentRect: DOMRect): number {
   const itemRect = itemElement!.getBoundingClientRect();
-  const top = itemRect.top - parentMovingElementRect.top - itemRect.height * 2;
+  const top = itemRect.top - parentRect.top - itemRect.height * 2;
   return top;
 }
 

@@ -18,13 +18,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
   tour: Tour;
-  canSave: boolean = false;
-  canLoad: boolean = false;
+  saveEnabled: boolean = false;
+  loadEnabled: boolean = false;
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
-    this.checkCanSave();
-    this.checkCanLoad();
+    this.checkSaveEnabled();
+    this.checkLoadEnabled();
   }
 
   ngOnInit(): void {
@@ -54,12 +54,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         event.previousIndex,
         event.currentIndex,
       );
-      this.checkCanSave();
+      this.checkSaveEnabled();
     }
   }
 
-  private checkCanSave() {
-    this.canSave = this.mainService.getSetupContainersItems() > 0;
+  private checkSaveEnabled() {
+    this.saveEnabled = this.mainService.getSetupContainersItems() > 0;
   }
 
   getConnectedLists(currentId: string): string[] {
@@ -88,7 +88,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private clearBoard() {
     this.mainService.createSourceContainers();
     this.clearContainers();
-    this.checkCanSave();
+    this.checkSaveEnabled();
   }
 
   private clearContainers() {
@@ -116,7 +116,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.pause(20);
     }
     this.filling = false;
-    this.checkCanSave();
+    this.checkSaveEnabled();
   }
 
   async pause(delay: number): Promise<void> {
@@ -130,14 +130,15 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.setItem(MainService.STORAGE_KEY + "-source", sourceContainersString);
     localStorage.setItem(MainService.STORAGE_KEY + "-containers-1", containersString1);
     localStorage.setItem(MainService.STORAGE_KEY + "-containers-2", containersString2);
-    this.checkCanLoad();
+    this.saveEnabled = false;
+    this.checkLoadEnabled();
   }
 
-  private checkCanLoad() {
+  private checkLoadEnabled() {
     const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
     const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
     const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
-    this.canLoad = (sourceContainersString !== null && containersString1 !== null && containersString2 !== null);
+    this.loadEnabled = (sourceContainersString !== null && containersString1 !== null && containersString2 !== null);
   }
 
   loadClick() {
@@ -186,6 +187,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.addSourceContainer();
       this.addSetupContainer();
       this.mainService.saveContainerCount();
+      this.checkSaveEnabled();
     }
   }
 
@@ -206,6 +208,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.removeSourceContainer();
       this.removeSetupContainer();
       this.mainService.saveContainerCount();
+      this.checkSaveEnabled();
     }
   }
 

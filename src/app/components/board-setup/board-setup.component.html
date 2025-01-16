@@ -109,8 +109,8 @@
         <button id="button-fill" class="button button-small" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
-        <button id="button-save" class="button button-small" (click)="saveClick()" [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
-        <button id="button-load" class="button button-small" (click)="loadClick()" [disabled]="filling || !canLoad">{{ "SETUP.LOAD" | translate }}</button>
+        <button id="button-save" class="button button-small" (click)="saveClick()" [disabled]="filling || !saveEnabled">{{ "SETUP.SAVE" | translate }}</button>
+        <button id="button-load" class="button button-small" (click)="loadClick()" [disabled]="filling || !loadEnabled">{{ "SETUP.LOAD" | translate }}</button>
       </div>
       <div class="buttons-container buttons-container-small">
         <button id="button-solve" class="button button-small" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
@@ -123,8 +123,8 @@
     <div class="buttons-container buttons-container-large">
       <button id="button-clear" class="button button-large" (click)="clearClick()" [disabled]="filling">{{ "SETUP.CLEAR" | translate }}</button>
       <button id="button-fill" class="button button-large mr-1" (click)="fillRandomly()" [disabled]="filling">{{ "SETUP.FILL_RANDOM" | translate }}</button>
-      <button id="button-save" class="button button-large" (click)="saveClick()" [disabled]="filling || !canSave">{{ "SETUP.SAVE" | translate }}</button>
-      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !canLoad">{{ "SETUP.LOAD" | translate }}</button>
+      <button id="button-save" class="button button-large" (click)="saveClick()" [disabled]="filling || !saveEnabled">{{ "SETUP.SAVE" | translate }}</button>
+      <button id="button-load" class="button button-large mr-1" (click)="loadClick()" [disabled]="filling || !loadEnabled">{{ "SETUP.LOAD" | translate }}</button>
       <button id="button-solve" class="button button-large" (click)="solveClick()" [disabled]="filling">{{ "SETUP.SOLVE" | translate }}</button>
       <button id="button-play" class="button button-large" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
     </div>
