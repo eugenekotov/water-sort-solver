@@ -72,6 +72,36 @@ export class PlayContainer {
     return color;
   }
 
+  push(color: Color): void {
+    PlayContainer.push(this, color);
+  }
+
+  static push(container: PlayContainer, color: Color): void {
+    // Search first empty item
+    const size = containerSize(container);
+    if (size == PlayContainer.MAX_SIZE) {
+      throw Error("Size limit exists.");
+    }
+    container.items[size].color = color;
+    containerAfterChange(container);
+  }
+
+  isEmpty(): boolean {
+    return PlayContainer.isEmpty(this);
+  }
+
+  static isEmpty(container: PlayContainer): boolean {
+    return container.items[0].color === undefined;
+  }
+
+  isFull(): boolean {
+    return PlayContainer.isFull(this);
+  }
+
+  static isFull(container: PlayContainer): boolean {
+    return containerSize(container) === PlayContainer.MAX_SIZE;
+  }
+
 }
 
 export function containerCreate(index: number): PlayContainer {

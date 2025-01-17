@@ -44,9 +44,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly maxSpeed = 20;
   readonly defaultSpeed = 5;
 
-  movingInProgress: boolean = false;
-  stoppingInProgress: boolean = false;
-
   private clicksSubject$ = new Subject<PlayContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
@@ -90,13 +87,13 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       concatMap(container => this.makeAction(container)))
       .subscribe({
         next: () => {
-          this.movingInProgress = false;
+          this.movingController.movingInProgress = false;
           // TODO: Here we need check is container or board resolved
         },
         error: () => {
           // Interrupted by button start from scratch or step back
-          this.stoppingInProgress = false;
-          this.movingInProgress = false;
+          this.movingController.stoppingInProgress = false;
+          this.movingController.movingInProgress = false;
           this.stepsSubjectSubscription.unsubscribe();
           this.createStepsSubject();
           this.stopSubject$.next();
@@ -105,26 +102,26 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private makeAction(container: PlayContainer): Observable<PlayContainer> {
-    this.movingInProgress = true;
+    this.movingController.movingInProgress = true;
     return new Observable(observer => {
       const selectedContainer = this.getSelectedContainer();
       if (selectedContainer) {
         if (container.selected) {
           // Move colors back down
-          // this.moveDown(container, observer);
+          this.movingController.moveDown(container, this.parentMovingElementRect, observer);
           container.selected = false;
         } else {
-          // if (containerIsEmpty(container) || (!containerIsFull(container) && containerPeek(container) === this.movingItem.color)) {
-          //   // Move colors if it is possible
-          //   // this.moveTo(container, observer);
-          //   this.steps.push(PlayStep.create(selectedContainer.index, container.index));
-          // } else {
-          //   // this.moveDown(selectedContainer, observer);
-          // }
+          if (container.isEmpty() || (!container.isFull() && container.peek() === this.movingController.getColor())) {
+            // Move colors if it is possible
+            // this.moveTo(container, observer);
+            this.steps.push(PlayStep.create(selectedContainer.index, container.index));
+          } else {
+            this.movingController.moveDown(selectedContainer, this.parentMovingElementRect, observer);
+          }
           selectedContainer.selected = false;
         }
       } else {
-        if (this.stoppingInProgress) {
+        if (this.movingController.stoppingInProgress) {
           observer.error({ message: "Stop" });
           return;
         }
@@ -270,8 +267,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   backClick() {
-    if (this.movingInProgress) {
-      this.stoppingInProgress = true;
+    if (this.movingController.movingInProgress) {
+      this.movingController.stoppingInProgress = true;
       const stopSubscriber = this.stopSubject$.subscribe(() => {
         stopSubscriber.unsubscribe();
         this.stepBack();
@@ -288,8 +285,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   restartClick() {
     // TODO: Ask confirmation
-    if (this.movingInProgress) {
-      this.stoppingInProgress = true;
+    if (this.movingController.movingInProgress) {
+      this.movingController.stoppingInProgress = true;
       setTimeout(() => {
         const stopSubscriber = this.stopSubject$.subscribe(() => {
           stopSubscriber.unsubscribe();
@@ -307,11 +304,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.steps = [];
     this.createStepsSubject();
-    this.movingInProgress = false;
-    this.stoppingInProgress = false;
-    // if (this.movingItem) {
-    //   this.movingItem.hidden = true;
-    // }
+    this.movingController.movingInProgress = false;
+    this.movingController.stoppingInProgress = false;
+    this.movingController.setHidden(true);
     setTimeout(() => this.getItemsElements(), 0);
   }
 
