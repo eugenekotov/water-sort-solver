@@ -102,7 +102,6 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
           stepsSubjectSubscription.unsubscribe();
           this.createStepsSubject();
           this.playing = false;
-          this.stopping = false;
           this.stepIndex = this.completeStepIndex;
         }
       });
@@ -154,6 +153,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   private makeStep(step: PlayStep): Observable<number> {
     return new Observable<number>(observer => {
       if (this.stopping) {
+        this.stopping = false;
         observer.error({ message: "Stop" });
         return;
       }

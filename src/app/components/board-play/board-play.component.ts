@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
+import { concatMap, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { Item, itemCreate } from 'src/app/classes/model/item.class';
 import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
@@ -32,9 +32,11 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly defaultSpeed = 5;
   speed: number = this.defaultSpeed; // TODO: change speed according to que size
 
-  playing: boolean = false;
+  movingInProgress: boolean = false;
+  stoppingInProgress: boolean = false;
 
   private clicksSubject$ = new Subject<PlayContainer>();
+  private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
   movingItem: Item; // Item for moving animation
   private movingCurrentPosition: Position;
@@ -42,7 +44,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(public mainService: MainService) {
     this.prepareBoard();
-    this.createStepsSubject();
     this.movingItem = itemCreate(undefined, 0, true);
   }
 
@@ -70,15 +71,31 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createStepsSubject() {
+    if (this.stepsSubjectSubscription) {
+      this.stepsSubjectSubscription.unsubscribe();
+    }
     this.clicksSubject$ = new Subject<PlayContainer>();
     this.stepsSubjectSubscription = this.clicksSubject$.pipe(
       concatMap(container => this.makeAction(container)))
-      .subscribe(() => {
-        // TODO: Here we need check is container or board resolved
+      .subscribe({
+        next: (container: PlayContainer) => {
+          this.movingInProgress = false;
+          console.log(container);
+          // TODO: Here we need check is container or board resolved
+        },
+        error: () => {
+          // Interrupted by button start from scratch or step back
+          this.stoppingInProgress = false;
+          this.movingInProgress = false;
+          this.stepsSubjectSubscription.unsubscribe();
+          this.createStepsSubject();
+          this.stopSubject$.next();
+        }
       });
   }
 
-  private makeAction(container: PlayContainer): Observable<void> {
+  private makeAction(container: PlayContainer): Observable<PlayContainer> {
+    this.movingInProgress = true;
     return new Observable(observer => {
       const selectedContainer = this.getSelectedContainer();
       if (selectedContainer) {
@@ -97,6 +114,10 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
           selectedContainer.selected = false;
         }
       } else {
+        if (this.stoppingInProgress) {
+          observer.error({ message: "Stop" });
+          return;
+        }
         // No selected container
         if (!containerIsEmpty(container)) {
           // We selected container, move colors up
@@ -110,7 +131,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private moveUp(container: PlayContainer, observer: Subscriber<void>) {
+  private moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
     setTimeout(() => {
       this.movingItem.color = containerPeek(container);
       const index = getItemIndex(container.index, containerSize(container) - 1);
@@ -122,13 +143,18 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(async () => {
         const topPosition = new Position(this.getMovingTopCoordinate(container.index), startPosition.left);
         await this.moving(startPosition, topPosition);
-        observer.next();
+        if (this.stoppingInProgress) {
+          this.moveDown(container, observer);
+          container.selected = false;
+          return;
+        }
+        observer.next(container);
         observer.complete();
       }, 0);
     }, 0);
   }
 
-  private moveDown(container: PlayContainer, observer: Subscriber<void>) {
+  private moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
     // moving
     setTimeout(async () => {
       const index = getItemIndex(container.index, containerSize(container));
@@ -136,13 +162,16 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.moving(this.movingCurrentPosition, finishPosition);
       containerPush(container, this.movingItem.color!);
       this.movingItem.hidden = true;
-      observer.next();
+      if (this.stoppingInProgress) {
+        observer.error({ message: "Stop" });
+        return;
+      }
+      observer.next(container);
       observer.complete();
     }, 0);
   }
 
-  private moveTo(container: PlayContainer, observer: Subscriber<void>) {
-    // moving
+  private moveTo(container: PlayContainer, observer: Subscriber<PlayContainer>) {
     setTimeout(async () => {
       const startPosition = this.movingCurrentPosition;
       const index = getItemIndex(container.index, containerSize(container));
@@ -152,7 +181,11 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       await this.moving(leftPosition, finishPosition);
       containerPush(container, this.movingItem.color!);
       this.movingItem.hidden = true;
-      observer.next();
+      if (this.stoppingInProgress) {
+        observer.error({ message: "Stop" });
+        return;
+      }
+      observer.next(container);
       observer.complete();
     }, 0);
   }
@@ -226,12 +259,34 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   backClick() {
+    if (this.movingInProgress) {
+      this.stoppingInProgress = true;
+      const stopSubscriber = this.stopSubject$.subscribe(() => {
+        stopSubscriber.unsubscribe();
+        this.stepBack();
+      });
+    } else {
+      this.stepBack();
+    }
+  }
 
+  private stepBack() {
+    const step = this.steps.pop();
+    containerPush(this.playContainers[step!.iFrom], containerPop(this.playContainers[step!.iTo]));
   }
 
   toStartClick() {
-    // TODO: Wait until step finished
-    this.prepareBoard();
+    if (this.movingInProgress) {
+      this.stoppingInProgress = true;
+      setTimeout(() => {
+        const stopSubscriber = this.stopSubject$.subscribe(() => {
+          stopSubscriber.unsubscribe();
+          this.prepareBoard();
+        });
+      }, 0);
+    } else {
+      this.prepareBoard();
+    }
   }
 
   private prepareBoard() {
@@ -239,6 +294,12 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.playContainers2 = containersClone(this.mainService.playContainers2);
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.steps = [];
+    this.createStepsSubject();
+    this.movingInProgress = false;
+    this.stoppingInProgress = false;
+    if (this.movingItem) {
+      this.movingItem.hidden = true;
+    }
     setTimeout(() => this.getItemsElements(), 0);
   }
 
