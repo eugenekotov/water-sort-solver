@@ -22,6 +22,56 @@ export class PlayContainer {
   index: number;
   items: Item[] = [];
   selected: boolean = false;
+
+  getTopColorCount(): number {
+    return PlayContainer.getTopColorCount(this);
+  }
+
+  static getTopColorCount(container: PlayContainer): number {
+    if (containerIsEmpty(container)) {
+      return 0;
+    }
+    let result = 1;
+    const color = containerPeek(container);
+    let i = containerSize(container) - 2;
+    while (i >= 0 && container.items[i].color === color) {
+      result++;
+      i--;
+    }
+    return result
+  }
+
+  peek(): Color {
+    return PlayContainer.peek(this);
+  }
+
+  static peek(container: PlayContainer): Color {
+    const size = containerSize(container);
+    if (size == 0) {
+      throw Error("Container is empty.");
+    }
+    return container.items[size - 1].color!;
+  }
+
+  size(): number {
+    return this._size;
+  }
+
+  pop(): Color {
+    return PlayContainer.pop(this);
+  }
+
+  static pop(container: PlayContainer): Color {
+    const size = container.size();
+    if (size == 0) {
+      throw Error("Container is empty.");
+    }
+    const color = container.items[size - 1].color!;
+    container.items[size - 1].color = undefined;
+    containerAfterChange(container);
+    return color;
+  }
+
 }
 
 export function containerCreate(index: number): PlayContainer {

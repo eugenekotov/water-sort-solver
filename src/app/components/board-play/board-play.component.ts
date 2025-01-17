@@ -1,12 +1,25 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
-import { Color } from 'src/app/classes/model/colors.class';
-import { Item, itemCreate } from 'src/app/classes/model/item.class';
-import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
-import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
+import { concatMap, Observable, Subject, Subscription } from 'rxjs';
+import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, PlayContainer } from 'src/app/classes/model/play-container.class';
+import { MovingController } from 'src/app/classes/moving-controller.class';
+import { getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
-import { PlayStep, Position } from '../board-solve/board-solve.component';
 import { ContainerComponent } from '../container/container.component';
+
+
+class PlayStepItem {
+  constructor(public iFrom: number, public iTo: number) {}
+}
+
+class PlayStep {
+  items: PlayStepItem[] = [];
+
+  static create(iFrom: number, iTo: number): PlayStep {
+    const result = new PlayStep();
+    result.items.push(new PlayStepItem(iFrom, iTo));
+    return result
+  }
+}
 
 @Component({
   selector: 'app-board-play',
@@ -30,7 +43,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
   readonly defaultSpeed = 5;
-  speed: number = this.defaultSpeed; // TODO: change speed according to que size
 
   movingInProgress: boolean = false;
   stoppingInProgress: boolean = false;
@@ -38,13 +50,12 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   private clicksSubject$ = new Subject<PlayContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
-  movingItem: Item; // Item for moving animation
-  private movingCurrentPosition: Position;
 
+  movingController = new MovingController();
 
   constructor(public mainService: MainService) {
     this.prepareBoard();
-    this.movingItem = itemCreate(undefined, 0, true);
+    this.movingController.speed = this.defaultSpeed;
   }
 
   ngOnInit(): void {
@@ -100,16 +111,16 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       if (selectedContainer) {
         if (container.selected) {
           // Move colors back down
-          this.moveDown(container, observer);
+          // this.moveDown(container, observer);
           container.selected = false;
         } else {
-          if (containerIsEmpty(container) || (!containerIsFull(container) && containerPeek(container) === this.movingItem.color)) {
-            // Move colors if it is possible
-            this.moveTo(container, observer);
-            this.steps.push(new PlayStep(this.steps.length, selectedContainer.index, container.index));
-          } else {
-            this.moveDown(selectedContainer, observer);
-          }
+          // if (containerIsEmpty(container) || (!containerIsFull(container) && containerPeek(container) === this.movingItem.color)) {
+          //   // Move colors if it is possible
+          //   // this.moveTo(container, observer);
+          //   this.steps.push(PlayStep.create(selectedContainer.index, container.index));
+          // } else {
+          //   // this.moveDown(selectedContainer, observer);
+          // }
           selectedContainer.selected = false;
         }
       } else {
@@ -120,7 +131,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
         // No selected container
         if (!containerIsEmpty(container)) {
           // We selected container, move colors up
-          this.moveUp(container, observer);
+          this.movingController.moveUp(container, this.itemsElements, this.parentMovingElementRect, observer);
           container.selected = true;
         } else {
           observer.next();
@@ -130,73 +141,74 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-    setTimeout(() => {
-      this.movingItem.color = containerPeek(container);
-      const index = getItemIndex(container.index, containerSize(container) - 1);
-      const startPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-      this.setMovingPosition(startPosition);
-      containerPop(container);
-      this.movingItem.hidden = false;
-      // moving
-      setTimeout(async () => {
-        const topPosition = new Position(this.getMovingTopCoordinate(container.index), startPosition.left);
-        await this.moving(startPosition, topPosition);
-        if (this.stoppingInProgress) {
-          this.moveDown(container, observer);
-          container.selected = false;
-          return;
-        }
-        observer.next(container);
-        observer.complete();
-      }, 0);
-    }, 0);
-  }
+  // private moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
+  //   setTimeout(() => {
+  //     const movingCount = containerGetTopColorCount(container);
+  //     this.movingItem0.color = containerPeek(container);
+  //     const index = getItemIndex(container.index, containerSize(container) - 1);
+  //     const startPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
+  //     this.setMovingPosition(startPosition);
+  //     containerPop(container);
+  //     this.movingItem.hidden = false;
+  //     // moving
+  //     setTimeout(async () => {
+  //       const topPosition = new Position(this.getMovingTopCoordinate(container.index), startPosition.left);
+  //       await this.moving(startPosition, topPosition);
+  //       if (this.stoppingInProgress) {
+  //         this.moveDown(container, observer);
+  //         container.selected = false;
+  //         return;
+  //       }
+  //       observer.next(container);
+  //       observer.complete();
+  //     }, 0);
+  //   }, 0);
+  // }
 
-  private moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-    // moving
-    setTimeout(async () => {
-      const index = getItemIndex(container.index, containerSize(container));
-      const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-      await this.moving(this.movingCurrentPosition, finishPosition);
-      containerPush(container, this.movingItem.color!);
-      this.movingItem.hidden = true;
-      if (this.stoppingInProgress) {
-        observer.error({ message: "Stop" });
-        return;
-      }
-      observer.next(container);
-      observer.complete();
-    }, 0);
-  }
+  // private moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
+  //   // moving
+  //   setTimeout(async () => {
+  //     const index = getItemIndex(container.index, containerSize(container));
+  //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
+  //     await this.moving(this.movingCurrentPosition, finishPosition);
+  //     containerPush(container, this.movingItem.color!);
+  //     this.movingItem.hidden = true;
+  //     if (this.stoppingInProgress) {
+  //       observer.error({ message: "Stop" });
+  //       return;
+  //     }
+  //     observer.next(container);
+  //     observer.complete();
+  //   }, 0);
+  // }
 
-  private moveTo(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-    setTimeout(async () => {
-      const startPosition = this.movingCurrentPosition;
-      const index = getItemIndex(container.index, containerSize(container));
-      const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-      const leftPosition = new Position(this.getMovingTopCoordinate(container.index), finishPosition.left);
-      await this.moving(startPosition, leftPosition);
-      await this.moving(leftPosition, finishPosition);
-      containerPush(container, this.movingItem.color!);
-      this.movingItem.hidden = true;
-      if (this.stoppingInProgress) {
-        observer.error({ message: "Stop" });
-        return;
-      }
-      observer.next(container);
-      observer.complete();
-    }, 0);
-  }
+  // private moveTo(container: PlayContainer, observer: Subscriber<PlayContainer>) {
+  //   setTimeout(async () => {
+  //     const startPosition = this.movingCurrentPosition;
+  //     const index = getItemIndex(container.index, containerSize(container));
+  //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
+  //     const leftPosition = new Position(this.getMovingTopCoordinate(container.index), finishPosition.left);
+  //     await this.moving(startPosition, leftPosition);
+  //     await this.moving(leftPosition, finishPosition);
+  //     containerPush(container, this.movingItem.color!);
+  //     this.movingItem.hidden = true;
+  //     if (this.stoppingInProgress) {
+  //       observer.error({ message: "Stop" });
+  //       return;
+  //     }
+  //     observer.next(container);
+  //     observer.complete();
+  //   }, 0);
+  // }
 
-  private async moving(from: Position, to: Position): Promise<void> {
-    return new Promise<void>(resolve => {
-      const moving_duration1 = calculateMovingDuration(from, to, this.speed);
-      this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
-      this.setMovingPosition(to);
-      setTimeout(resolve, moving_duration1);
-    });
-  }
+  // private async moving(from: Position, to: Position): Promise<void> {
+  //   return new Promise<void>(resolve => {
+  //     const moving_duration1 = calculateMovingDuration(from, to, this.speed);
+  //     this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+  //     this.setMovingPosition(to);
+  //     setTimeout(resolve, moving_duration1);
+  //   });
+  // }
 
   private getItemsElements() {
     this.itemsElements = [];
@@ -222,7 +234,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     if (speed < this.minSpeed || this.maxSpeed < speed) {
       speed = this.defaultSpeed;
     }
-    this.speed = speed;
+    this.movingController.speed = speed;
   }
 
   private saveSpeed(speed: number) {
@@ -251,11 +263,11 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
   }
 
-  private setMovingPosition(position: Position) {
-    this.movingCurrentPosition = position;
-    this.movingItem.top = `${position.top}px`;
-    this.movingItem.left = `${position.left}px`;
-  }
+  // private setMovingPosition(position: Position) {
+  //   this.movingCurrentPosition = position;
+  //   this.movingItem.top = `${position.top}px`;
+  //   this.movingItem.left = `${position.left}px`;
+  // }
 
   backClick() {
     if (this.movingInProgress) {
@@ -271,7 +283,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stepBack() {
     const step = this.steps.pop();
-    containerPush(this.playContainers[step!.iFrom], containerPop(this.playContainers[step!.iTo]));
+    step!.items.forEach(item => containerPush(this.playContainers[item.iFrom], containerPop(this.playContainers[item.iTo])));
   }
 
   restartClick() {
@@ -297,9 +309,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.createStepsSubject();
     this.movingInProgress = false;
     this.stoppingInProgress = false;
-    if (this.movingItem) {
-      this.movingItem.hidden = true;
-    }
+    // if (this.movingItem) {
+    //   this.movingItem.hidden = true;
+    // }
     setTimeout(() => this.getItemsElements(), 0);
   }
 

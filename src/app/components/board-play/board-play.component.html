@@ -36,13 +36,13 @@
       </div>
     </ng-container>
 
-    <app-moving-item class="moving-item" [item]="movingItem"></app-moving-item>
+    <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem"></app-moving-item>
   </div>
 
   <div class="speed-small">
     <div class="speed-small-2 shadow-inset">
       <label>{{ "SOLVE.SPEED" | translate }}</label>
-      <mat-slider [min]="minSpeed" [max]="maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="speed">
+      <mat-slider [min]="minSpeed" [max]="maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="movingController.speed">
         <input matSliderThumb>
       </mat-slider>
     </div>

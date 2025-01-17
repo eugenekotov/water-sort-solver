@@ -7,7 +7,7 @@ import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
 import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 
-export class PlayStep {
+class PlayStep {
   index: number;
   iFrom: number;
   iTo: number;
