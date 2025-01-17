@@ -39,7 +39,7 @@
     "FINISH": "Finish"
   },
   "PLAY": {
-    "TO_START": "From scratch"
+    "RESTART": "Restart"
   }
 
 }

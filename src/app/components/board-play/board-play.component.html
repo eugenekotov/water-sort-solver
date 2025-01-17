@@ -50,7 +50,7 @@
 
   <ng-container *ngIf="mainService.isMobile">
     <div class="buttons-container buttons-container-small">
-      <button class="button button-small" (click)="toStartClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "PLAY.TO_START" | translate }}</button>
+      <button class="button button-small" (click)="restartClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
       <button class="button button-small" (click)="backClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
       <button class="button button-small" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
     </div>
@@ -58,7 +58,7 @@
 
   <ng-container *ngIf="!mainService.isMobile">
     <div class="buttons-container buttons-container-large">
-      <button class="button button-large" (click)="toStartClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "PLAY.TO_START" | translate }}</button>
+      <button class="button button-large" (click)="restartClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
       <button class="button button-large" (click)="backClick()" [disabled]="stoppingInProgress || steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
       <button class="button button-large" (click)="setupClick()">{{ "SETUP_BOARD" | translate }}</button>
     </div>

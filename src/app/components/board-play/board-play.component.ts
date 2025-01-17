@@ -78,9 +78,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepsSubjectSubscription = this.clicksSubject$.pipe(
       concatMap(container => this.makeAction(container)))
       .subscribe({
-        next: (container: PlayContainer) => {
+        next: () => {
           this.movingInProgress = false;
-          console.log(container);
           // TODO: Here we need check is container or board resolved
         },
         error: () => {
@@ -275,7 +274,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     containerPush(this.playContainers[step!.iFrom], containerPop(this.playContainers[step!.iTo]));
   }
 
-  toStartClick() {
+  restartClick() {
+    // TODO: Ask confirmation
     if (this.movingInProgress) {
       this.stoppingInProgress = true;
       setTimeout(() => {
