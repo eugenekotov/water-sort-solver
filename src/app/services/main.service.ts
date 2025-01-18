@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Color } from '../classes/model/colors.class';
-import { containerAfterChange, containerClear, containerCreate, PlayContainer } from '../classes/model/play-container.class';
+import { PlayContainer } from '../classes/model/play-container.class';
 import { SetupContainer } from '../classes/model/setup-container.class';
+import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
-import { Solution } from '../classes/model/solution-set.class';
 
 // TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | "play" | undefined;
@@ -161,15 +161,15 @@ export class MainService {
     this.playContainers2 = [];
     if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
       for (let i = 0; i < this.containerCount; i++) {
-        this.playContainers1.push(containerCreate(i));
+        this.playContainers1.push(PlayContainer.create(i));
       }
     } else {
       const halfOfContainerCount = Math.ceil(this.containerCount / 2);
       for (let i = 0; i < halfOfContainerCount; i++) {
-        this.playContainers1.push(containerCreate(i));
+        this.playContainers1.push(PlayContainer.create(i));
       }
       for (let i = halfOfContainerCount; i < this.containerCount; i++) {
-        this.playContainers2.push(containerCreate(i));
+        this.playContainers2.push(PlayContainer.create(i));
       }
     }
   }
@@ -177,12 +177,12 @@ export class MainService {
   public fillPlayContainers(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     setupContainers1.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
-      containerAfterChange(this.playContainers1[containerIndex]);
+      PlayContainer.afterChange(this.playContainers1[containerIndex]);
     });
 
     setupContainers2.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers2[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
-      containerAfterChange(this.playContainers2[containerIndex]);
+      PlayContainer.afterChange(this.playContainers2[containerIndex]);
     });
   }
 

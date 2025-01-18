@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containersClone, PlayContainer } from 'src/app/classes/model/play-container.class';
+import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
@@ -126,7 +126,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         // No selected container
-        if (!containerIsEmpty(container)) {
+        if (!PlayContainer.isEmpty(container)) {
           // We selected container, move colors up
           this.movingController.moveUp(container, this.itemsElements, this.parentMovingElementRect, observer);
           container.selected = true;
@@ -141,11 +141,11 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   // private moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
   //   setTimeout(() => {
   //     const movingCount = containerGetTopColorCount(container);
-  //     this.movingItem0.color = containerPeek(container);
-  //     const index = getItemIndex(container.index, containerSize(container) - 1);
+  //     this.movingItem0.color = container.peek();
+  //     const index = getItemIndex(container.index, PlayContainer.size(container) - 1);
   //     const startPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
   //     this.setMovingPosition(startPosition);
-  //     containerPop(container);
+  //     container.pop();
   //     this.movingItem.hidden = false;
   //     // moving
   //     setTimeout(async () => {
@@ -165,10 +165,10 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   // private moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
   //   // moving
   //   setTimeout(async () => {
-  //     const index = getItemIndex(container.index, containerSize(container));
+  //     const index = getItemIndex(container.index, PlayContainer.size(container));
   //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
   //     await this.moving(this.movingCurrentPosition, finishPosition);
-  //     containerPush(container, this.movingItem.color!);
+  //     PlayContainer.push(container, this.movingItem.color!);
   //     this.movingItem.hidden = true;
   //     if (this.stoppingInProgress) {
   //       observer.error({ message: "Stop" });
@@ -182,12 +182,12 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   // private moveTo(container: PlayContainer, observer: Subscriber<PlayContainer>) {
   //   setTimeout(async () => {
   //     const startPosition = this.movingCurrentPosition;
-  //     const index = getItemIndex(container.index, containerSize(container));
+  //     const index = getItemIndex(container.index, PlayContainer.size(container));
   //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
   //     const leftPosition = new Position(this.getMovingTopCoordinate(container.index), finishPosition.left);
   //     await this.moving(startPosition, leftPosition);
   //     await this.moving(leftPosition, finishPosition);
-  //     containerPush(container, this.movingItem.color!);
+  //     PlayContainer.push(container, this.movingItem.color!);
   //     this.movingItem.hidden = true;
   //     if (this.stoppingInProgress) {
   //       observer.error({ message: "Stop" });
@@ -280,7 +280,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stepBack() {
     const step = this.steps.pop();
-    step!.items.forEach(item => containerPush(this.playContainers[item.iFrom], containerPop(this.playContainers[item.iTo])));
+    step!.items.forEach(item => PlayContainer.push(this.playContainers[item.iFrom], this.playContainers[item.iTo].pop()));
   }
 
   restartClick() {
@@ -299,8 +299,8 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private prepareBoard() {
-    this.playContainers1 = containersClone(this.mainService.playContainers1);
-    this.playContainers2 = containersClone(this.mainService.playContainers2);
+    this.playContainers1 = PlayContainer.containersClone(this.mainService.playContainers1);
+    this.playContainers2 = PlayContainer.containersClone(this.mainService.playContainers2);
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.steps = [];
     this.createStepsSubject();

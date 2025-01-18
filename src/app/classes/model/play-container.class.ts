@@ -1,6 +1,10 @@
 import { Color } from "./colors.class";
 import { Item, itemCreate } from "./item.class";
 
+
+/**
+ * static methods added to use them from web-worker
+ */
 export class PlayContainer {
 
   static readonly MAX_SIZE = 4;
@@ -28,12 +32,12 @@ export class PlayContainer {
   }
 
   static getTopColorCount(container: PlayContainer): number {
-    if (containerIsEmpty(container)) {
+    if (PlayContainer.isEmpty(container)) {
       return 0;
     }
     let result = 1;
-    const color = containerPeek(container);
-    let i = containerSize(container) - 2;
+    const color = PlayContainer.peek(container);
+    let i = PlayContainer.size(container) - 2;
     while (i >= 0 && container.items[i].color === color) {
       result++;
       i--;
@@ -46,7 +50,7 @@ export class PlayContainer {
   }
 
   static peek(container: PlayContainer): Color {
-    const size = containerSize(container);
+    const size = PlayContainer.size(container);
     if (size == 0) {
       throw Error("Container is empty.");
     }
@@ -55,6 +59,10 @@ export class PlayContainer {
 
   size(): number {
     return this._size;
+  }
+
+  static size(container: PlayContainer) {
+    return container._size
   }
 
   pop(): Color {
@@ -68,7 +76,7 @@ export class PlayContainer {
     }
     const color = container.items[size - 1].color!;
     container.items[size - 1].color = undefined;
-    containerAfterChange(container);
+    PlayContainer.afterChange(container);
     return color;
   }
 
@@ -78,12 +86,12 @@ export class PlayContainer {
 
   static push(container: PlayContainer, color: Color): void {
     // Search first empty item
-    const size = containerSize(container);
+    const size = PlayContainer.size(container);
     if (size == PlayContainer.MAX_SIZE) {
       throw Error("Size limit exists.");
     }
     container.items[size].color = color;
-    containerAfterChange(container);
+    PlayContainer.afterChange(container);
   }
 
   isEmpty(): boolean {
@@ -99,128 +107,83 @@ export class PlayContainer {
   }
 
   static isFull(container: PlayContainer): boolean {
-    return containerSize(container) === PlayContainer.MAX_SIZE;
+    return PlayContainer.size(container) === PlayContainer.MAX_SIZE;
   }
 
-}
-
-export function containerCreate(index: number): PlayContainer {
-  const container = new PlayContainer();
-  container.index = index;
-  for (let i = 0; i < PlayContainer.MAX_SIZE; i++) {
-    container.items.push(itemCreate(undefined, index, false));
+  static afterChange(container: PlayContainer) {
+    PlayContainer.calculateSize(container);
+    PlayContainer.checkResolved(container);
   }
-  containerAfterChange(container);
-  return container;
-}
 
-export function containerAfterChange(container: PlayContainer) {
-  containerCalculateSize(container);
-  containerCheckResolved(container);
-}
-
-export function containerPush(container: PlayContainer, color: Color): void {
-  // Search first empty item
-  const size = containerSize(container);
-  if (size == PlayContainer.MAX_SIZE) {
-    throw Error("Size limit exists.");
-  }
-  container.items[size].color = color;
-  containerAfterChange(container);
-}
-
-export function containerPeek(container: PlayContainer): Color {
-  const size = containerSize(container);
-  if (size == 0) {
-    throw Error("Container is empty.");
-  }
-  return container.items[size - 1].color!;
-}
-
-export function containerPop(container: PlayContainer): Color {
-  const size = containerSize(container);
-  if (size == 0) {
-    throw Error("Container is empty.");
-  }
-  const color = container.items[size - 1].color!;
-  container.items[size - 1].color = undefined;
-  containerAfterChange(container);
-  return color;
-}
-
-export function containerSize(container: PlayContainer): number {
-  return container._size;
-}
-
-function containerCalculateSize(container: PlayContainer) {
-  container._size = container.items.findIndex(item => item.color === undefined);
-  if (container._size === -1) {
-    container._size = PlayContainer.MAX_SIZE;
-  }
-}
-
-export function containerIsEmpty(container: PlayContainer): boolean {
-  return container.items[0].color === undefined;
-}
-
-export function containerIsFull(container: PlayContainer): boolean {
-  return containerSize(container) === PlayContainer.MAX_SIZE;
-}
-
-export function containerClear(container: PlayContainer) {
-  container.items.forEach(item => item.color = undefined);
-}
-
-export function containerIsResolved(container: PlayContainer): boolean {
-  return container.resolved;
-}
-
-function containerCheckResolved(container: PlayContainer): void {
-  if (containerSize(container) !== PlayContainer.MAX_SIZE) {
-    container.resolved = false;
-  } else {
-    container.resolved = container.items.every(item => item.color === containerPeek(container));
-  }
-}
-
-export function containerEquals(container1: PlayContainer, container2: PlayContainer): boolean {
-  if (containerSize(container1) !== containerSize(container2)) {
-    return false;
-  }
-  for (let i = 0; i < containerSize(container1); i++) {
-    if (container1.items[i].color !== container2.items[i].color) {
-      return false;
+  private static calculateSize(container: PlayContainer) {
+    container._size = container.items.findIndex(item => item.color === undefined);
+    if (container._size === -1) {
+      container._size = PlayContainer.MAX_SIZE;
     }
   }
-  return true;
-}
 
-export function containerHasOnlyThreeOfOneColor(container: PlayContainer): boolean {
-  return containerSize(container) === 3 && container.items[0].color === container.items[1].color && container.items[0].color === container.items[2].color;
-}
-
-export function containerHasOnlyTwoOfOneColor(container: PlayContainer): boolean {
-  return containerSize(container) === 2 && container.items[0].color === container.items[1].color;
-}
-
-export function containerHasOnlyOneOfOneColor(container: PlayContainer): boolean {
-  return containerSize(container) === 1;
-}
-
-export function containerHasOnlyOneColor(container: PlayContainer): boolean {
-  if (containerIsEmpty(container)) {
-    return false;
+  private static checkResolved(container: PlayContainer): void {
+    if (PlayContainer.size(container) !== PlayContainer.MAX_SIZE) {
+      container.resolved = false;
+    } else {
+      container.resolved = container.items.every(item => item.color === PlayContainer.peek(container));
+    }
   }
-  return container.items.every(item => item.color === undefined || item.color === container.items[0].color);
-}
 
-export function containerClone(c: PlayContainer): PlayContainer {
-  const newContainer = containerCreate(c.index);
-  c.items.forEach((item, index) => newContainer.items[index].color = item.color);
-  containerAfterChange(newContainer);
-  return newContainer;
-}
+  static create(index: number): PlayContainer {
+    const container = new PlayContainer();
+    container.index = index;
+    for (let i = 0; i < PlayContainer.MAX_SIZE; i++) {
+      container.items.push(itemCreate(undefined, index, false));
+    }
+    PlayContainer.afterChange(container);
+    return container;
+  }
 
-export function containersClone(containers: PlayContainer[]): PlayContainer[] {
-  return containers.map(container => containerClone(container));
+  static isResolved(container: PlayContainer): boolean {
+    return container.resolved;
+  }
+
+  static equals(container1: PlayContainer, container2: PlayContainer): boolean {
+    if (PlayContainer.size(container1) !== PlayContainer.size(container2)) {
+      return false;
+    }
+    for (let i = 0; i < PlayContainer.size(container1); i++) {
+      if (container1.items[i].color !== container2.items[i].color) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static hasOnlyThreeOfOneColor(container: PlayContainer): boolean {
+    return PlayContainer.size(container) === 3 && container.items[0].color === container.items[1].color && container.items[0].color === container.items[2].color;
+  }
+
+  static hasOnlyTwoOfOneColor(container: PlayContainer): boolean {
+    return PlayContainer.size(container) === 2 && container.items[0].color === container.items[1].color;
+  }
+
+  static hasOnlyOneOfOneColor(container: PlayContainer): boolean {
+    return PlayContainer.size(container) === 1;
+  }
+
+  static hasOnlyOneColor(container: PlayContainer): boolean {
+    if (PlayContainer.isEmpty(container)) {
+      return false;
+    }
+    return container.items.every(item => item.color === undefined || item.color === container.items[0].color);
+  }
+
+  static containerClone(c: PlayContainer): PlayContainer {
+    const newContainer = PlayContainer.create(c.index);
+    c.items.forEach((item, index) => newContainer.items[index].color = item.color);
+    PlayContainer.afterChange(newContainer);
+    return newContainer;
+  }
+
+  static containersClone(containers: PlayContainer[]): PlayContainer[] {
+    return containers.map(container => PlayContainer.containerClone(container));
+  }
+
 }

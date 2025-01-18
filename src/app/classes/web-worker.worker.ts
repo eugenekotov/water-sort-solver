@@ -6,7 +6,7 @@ import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
 import { boardSetAdd, boardSetContains } from "./model/board-set.class";
 import { Board, boardClone, boardCreate, boardIsResolved } from "./model/board.class";
-import { containerHasOnlyOneColor, containerHasOnlyThreeOfOneColor, containerIsEmpty, containerIsFull, containerPeek, containerPop, containerPush, containerSize, PlayContainer } from "./model/play-container.class";
+import { PlayContainer } from "./model/play-container.class";
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
@@ -92,27 +92,27 @@ function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult
 }
 
 function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
-  if (containerIsEmpty(board.containers[iFrom])) {
+  if (PlayContainer.isEmpty(board.containers[iFrom])) {
     // Nothing to take
     return;
   }
-  if (containerIsFull(board.containers[iTo])) {
+  if (PlayContainer.isFull(board.containers[iTo])) {
     // No place to put
     return;
   }
-  if (!containerIsEmpty(board.containers[iTo]) && containerPeek(board.containers[iFrom]) != containerPeek(board.containers[iTo])) {
+  if (!PlayContainer.isEmpty(board.containers[iTo]) && PlayContainer.peek(board.containers[iFrom]) != PlayContainer.peek(board.containers[iTo])) {
     // Not suitable color
     return;
   }
-  if (containerSize(board.containers[iFrom]) == 1 && containerIsEmpty(board.containers[iTo])) {
+  if (PlayContainer.size(board.containers[iFrom]) == 1 && PlayContainer.isEmpty(board.containers[iTo])) {
     // Stupid move;
     return;
   }
-  if (containerHasOnlyThreeOfOneColor(board.containers[iFrom])) {
+  if (PlayContainer.hasOnlyThreeOfOneColor(board.containers[iFrom])) {
     // Stupid move;
     return;
   }
-  if (containerHasOnlyOneColor(board.containers[iFrom]) && containerIsEmpty(board.containers[iTo])) {
+  if (PlayContainer.hasOnlyOneColor(board.containers[iFrom]) && PlayContainer.isEmpty(board.containers[iTo])) {
     // if we have only one color and move to empty container
     // Stupid move;
     return;
@@ -126,7 +126,7 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
     // console.log("We already tried it!");
     return;
   }
-  solutionData.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[containerSize(board.containers[iTo]) - 1].color!));
+  solutionData.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[PlayContainer.size(board.containers[iTo]) - 1].color!));
   boardSetAdd(solutionData.oldBoards, board);
   tryToResolve(solutionData, board, stepCount + 1);
   removeSteps(solutionData, stepCount);
@@ -134,7 +134,7 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
 
 function move(board: Board, iFrom: number, iTo: number): Board {
   board = boardClone(board);
-  containerPush(board.containers[iTo], containerPop(board.containers[iFrom]));
+  PlayContainer.push(board.containers[iTo], PlayContainer.pop(board.containers[iFrom]));
   return board;
 }
 

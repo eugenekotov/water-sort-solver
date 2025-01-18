@@ -1,4 +1,4 @@
-import { containerAfterChange, containerClone, containerEquals, containerIsEmpty, containerIsResolved, PlayContainer } from "./play-container.class";
+import { PlayContainer } from "./play-container.class";
 
 export class Board {
 
@@ -12,7 +12,7 @@ export function boardCreate(containers?: PlayContainer[]): Board {
   const board = new Board();
   if (containers !== undefined) {
     board.containers = containers;
-    board.containers.forEach(container => containerAfterChange(container));
+    board.containers.forEach(container => PlayContainer.afterChange(container));
   }
   return board;
 }
@@ -22,9 +22,9 @@ export function boardIsResolved(board: Board): boolean {
   let i = 0;
   while (i < board.containers.length) {
     let container = board.containers[i];
-    if (containerIsEmpty(container)) {
+    if (PlayContainer.isEmpty(container)) {
       i++;
-    } else if (containerIsResolved(container)) {
+    } else if (PlayContainer.isResolved(container)) {
       board.containers.splice(i, 1);
     } else {
       result = false;
@@ -36,7 +36,7 @@ export function boardIsResolved(board: Board): boolean {
 
 export function boardClone(board: Board): Board {
   const newBoard = new Board();
-  newBoard.containers = board.containers.map(container => containerClone(container));
+  newBoard.containers = board.containers.map(container => PlayContainer.containerClone(container));
   return newBoard;
 }
 
@@ -55,5 +55,5 @@ export function boardEquals(board1: Board, board2: Board): boolean {
 }
 
 export function boardGetContainerCount(board: Board, container2: PlayContainer): number {
-  return board.containers.filter(container1 => containerEquals(container1, container2)).length;
+  return board.containers.filter(container1 => PlayContainer.equals(container1, container2)).length;
 }

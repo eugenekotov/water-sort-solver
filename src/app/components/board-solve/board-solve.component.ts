@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { Item, itemCreate } from 'src/app/classes/model/item.class';
-import { containerPeek, containerPop, containerPush, containerSize, PlayContainer } from 'src/app/classes/model/play-container.class';
+import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
@@ -158,22 +158,22 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
       // show moving item
-      this.movingItem.color = containerPeek(this.playContainers[step.iFrom]);
-      const indexFrom = getItemIndex(step.iFrom, containerSize(this.playContainers[step.iFrom]) - 1);
+      this.movingItem.color = this.playContainers[step.iFrom].peek();
+      const indexFrom = getItemIndex(step.iFrom, this.playContainers[step.iFrom].size() - 1);
       const startPosition = getMovingPosition(this.itemsElements[indexFrom], this.parentMovingElementRect);
       this.setMovingPosition(startPosition);
-      containerPop(this.playContainers[step.iFrom]);
+      this.playContainers[step.iFrom].pop();
       this.movingItem.hidden = false;
       // moving
       setTimeout(async () => {
-        const indexTo = getItemIndex(step.iTo, containerSize(this.playContainers[step.iTo]));
+        const indexTo = getItemIndex(step.iTo, this.playContainers[step.iTo].size());
         const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
         const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
         const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
         await this.moving(startPosition, topPosition);
         await this.moving(topPosition, leftPosition);
         await this.moving(leftPosition, finishPosition);
-        containerPush(this.playContainers[step.iTo], this.movingItem.color!);
+        this.playContainers[step.iTo].push(this.movingItem.color!);
         this.movingItem.hidden = true;
         this.completeStepIndex = step.index;
         await new Promise<void>(resolve => setTimeout(resolve, 0));
