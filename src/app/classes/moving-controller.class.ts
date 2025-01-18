@@ -127,11 +127,16 @@ export class MovingController {
         observer.error({ message: "Stop" });
         return;
       }
+      // to
+      const elementsTo = this.getElements(containerTo, containerTo.size() - 1 + movingToCount, movingToCount, "descending");
+      const finishPositionsTo = this.getBottomPositions(elementsTo);
+      await this.moving(movingToItems, finishPositionsTo);
+      this.push(containerTo, this.movingItems[0].color!, movingToCount);
+      this.setHidden(movingToItems, true);
+
+
       observer.next(containerTo);
       observer.complete();
-
-
-
 
       // const startPosition = this.movingCurrentPosition;
       // const index = getItemIndex(container.index, PlayContainer.size(container));
