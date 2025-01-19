@@ -227,6 +227,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.setMode("setup");
   }
 
+  // TODO: handle click on moving item
   onContainerClick(container: PlayContainer) {
     this.clicksSubject$.next(container);
   }
@@ -259,7 +260,14 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
         this.stepBack();
       });
     } else {
-      this.stepBack();
+      const selectedContainer = this.getSelectedContainer();
+      if (selectedContainer) {
+        new Observable(observer => {
+          this.movingController.moveDown(selectedContainer, observer);
+        }).subscribe(() => this.stepBack());
+      } else {
+        this.stepBack();
+      }
     }
   }
 
