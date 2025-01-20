@@ -310,11 +310,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getContainer(x: number, y: number): PlayContainer | undefined {
-    console.log(x, y);
     for (let i = 0; i < this.containerHTMLElements.length; i++) {
       const rect = this.containerHTMLElements[i].getBoundingClientRect();
       if (this.isInRect(x, y, rect)) {
-        console.log("container " + i, rect);
         return this.playContainers[i];
       }
     }
@@ -330,7 +328,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
       this.containerHTMLElements.push(document.getElementById(this.getContainerId(containerIndex)));
     }
-
   }
 
 }
