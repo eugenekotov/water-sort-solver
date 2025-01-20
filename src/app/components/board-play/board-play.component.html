@@ -5,17 +5,17 @@
     <!-- <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solution!.steps.length} }}</p> -->
     <p>{{ "SOLVE.STEP" | translate: {step: steps.length} }}</p>
   </div>
-  <div class="relative-container">
+  <div class="relative-container" (click)="onClick($event)">
     <ng-container *ngIf="mainService.isMobile">
       <div class="play-containers-small">
         <div class="containers containers-small">
           <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
           </app-container>
         </div>
         <div class="containers containers-small">
           <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
           </app-container>
         </div>
       </div>
@@ -25,12 +25,12 @@
       <div class="play-containers-large">
         <div class="containers containers-large">
           <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
           </app-container>
         </div>
         <div class="containers containers-large">
           <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick(container)">
+            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
           </app-container>
         </div>
       </div>

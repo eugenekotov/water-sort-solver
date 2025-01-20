@@ -6,7 +6,7 @@ import { MainService } from 'src/app/services/main.service';
 
 
 export class PlayStep {
-  constructor(public iFrom: number, public iTo: number, public count: number) {}
+  constructor(public iFrom: number, public iTo: number, public count: number) { }
 }
 
 @Component({
@@ -20,6 +20,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;
+  private containerHTMLElements: any[] = [];
 
   steps: PlayStep[] = [];
 
@@ -54,6 +55,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private onScreenResized() {
     this.movingController.getHTMLElements(this.playContainers);
+    this.getContainerHTMLElemets();
   }
 
   ngOnDestroy(): void {
@@ -61,6 +63,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       this.screenResizedSubscription.unsubscribe();
     }
     this.stepsSubjectSubscription.unsubscribe();
+
   }
 
   private createStepsSubject() {
@@ -219,9 +222,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.setMode("setup");
   }
 
-  // TODO: handle click on moving item
-  onContainerClick(container: PlayContainer) {
+  onContainerClick(event: any, container: PlayContainer) {
     this.clicksSubject$.next(container);
+    event.stopPropagation();
   }
 
   private static selectedContainerPredicate(container: PlayContainer): boolean {
@@ -265,7 +268,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stepBack() {
     const step = this.steps.pop();
-    for(let i=0; i < step!.count; i++) {
+    for (let i = 0; i < step!.count; i++) {
       PlayContainer.push(this.playContainers[step!.iFrom], this.playContainers[step!.iTo].pop())
     }
   }
@@ -294,7 +297,40 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
     this.movingController.setHidden(this.movingController.movingItems, true);
-    setTimeout(() => this.movingController.getHTMLElements(this.playContainers), 0);
+    setTimeout(() => this.onScreenResized(), 0);
+  }
+
+  onClick(event: any) {
+    const x = event.clientX;
+    const y = event.clientY;
+    const container = this.getContainer(x, y);
+    if (container) {
+      this.clicksSubject$.next(container);
+    }
+  }
+
+  private getContainer(x: number, y: number): PlayContainer | undefined {
+    console.log(x, y);
+    for (let i = 0; i < this.containerHTMLElements.length; i++) {
+      const rect = this.containerHTMLElements[i].getBoundingClientRect();
+      if (this.isInRect(x, y, rect)) {
+        console.log("container " + i, rect);
+        return this.playContainers[i];
+      }
+    }
+    return undefined;
+  }
+
+  private isInRect(x: number, y: number, rect: DOMRect): boolean {
+    return rect.x <= x && x <= rect.x + rect.width && rect.y <= y && y <= rect.y + rect.height;
+  }
+
+  private getContainerHTMLElemets() {
+    this.containerHTMLElements = [];
+    for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
+      this.containerHTMLElements.push(document.getElementById(this.getContainerId(containerIndex)));
+    }
+
   }
 
 }
