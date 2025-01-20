@@ -5,18 +5,8 @@ import { MovingController } from 'src/app/classes/moving-controller.class';
 import { MainService } from 'src/app/services/main.service';
 
 
-class PlayStepItem {
-  constructor(public iFrom: number, public iTo: number) {}
-}
-
-class PlayStep {
-  items: PlayStepItem[] = [];
-
-  static create(iFrom: number, iTo: number): PlayStep {
-    const result = new PlayStep();
-    result.items.push(new PlayStepItem(iFrom, iTo));
-    return result
-  }
+export class PlayStep {
+  constructor(public iFrom: number, public iTo: number, public count: number) {}
 }
 
 @Component({
@@ -81,7 +71,10 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepsSubjectSubscription = this.clicksSubject$.pipe(
       concatMap(container => this.makeAction(container)))
       .subscribe({
-        next: () => {
+        next: (step: PlayStep | undefined) => {
+          if (step) {
+            this.steps.push(step);
+          }
           this.movingInProgress = false;
           // TODO: Here we need check is container or board resolved
         },
@@ -96,7 +89,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  private makeAction(container: PlayContainer): Observable<PlayContainer> {
+  private makeAction(container: PlayContainer): Observable<PlayStep | undefined> {
     return new Observable(observer => {
       this.movingInProgress = true;
       const selectedContainer = this.getSelectedContainer();
@@ -109,7 +102,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
           if (container.isEmpty() || (!container.isFull() && container.peek() === this.movingController.getColor())) {
             // Move colors if it is possible
             this.movingController.moveTo(selectedContainer, container, observer);
-            this.steps.push(PlayStep.create(selectedContainer.index, container.index));
           } else {
             this.movingController.moveDown(selectedContainer, observer);
           }
@@ -273,7 +265,9 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private stepBack() {
     const step = this.steps.pop();
-    step!.items.forEach(item => PlayContainer.push(this.playContainers[item.iFrom], this.playContainers[item.iTo].pop()));
+    for(let i=0; i < step!.count; i++) {
+      PlayContainer.push(this.playContainers[step!.iFrom], this.playContainers[step!.iTo].pop())
+    }
   }
 
   restartClick() {

@@ -4,8 +4,7 @@ import { ContainerComponent } from "../components/container/container.component"
 import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
 import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./utils.class";
-
-type TOrder = "ascending" | "descending";
+import { PlayStep } from "../components/board-play/board-play.component";
 
 class MovingItem {
 
@@ -60,12 +59,12 @@ export class MovingController {
     this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
-  moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
+  moveUp(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(() => {
       const movingCount = container.getTopColorCount();
       const movingItems = this.getMovingItems(movingCount);
       this.setColor(movingItems, container.peek());
-      const elements = this.getElements(container, container.size() - 1, movingCount, "ascending");
+      const elements = this.getElements(container, container.size() - 1, movingCount);
       const startPositions = this.getBottomPositions(elements);
       this.setPositions(movingItems, startPositions);
       this.pop(container, movingCount);
@@ -79,17 +78,17 @@ export class MovingController {
           container.selected = false;
           return;
         }
-        observer.next(container);
+        observer.next();
         observer.complete();
       }, 0);
     }, 0);
   }
 
-  moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
+  moveDown(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(async () => {
       const movingItems = this.getVisibleMovingItems();
       const movingCount = movingItems.length;
-      const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount, "ascending");
+      const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount);
       const finishPositions = this.getBottomPositions(elements);
       await this.moving(movingItems, finishPositions);
       this.push(container, this.movingItems[0].color!, movingCount);
@@ -98,12 +97,12 @@ export class MovingController {
         observer.error({ message: "Stop" });
         return;
       }
-      observer.next(container);
+      observer.next();
       observer.complete();
     }, 0);
   }
 
-  moveTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayContainer>) {
+  moveTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(async () => {
       const visibleCount = this.movingItems.reduce((accumulator, movingItem) => !movingItem.hidden ? accumulator + 1 : accumulator, 0);
       const movingToCount = Math.min(PlayContainer.MAX_SIZE - containerTo.size(), visibleCount);
@@ -118,7 +117,7 @@ export class MovingController {
         }
       }
       // down
-      const elementsDown = this.getElements(containerFrom, containerFrom.size() - 1 + movingDownCount, movingDownCount, "ascending");
+      const elementsDown = this.getElements(containerFrom, containerFrom.size() - 1 + movingDownCount, movingDownCount);
       const finishPositionsDown = this.getBottomPositions(elementsDown);
       await this.moving(movingDownItems, finishPositionsDown);
       this.push(containerFrom, this.movingItems[0].color!, movingDownCount);
@@ -128,28 +127,14 @@ export class MovingController {
         return;
       }
       // to
-      const elementsTo = this.getElements(containerTo, containerTo.size() - 1 + movingToCount, movingToCount, "descending");
+      const elementsTo = this.getElements(containerTo, containerTo.size() - 1 + movingToCount, movingToCount);
       const finishPositionsTo = this.getBottomPositions(elementsTo);
       await this.moving(movingToItems, finishPositionsTo);
       this.push(containerTo, this.movingItems[0].color!, movingToCount);
       this.setHidden(movingToItems, true);
 
-
-      observer.next(containerTo);
+      observer.next(new PlayStep(containerFrom.index, containerTo.index, movingToCount));
       observer.complete();
-
-      // const startPosition = this.movingCurrentPosition;
-      // const index = getItemIndex(container.index, PlayContainer.size(container));
-      // const finishPosition = getMovingPosition(this.itemsElements[index], this.parentElementRect);
-      // const leftPosition = new Position(this.getMovingTopCoordinate(container.index), finishPosition.left);
-      // await this.moving(startPosition, leftPosition);
-      // await this.moving(leftPosition, finishPosition);
-      // PlayContainer.push(container, this.movingItem.color!);
-      // this.movingItem.hidden = true;
-      // if (this.stoppingInProgress) {
-      //   observer.error({ message: "Stop" });
-      //   return;
-      // }
     }, 0);
   }
 
@@ -162,20 +147,11 @@ export class MovingController {
     movingItems.forEach(movingItem => movingItem.color = color);
   }
 
-  private getElements(container: PlayContainer, first: number, count: number, order: TOrder): HTMLElement[] {
+  private getElements(container: PlayContainer, first: number, count: number): HTMLElement[] {
     const result: HTMLElement[] = [];
-    if (order === "ascending") {
-      for (let i = 0; i < count; i++) {
-        const index = getItemIndex(container.index, first - i);
-        result.push(this.itemsElements[index]);
-      }
-    } else if (order === "descending") {
-      for (let i = count - 1; i >= 0; i--) {
-        const index = getItemIndex(container.index, first - i);
-        result.push(this.itemsElements[index]);
-      }
-    } else {
-      const _n: never = order;
+    for (let i = 0; i < count; i++) {
+      const index = getItemIndex(container.index, first - i);
+      result.push(this.itemsElements[index]);
     }
     return result;
   }
