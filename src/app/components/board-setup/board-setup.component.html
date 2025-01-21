@@ -25,10 +25,7 @@
               </g>
             </g>
           </svg>
-
-
         </div>
-
       </button>
 
       <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
@@ -46,7 +43,7 @@
   <div class="source-containers-parent">
     <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'"
-      style="width: 'sourcecontainersWidth';">
+      style="width: 'sourceContainersWidth';">
 
       <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
         [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" cdkDropList
