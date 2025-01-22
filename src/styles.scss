@@ -77,8 +77,12 @@ body {
   --tour-tooltip-background-color: white;
   --tour-tooltip-color: var(--color-11);
   --tour-next-color: green;
+
   --lang-border-color: rgba(0, 0, 199, 0.692);
   --lang-background-color: var(--color-04);
+
+  --container-source-count-background-color: var(--color-09);
+  --container-source-count-text-color: var(--color-01);
 }
 
 .dark-theme {
@@ -119,4 +123,7 @@ body {
 
   --lang-border-color: rgb(150, 250, 255);
   --lang-background-color: var(--color-dark-05);
+
+  --container-source-count-background-color: var(--color-dark-09);
+  --container-source-count-text-color: var(--color-dark-01);
 }

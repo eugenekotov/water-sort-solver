@@ -2,7 +2,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
+import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
+import { SourceContainer } from 'src/app/classes/model/source-container.class';
 import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
@@ -64,15 +66,25 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getConnectedLists(currentId: string): string[] {
     const array: string[] = [
-      ...this.mainService.sourceContainers.map(c => c.id),
       ...this.mainService.setupContainers1.map(c => c.id),
       ...this.mainService.setupContainers2.map(c => c.id)];
     return array.filter(id => id !== currentId);
   }
 
+  getSourceItemStyle(container: SourceContainer) {
+    let result: any = { 'background-color': container.color };
+    if (container.count > 0) {
+      result['opacity'] = 1;
+    } else {
+      result['opacity'] = 0.2;
+    }
+    return result;
+  }
+
   getItemStyle(color: Color) {
     return { 'background-color': color };
   }
+
 
   canDrop(container: SetupContainer): () => boolean {
     return () => {
@@ -86,7 +98,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private clearBoard() {
-    this.mainService.createSourceContainers();
+    // this.createSourceContainers();
+    this.mainService.sourceContainers.forEach(container => container.count = PlayContainer.MAX_SIZE);
     this.clearContainers();
     this.checkSaveEnabled();
   }
@@ -98,21 +111,21 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async fillRandomly() {
     this.filling = true;
-    let sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+    let sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
     if (sourceContainers.length === 0) {
       this.clearBoard();
     }
-    sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+    sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
     while (sourceContainers.length > 0) {
       const sourceIndex = getRandomInt(0, sourceContainers.length - 1);
-      const color = sourceContainers[sourceIndex].colors.pop();
+      sourceContainers[sourceIndex].count--;
       await this.pause(10);
       const setupContainers = [
         ...this.mainService.setupContainers1.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE),
         ...this.mainService.setupContainers2.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE)];
       const setupIndex = getRandomInt(0, setupContainers.length - 3);
-      setupContainers[setupIndex].colors.splice(0, 0, color!);
-      sourceContainers = this.mainService.sourceContainers.filter(container => container.colors.length > 0);
+      setupContainers[setupIndex].colors.splice(0, 0, sourceContainers[sourceIndex].color);
+      sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
       await this.pause(20);
     }
     this.filling = false;
@@ -199,7 +212,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private addSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceContainers.push({ id: 'source-container' + (this.mainService.containerCount - 3), colors: [color, color, color, color] });
+    this.mainService.sourceContainers.push({ color: color, count: PlayContainer.MAX_SIZE });
   }
 
   removeContainer() {
@@ -238,7 +251,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     // move colors back to source
     container!.colors.forEach(color => {
       const index = Object.values(Color).indexOf(color);
-      this.mainService.sourceContainers[index].colors.push(color);
+      this.mainService.sourceContainers[index].count++;
     });
     this.mainService.balanceSetupContainers();
   }

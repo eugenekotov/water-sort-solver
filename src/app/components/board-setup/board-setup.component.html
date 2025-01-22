@@ -42,19 +42,23 @@
 
   <div class="source-containers-parent">
     <div id="source-containers" class="source-containers shadow-inset"
-      [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'"
-      style="width: 'sourceContainersWidth';">
+      [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
-      <div *ngFor="let container of mainService.sourceContainers" [id]="container.id" class="source-container"
-        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" cdkDropList
-        [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
-        (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)">
+      <div *ngFor="let container of mainService.sourceContainers" class="source-container"
+        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" >
 
-        <div *ngFor="let color of container.colors" class="item shadow shadow-active"
-          [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)" cdkDrag>
+        <div class="shadow" [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
+          [ngStyle]="getSourceItemStyle(container)">
+        </div>
+
+        <div class="source-item-count shadow" [ngClass]="mainService.isMobile ? 'source-item-count-small' : 'source-item-count-large'"
+          [ngStyle]="container.count > 0 ? {'opacity' : 1} : {'opacity' : 1}">
+
+          {{container.count}}
         </div>
       </div>
     </div>
+
     <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 10px;">
       <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="addContainer()">
         <div style="display: flex; justify-content: center;">

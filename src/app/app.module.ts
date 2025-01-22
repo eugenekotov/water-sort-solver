@@ -1,27 +1,27 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { AppComponent } from './app.component';
-import { BoardSetupComponent } from './components/board-setup/board-setup.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AppComponent } from './app.component';
+import { BoardInProgressComponent } from './components/board-in-progress/board-in-progress.component';
+import { BoardNoSolutionComponent } from './components/board-no-solution/board-no-solution.component';
+import { BoardPlayComponent } from './components/board-play/board-play.component';
+import { BoardSetupComponent } from './components/board-setup/board-setup.component';
 import { BoardSolveComponent } from './components/board-solve/board-solve.component';
 import { ContainerComponent } from './components/container/container.component';
 import { ItemComponent } from './components/item/item.component';
-import { MovingItemComponent } from './components/moving-item/moving-item.component';
-import { BoardInProgressComponent } from './components/board-in-progress/board-in-progress.component';
-import { BoardNoSolutionComponent } from './components/board-no-solution/board-no-solution.component';
-import { MatSliderModule } from '@angular/material/slider';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { TourItemComponent } from './components/tour-item/tour-item.component';
-import { MatIconModule } from '@angular/material/icon';
-import { TourComponent } from './components/tour/tour.component';
 import { LangBarComponent } from './components/lang-bar/lang-bar.component';
-import { BoardPlayComponent } from './components/board-play/board-play.component';
+import { MovingItemComponent } from './components/moving-item/moving-item.component';
+import { TourItemComponent } from './components/tour-item/tour-item.component';
+import { TourComponent } from './components/tour/tour.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -41,7 +41,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     TourItemComponent,
     TourComponent,
     LangBarComponent,
-    BoardPlayComponent,
+    BoardPlayComponent
   ],
   imports: [
     BrowserModule,

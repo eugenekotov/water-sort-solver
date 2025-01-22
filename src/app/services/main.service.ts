@@ -7,6 +7,7 @@ import { SetupContainer } from '../classes/model/setup-container.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
+import { SourceContainer } from '../classes/model/source-container.class';
 
 // TODO: Add start page
 type TMode = "setup" | "in-progress" | "no-solution" | "solve" | "play" | undefined;
@@ -40,8 +41,7 @@ export class MainService {
   public screenResized$: Subject<void> = new Subject<void>();
 
   public containerCount = MainService.DEFAULT_CONTAINER_COUNT;
-  sourceContainers: SetupContainer[] = [];
-
+  sourceContainers: SourceContainer[] = [];
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
@@ -186,6 +186,15 @@ export class MainService {
     });
   }
 
+  private createSourceContainers() {
+    this.sourceContainers = [];
+    Object.values(Color).forEach((color, index) => {
+      if (index < this.containerCount - 2) {
+        this.sourceContainers.push({ color: color, count: PlayContainer.MAX_SIZE });
+      }
+    });
+  }
+
   public createSetupContainers() {
     this.setupContainers1 = [];
     this.setupContainers2 = [];
@@ -211,15 +220,6 @@ export class MainService {
         this.setupContainers2.push(allContainers[i]);
       }
     }
-  }
-
-  public createSourceContainers() {
-    this.sourceContainers = [];
-    Object.values(Color).forEach((color, index) => {
-      if (index < this.containerCount - 2) {
-        this.sourceContainers.push({ id: 'source-container' + index, colors: [color, color, color, color] });
-      }
-    });
   }
 
   private loadContainerCount() {

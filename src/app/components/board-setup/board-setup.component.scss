@@ -36,6 +36,8 @@
 }
 
 .source-containers-parent {
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,39 +61,26 @@
 .source-containers {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
-.source-containers-large {
-  padding: math.div($item-size-large, 4);
-  height: 4 * $item-size-large + $container-items-gap-large * 3;
-  // width: 12 * $item-size-large + $container-items-gap-large * 11; // width calculats in .ts
-  gap: $container-items-gap-large;
+.source-containers-small {
+  padding: math.div($item-size-small, 6);
 }
 
-.source-containers-small {
-  padding: math.div($item-size-small, 4);
-  height: 4 * $item-size-small + $container-items-gap-small * 3;
-  // width: 12 * $item-size-small + $container-items-gap-small * 11; // width calculats in .ts
-  gap: $container-items-gap-small;
+.source-containers-large {
+  padding: math.div($item-size-large, 6);
 }
 
 .source-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+  position: relative;
 }
 
 .source-container-small {
-  width: $item-size-small;
-  gap: $container-items-gap-small;
 }
 
 .source-container-large {
-  width: $item-size-large;
-  gap: $container-items-gap-large;
 }
 
 .setup-containers {
@@ -118,6 +107,45 @@
 
 .item {
   cursor: move;
+}
+
+.source-item-small {
+  position: relative;
+  margin: math.div($item-size-small, 4);
+  margin-top: math.div($item-size-small, 4);
+}
+
+.source-item-large {
+  position: relative;
+  margin: math.div($item-size-large, 4);
+  margin-top: math.div($item-size-large, 4);
+}
+
+.source-item-count {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--container-source-count-background-color);
+  color: var(--container-source-count-text-color);
+  border: 1px solid var(--main-background-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.source-item-count-small {
+  top: 0px;
+  left: $item-size-small - math.div($item-size-small, 10);
+  width: 18px;
+  height: 18px;
+  font-size: 11px;
+}
+
+.source-item-count-large {
+  top: 0px;
+  left: $item-size-large - math.div($item-size-large, 10);
+  width: 22px;
+  height: 22px;
+  font-size: 12px;
 }
 
 .cdk-drag-preview {
