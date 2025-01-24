@@ -330,4 +330,14 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  onMovingItemClick() {
+    if (this.movingInProgress) {
+      return;
+    }
+    const selectedContainer = this.getSelectedContainer();
+    if (selectedContainer) {
+      this.clicksSubject$.next(selectedContainer);
+    }
+  }
+
 }

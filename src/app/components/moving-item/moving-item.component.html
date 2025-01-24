@@ -1,5 +1,6 @@
 <div id="moving"
   class="moving-item shadow shadow-active"
   [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-  [ngStyle]="getStyle()" [hidden]="item.hidden">
+  [ngStyle]="getStyle()" [hidden]="item.hidden"
+  (click)="onClick($event)">
 </div>

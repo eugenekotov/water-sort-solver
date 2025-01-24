@@ -202,7 +202,7 @@ export class MovingController {
 
   private getMovingTopPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
     const itemRect = itemElement!.getBoundingClientRect();
-    const top = itemRect.top - parentRect.top - itemRect.height * 2;
+    const top = itemRect.top - parentRect.top - itemRect.height * 1.3;
     const left = itemRect.left - parentRect.left - 1;
     return new Position(top, left);
   }

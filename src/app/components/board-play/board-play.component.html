@@ -36,7 +36,7 @@
       </div>
     </ng-container>
 
-    <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem"></app-moving-item>
+    <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
   </div>
 
   <div class="speed-small">

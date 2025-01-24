@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Item } from 'src/app/classes/model/item.class';
 import { MainService } from 'src/app/services/main.service';
 
@@ -10,6 +10,7 @@ import { MainService } from 'src/app/services/main.service';
 export class MovingItemComponent implements OnInit {
 
   @Input() item!: Item;
+  @Output() click: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(public mainService: MainService) { }
 
@@ -24,6 +25,11 @@ export class MovingItemComponent implements OnInit {
       'left': this.item.left,
       'transition-duration': this.item.transitionDuration
     };
+  }
+
+  onClick(event: any) {
+    this.click.emit();
+    event.stopPropagation();
   }
 
 }
