@@ -22,6 +22,8 @@ import { LangBarComponent } from './components/lang-bar/lang-bar.component';
 import { MovingItemComponent } from './components/moving-item/moving-item.component';
 import { TourItemComponent } from './components/tour-item/tour-item.component';
 import { TourComponent } from './components/tour/tour.component';
+import { SettingsComponent } from './components/settings/settings.component';
+import { MenuComponent } from './components/menu/menu.component';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -41,7 +43,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     TourItemComponent,
     TourComponent,
     LangBarComponent,
-    BoardPlayComponent
+    BoardPlayComponent,
+    SettingsComponent,
+    MenuComponent
   ],
   imports: [
     BrowserModule,

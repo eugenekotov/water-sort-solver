@@ -219,7 +219,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setupClick() {
-    this.mainService.setMode("setup");
+    this.mainService.setView("setup");
   }
 
   onContainerClick(event: any, container: PlayContainer) {

@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.mainService.setMode("setup");
+    this.mainService.setView("setup");
   }
 
 }

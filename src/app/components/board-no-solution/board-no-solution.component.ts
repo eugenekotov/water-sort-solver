@@ -12,7 +12,7 @@ export class BoardNoSolutionComponent {
   }
 
   setupClick() {
-    this.mainService.setMode("setup");
+    this.mainService.setView("setup");
   }
 
 }

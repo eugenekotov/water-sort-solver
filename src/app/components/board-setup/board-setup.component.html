@@ -1,4 +1,4 @@
-<div class="view-container" [ngStyle]="mainService.visibleSetup ? {'opacity' : 1} : {'opacity' : 0}">
+<div class="view-container" [ngStyle]="mainService.visible.get('setup') ? {'opacity' : 1} : {'opacity' : 0}">
 
   <div class="title-container">
 

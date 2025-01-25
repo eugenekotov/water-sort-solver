@@ -9,8 +9,7 @@ import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solu
 import { TourService } from './tour.service';
 import { SourceContainer } from '../classes/model/source-container.class';
 
-// TODO: Add start page
-type TMode = "setup" | "in-progress" | "no-solution" | "solve" | "play" | undefined;
+type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";
@@ -45,12 +44,8 @@ export class MainService {
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
-  private _mode: TMode = undefined;
-  visibleSetup: boolean = false;
-  visibleInProgress: boolean = false;
-  visibleNoSolution: boolean = false;
-  visibleSolve: boolean = false;
-  visiblePlay: boolean = false;
+  private _view: TView | undefined = undefined;
+  visible: Map<TView, boolean> = new Map<TView, boolean>();
 
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
@@ -65,15 +60,15 @@ export class MainService {
     this.setLanguage();
   }
 
-  get mode(): TMode {
-    return this._mode;
+  get view(): TView | undefined {
+    return this._view;
   }
 
-  setMode(mode: TMode): Promise<void> {
+  setView(view: TView): Promise<void> {
     return new Promise<void>(resolve => {
       this.setVisible(false);
       setTimeout(() => {
-        this._mode = mode;
+        this._view = view;
         setTimeout(() => {
           this.setVisible(true);
           setTimeout(() => {
@@ -105,50 +100,24 @@ export class MainService {
   }
 
   setVisible(value: boolean) {
-    switch (this._mode) {
-      case "setup":
-        this.visibleSetup = value;
-        break;
-
-      case "in-progress":
-        this.visibleInProgress = value;
-        break;
-
-      case "no-solution":
-        this.visibleNoSolution = value;
-        break;
-
-      case "solve":
-        this.visibleSolve = value;
-        break;
-
-      case "play":
-        this.visiblePlay = value;
-        break;
-
-      case undefined:
-        break;
-
-      default:
-        const _n: never = this._mode;
-    }
+    this.visible.set(this._view!, value);
   }
 
   solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
-    this.setMode("in-progress").then(_ => {
+    this.setView("in-progress").then(_ => {
       this.createPlayContainers();
       this.fillPlayContainers(setupContainers1, setupContainers2);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
-          this.setMode("solve");
+          this.setView("solve");
         } else if (result.result === EWorkerResult.BEST_SOLUTION) {
           this.solution = result.solution!;
-          this.setMode("solve");
+          this.setView("solve");
         } else if (result.result === EWorkerResult.NO_SOLUTION) {
-          this.setMode("no-solution");
+          this.setView("no-solution");
         } else if (result.result === EWorkerResult.CANCEL) {
-          this.setMode("setup");
+          this.setView("setup");
         } else {
           const n: never = result.result;
         }
@@ -190,7 +159,7 @@ export class MainService {
     this.sourceContainers = [];
     Object.values(Color).forEach((color, index) => {
       if (index < this.containerCount - 2) {
-        this.sourceContainers.push({ color: color, count: PlayContainer.MAX_SIZE });
+        this.sourceContainers.push(new SourceContainer(color));
       }
     });
   }
@@ -290,7 +259,7 @@ export class MainService {
   play(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
     this.createPlayContainers();
     this.fillPlayContainers(setupContainers1, setupContainers2);
-    this.setMode("play");
+    this.setView("play");
   }
 
 }

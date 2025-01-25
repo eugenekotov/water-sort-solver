@@ -1,4 +1,4 @@
-<div class="view-container" [ngStyle]="mainService.visiblePlay ? {'opacity' : 1} : {'opacity' : 0}">
+<div class="view-container" [ngStyle]="mainService.visible.get('play') ? {'opacity' : 1} : {'opacity' : 0}">
 
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">

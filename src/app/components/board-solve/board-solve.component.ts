@@ -230,7 +230,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setupClick() {
-    this.mainService.setMode("setup");
+    this.mainService.setView("setup");
   }
 
 }
