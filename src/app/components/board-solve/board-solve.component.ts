@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { Item, itemCreate } from 'src/app/classes/model/item.class';
+import { MovingItem } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
@@ -56,11 +56,11 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   stopping: boolean = false;
 
   private stepsSubject$ = new Subject<PlayStep>();
-  movingItem: Item; // Item for moving animation
+  movingItem: MovingItem; // Item for moving animation
 
   constructor(public mainService: MainService) {
     this.createStepsSubject();
-    this.movingItem = itemCreate(undefined, 0, true);
+    this.movingItem = new MovingItem();
   }
 
   ngOnInit(): void {

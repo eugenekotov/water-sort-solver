@@ -1,6 +1,6 @@
 import { Color } from "./colors.class";
 import { CONTAINER_SIZE } from "./const.class";
-import { Item, itemCreate } from "./item.class";
+import { PlayItem } from "./item.class";
 
 
 /**
@@ -24,7 +24,7 @@ export class PlayContainer {
 
   _size: number = 0;
   index: number;
-  items: Item[] = [];
+  items: PlayItem[] = [];
   selected: boolean = false;
 
   getTopColorCount(): number {
@@ -134,7 +134,7 @@ export class PlayContainer {
     const container = new PlayContainer();
     container.index = index;
     for (let i = 0; i < CONTAINER_SIZE; i++) {
-      container.items.push(itemCreate(undefined, index, false));
+      container.items.push(PlayItem.create(undefined, index, false));
     }
     PlayContainer.afterChange(container);
     return container;

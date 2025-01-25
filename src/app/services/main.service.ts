@@ -7,8 +7,8 @@ import { SetupContainer } from '../classes/model/setup-container.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
-import { SourceContainer } from '../classes/model/source-container.class';
 import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
+import { SourceItem } from '../classes/model/item.class';
 
 type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
@@ -31,7 +31,7 @@ export class MainService {
   public screenResized$: Subject<void> = new Subject<void>();
 
   public containerCount = DEFAULT_CONTAINER_COUNT;
-  sourceContainers: SourceContainer[] = [];
+  sourceContainers: SourceItem[] = [];
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
@@ -150,7 +150,7 @@ export class MainService {
     this.sourceContainers = [];
     Object.values(Color).forEach((color, index) => {
       if (index < this.containerCount - 2) {
-        this.sourceContainers.push(new SourceContainer(color));
+        this.sourceContainers.push(new SourceItem(color));
       }
     });
   }

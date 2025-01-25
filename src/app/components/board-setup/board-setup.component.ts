@@ -3,9 +3,8 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
+import { SourceItem } from 'src/app/classes/model/item.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
-import { SourceContainer } from 'src/app/classes/model/source-container.class';
 import { MovingItem } from 'src/app/classes/moving-controller.class';
 import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
@@ -75,7 +74,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return array.filter(id => id !== currentId);
   }
 
-  getSourceItemStyle(container: SourceContainer) {
+  getSourceItemStyle(container: SourceItem) {
     let result: any = { 'background-color': container.color };
     if (container.count > 0) {
       result['opacity'] = 1;
@@ -115,21 +114,21 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async fillRandomly() {
     this.filling = true;
-    let sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
-    if (sourceContainers.length === 0) {
+    let sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
+    if (sourceItems.length === 0) {
       this.clearBoard();
     }
-    sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
-    while (sourceContainers.length > 0) {
-      const sourceIndex = getRandomInt(0, sourceContainers.length - 1);
-      sourceContainers[sourceIndex].count--;
+    sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
+    while (sourceItems.length > 0) {
+      const sourceIndex = getRandomInt(0, sourceItems.length - 1);
+      sourceItems[sourceIndex].count--;
       await this.pause(10);
       const setupContainers = [
         ...this.mainService.setupContainers1.filter(container => container.colors.length < CONTAINER_SIZE),
         ...this.mainService.setupContainers2.filter(container => container.colors.length < CONTAINER_SIZE)];
       const setupIndex = getRandomInt(0, setupContainers.length - 3);
-      setupContainers[setupIndex].colors.splice(0, 0, sourceContainers[sourceIndex].color);
-      sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
+      setupContainers[setupIndex].colors.splice(0, 0, sourceItems[sourceIndex].color!);
+      sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
       await this.pause(20);
     }
     this.filling = false;
@@ -216,7 +215,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private addSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceContainers.push(new SourceContainer(color));
+    this.mainService.sourceContainers.push(new SourceItem(color));
   }
 
   removeContainer() {
@@ -260,13 +259,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.balanceSetupContainers();
   }
 
-  onSourceContainerClick(event: any, container: SourceContainer) {
+  onSourceContainerClick(event: any, item: SourceItem) {
     event.stopPropagation();
-    if (container.selected) {
-      container.selected = !container.selected;
+    if (item.selected) {
+      item.selected = !item.selected;
       console.log("unselect");
     } else {
-      container.selected = !container.selected;
+      item.selected = !item.selected;
       console.log("select");
     }
   }

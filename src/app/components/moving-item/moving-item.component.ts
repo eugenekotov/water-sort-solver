@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Item } from 'src/app/classes/model/item.class';
+import { MovingItem } from 'src/app/classes/model/item.class';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class MovingItemComponent implements OnInit {
 
-  @Input() item!: Item;
+  @Input() item!: MovingItem;
   @Output() click: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(public mainService: MainService) { }
