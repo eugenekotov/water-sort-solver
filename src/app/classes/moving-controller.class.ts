@@ -5,6 +5,7 @@ import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
 import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./utils.class";
 import { PlayStep } from "../components/board-play/board-play.component";
+import { CONTAINER_SIZE } from "./model/const.class";
 
 export class MovingItem {
 
@@ -105,7 +106,7 @@ export class MovingController {
   moveTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(async () => {
       const visibleCount = this.movingItems.reduce((accumulator, movingItem) => !movingItem.hidden ? accumulator + 1 : accumulator, 0);
-      const movingToCount = Math.min(PlayContainer.MAX_SIZE - containerTo.size(), visibleCount);
+      const movingToCount = Math.min(CONTAINER_SIZE - containerTo.size(), visibleCount);
       const movingDownCount = visibleCount - movingToCount;
       const movingToItems: MovingItem[] = [];
       const movingDownItems: MovingItem[] = [];

@@ -6,6 +6,7 @@ import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
 import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
+import { STORAGE_KEY } from 'src/app/classes/model/const.class';
 
 class PlayStep {
   index: number;
@@ -108,7 +109,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadSpeed() {
-    let speed = Number(localStorage.getItem(MainService.STORAGE_KEY + "-speed"));
+    let speed = Number(localStorage.getItem(STORAGE_KEY + "-speed"));
     if (speed < this.minSpeed || this.maxSpeed < speed) {
       speed = this.defaultSpeed;
     }
@@ -116,7 +117,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private saveSpeed(speed: number) {
-    localStorage.setItem(MainService.STORAGE_KEY + "-speed", String(speed));
+    localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
   }
 
   speedChanged(event: any) {

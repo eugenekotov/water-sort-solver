@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
+import { STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { MainService } from 'src/app/services/main.service';
@@ -207,7 +208,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private loadSpeed() {
-    let speed = Number(localStorage.getItem(MainService.STORAGE_KEY + "-speed"));
+    let speed = Number(localStorage.getItem(STORAGE_KEY + "-speed"));
     if (speed < this.minSpeed || this.maxSpeed < speed) {
       speed = this.defaultSpeed;
     }
@@ -215,7 +216,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private saveSpeed(speed: number) {
-    localStorage.setItem(MainService.STORAGE_KEY + "-speed", String(speed));
+    localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
   }
 
   setupClick() {

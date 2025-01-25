@@ -8,6 +8,7 @@ import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
 import { SourceContainer } from '../classes/model/source-container.class';
+import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 
 type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
@@ -19,16 +20,6 @@ type TTheme = "light-theme" | "dark-theme";
 })
 export class MainService {
 
-  public readonly TRANSITION_DURATION_MS = 500;
-  public static readonly MAX_CONTAINER_COUNT = 14;
-  public static readonly MIN_CONTAINER_COUNT = 4;
-  public static readonly MAX_CONTAINER_COUNT_IN_LINE = 7;
-  public static readonly DEFAULT_CONTAINER_COUNT = 7;
-  public readonly TRANSITION_DURATION = (this.TRANSITION_DURATION_MS / 1000).toString() + "s";
-  public readonly CONTAINER_SIZE = 4;
-  public readonly OPACITY_DELAY = 300;
-  public static readonly STORAGE_KEY = "water-sort-solver";
-
   public readonly itemWidthSmall: number = 25;
   public readonly itemWidthLarge: number = 30;
   public readonly containerItemsGapSmall: number = 4;
@@ -39,7 +30,7 @@ export class MainService {
   public screenChanged$: Subject<void> = new Subject<void>();
   public screenResized$: Subject<void> = new Subject<void>();
 
-  public containerCount = MainService.DEFAULT_CONTAINER_COUNT;
+  public containerCount = DEFAULT_CONTAINER_COUNT;
   sourceContainers: SourceContainer[] = [];
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
@@ -73,9 +64,9 @@ export class MainService {
           this.setVisible(true);
           setTimeout(() => {
             resolve();
-          }, this.OPACITY_DELAY);
+          }, OPACITY_DELAY);
         }, 100)
-      }, this.OPACITY_DELAY);
+      }, OPACITY_DELAY);
     });
   }
 
@@ -128,7 +119,7 @@ export class MainService {
   private createPlayContainers() {
     this.playContainers1 = [];
     this.playContainers2 = [];
-    if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
+    if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
       for (let i = 0; i < this.containerCount; i++) {
         this.playContainers1.push(PlayContainer.create(i));
       }
@@ -174,7 +165,7 @@ export class MainService {
   }
 
   public balanceSetupContainers() {
-    if (this.containerCount <= MainService.MAX_CONTAINER_COUNT_IN_LINE) {
+    if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
       this.setupContainers1 = [...this.setupContainers1, ...this.setupContainers2];
       this.setupContainers2 = [];
     } else {
@@ -192,15 +183,15 @@ export class MainService {
   }
 
   private loadContainerCount() {
-    let loadedValue: number = Number(localStorage.getItem(MainService.STORAGE_KEY + "-containers"));
-    if (!loadedValue || loadedValue < MainService.MIN_CONTAINER_COUNT) {
-      loadedValue = MainService.DEFAULT_CONTAINER_COUNT;
+    let loadedValue: number = Number(localStorage.getItem(STORAGE_KEY + "-containers"));
+    if (!loadedValue || loadedValue < MIN_CONTAINER_COUNT) {
+      loadedValue = DEFAULT_CONTAINER_COUNT;
     }
     this.containerCount = loadedValue;
   }
 
   saveContainerCount() {
-    localStorage.setItem(MainService.STORAGE_KEY + "-containers", String(this.containerCount));
+    localStorage.setItem(STORAGE_KEY + "-containers", String(this.containerCount));
   }
 
   private setLanguage() {
@@ -214,11 +205,11 @@ export class MainService {
   }
 
   private saveLang(lang: TLang) {
-    localStorage.setItem(MainService.STORAGE_KEY + "-lang", lang as string);
+    localStorage.setItem(STORAGE_KEY + "-lang", lang as string);
   }
 
   private loadLang(): TLang | undefined {
-    const value = localStorage.getItem(MainService.STORAGE_KEY + "-lang");
+    const value = localStorage.getItem(STORAGE_KEY + "-lang");
     if (value) {
       return value as TLang;
     }
@@ -240,11 +231,11 @@ export class MainService {
   }
 
   private saveTheme() {
-    localStorage.setItem(MainService.STORAGE_KEY + "-theme", this.theme as string);
+    localStorage.setItem(STORAGE_KEY + "-theme", this.theme as string);
   }
 
   loadTheme() {
-    const value = localStorage.getItem(MainService.STORAGE_KEY + "-theme");
+    const value = localStorage.getItem(STORAGE_KEY + "-theme");
     this.theme = value ? value as TTheme : "light-theme";
     this.applyTheme();
   }

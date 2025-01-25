@@ -1,4 +1,5 @@
 import { Color } from "./colors.class";
+import { CONTAINER_SIZE } from "./const.class";
 import { Item, itemCreate } from "./item.class";
 
 
@@ -7,7 +8,6 @@ import { Item, itemCreate } from "./item.class";
  */
 export class PlayContainer {
 
-  static readonly MAX_SIZE = 4;
   resolved = false;
 
   /**
@@ -87,7 +87,7 @@ export class PlayContainer {
   static push(container: PlayContainer, color: Color): void {
     // Search first empty item
     const size = PlayContainer.size(container);
-    if (size == PlayContainer.MAX_SIZE) {
+    if (size == CONTAINER_SIZE) {
       throw Error("Size limit exists.");
     }
     container.items[size].color = color;
@@ -107,7 +107,7 @@ export class PlayContainer {
   }
 
   static isFull(container: PlayContainer): boolean {
-    return PlayContainer.size(container) === PlayContainer.MAX_SIZE;
+    return PlayContainer.size(container) === CONTAINER_SIZE;
   }
 
   static afterChange(container: PlayContainer) {
@@ -118,12 +118,12 @@ export class PlayContainer {
   private static calculateSize(container: PlayContainer) {
     container._size = container.items.findIndex(item => item.color === undefined);
     if (container._size === -1) {
-      container._size = PlayContainer.MAX_SIZE;
+      container._size = CONTAINER_SIZE;
     }
   }
 
   private static checkResolved(container: PlayContainer): void {
-    if (PlayContainer.size(container) !== PlayContainer.MAX_SIZE) {
+    if (PlayContainer.size(container) !== CONTAINER_SIZE) {
       container.resolved = false;
     } else {
       container.resolved = container.items.every(item => item.color === PlayContainer.peek(container));
@@ -133,7 +133,7 @@ export class PlayContainer {
   static create(index: number): PlayContainer {
     const container = new PlayContainer();
     container.index = index;
-    for (let i = 0; i < PlayContainer.MAX_SIZE; i++) {
+    for (let i = 0; i < CONTAINER_SIZE; i++) {
       container.items.push(itemCreate(undefined, index, false));
     }
     PlayContainer.afterChange(container);

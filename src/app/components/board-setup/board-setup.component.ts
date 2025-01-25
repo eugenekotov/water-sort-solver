@@ -2,6 +2,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
+import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { SourceContainer } from 'src/app/classes/model/source-container.class';
@@ -91,7 +92,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   canDrop(container: SetupContainer): () => boolean {
     return () => {
-      return container.colors.length < this.mainService.CONTAINER_SIZE;
+      return container.colors.length < CONTAINER_SIZE;
     }
   }
 
@@ -102,7 +103,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private clearBoard() {
     // this.createSourceContainers();
-    this.mainService.sourceContainers.forEach(container => container.count = PlayContainer.MAX_SIZE);
+    this.mainService.sourceContainers.forEach(container => container.count = CONTAINER_SIZE);
     this.clearContainers();
     this.checkSaveEnabled();
   }
@@ -124,8 +125,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       sourceContainers[sourceIndex].count--;
       await this.pause(10);
       const setupContainers = [
-        ...this.mainService.setupContainers1.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE),
-        ...this.mainService.setupContainers2.filter(container => container.colors.length < this.mainService.CONTAINER_SIZE)];
+        ...this.mainService.setupContainers1.filter(container => container.colors.length < CONTAINER_SIZE),
+        ...this.mainService.setupContainers2.filter(container => container.colors.length < CONTAINER_SIZE)];
       const setupIndex = getRandomInt(0, setupContainers.length - 3);
       setupContainers[setupIndex].colors.splice(0, 0, sourceContainers[sourceIndex].color);
       sourceContainers = this.mainService.sourceContainers.filter(container => container.count > 0);
@@ -143,25 +144,25 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
     const containersString1 = JSON.stringify(this.mainService.setupContainers1);
     const containersString2 = JSON.stringify(this.mainService.setupContainers2);
-    localStorage.setItem(MainService.STORAGE_KEY + "-source", sourceContainersString);
-    localStorage.setItem(MainService.STORAGE_KEY + "-containers-1", containersString1);
-    localStorage.setItem(MainService.STORAGE_KEY + "-containers-2", containersString2);
+    localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
+    localStorage.setItem(STORAGE_KEY + "-containers-1", containersString1);
+    localStorage.setItem(STORAGE_KEY + "-containers-2", containersString2);
     this.saveEnabled = false;
     this.checkLoadEnabled();
   }
 
   private checkLoadEnabled() {
-    const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
-    const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
-    const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
+    const sourceContainersString = localStorage.getItem(STORAGE_KEY + "-source");
+    const containersString1 = localStorage.getItem(STORAGE_KEY + "-containers-1");
+    const containersString2 = localStorage.getItem(STORAGE_KEY + "-containers-2");
     this.loadEnabled = (sourceContainersString !== null && containersString1 !== null && containersString2 !== null);
   }
 
   loadClick() {
     // TODO: confirm lost current data
-    const sourceContainersString = localStorage.getItem(MainService.STORAGE_KEY + "-source");
-    const containersString1 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-1");
-    const containersString2 = localStorage.getItem(MainService.STORAGE_KEY + "-containers-2");
+    const sourceContainersString = localStorage.getItem(STORAGE_KEY + "-source");
+    const containersString1 = localStorage.getItem(STORAGE_KEY + "-containers-1");
+    const containersString2 = localStorage.getItem(STORAGE_KEY + "-containers-2");
     if (sourceContainersString !== null && containersString1 !== null && containersString2 !== null) {
       const sourceContainers = JSON.parse(sourceContainersString);
       const setupContainers1 = JSON.parse(containersString1);
@@ -198,7 +199,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   addContainer() {
-    if (this.mainService.containerCount < MainService.MAX_CONTAINER_COUNT) {
+    if (this.mainService.containerCount < MAX_CONTAINER_COUNT) {
       this.mainService.containerCount++;
       this.addSourceContainer();
       this.addSetupContainer();
@@ -219,7 +220,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   removeContainer() {
-    if (MainService.MIN_CONTAINER_COUNT < this.mainService.containerCount) {
+    if (MIN_CONTAINER_COUNT < this.mainService.containerCount) {
       this.mainService.containerCount--;
       this.removeSourceContainer();
       this.removeSetupContainer();

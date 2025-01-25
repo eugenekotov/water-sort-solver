@@ -1,5 +1,5 @@
 import { Position } from "../components/board-solve/board-solve.component";
-import { PlayContainer } from "./model/play-container.class";
+import { CONTAINER_SIZE } from "./model/const.class";
 
 export function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);
@@ -13,11 +13,11 @@ export function calculateMovingDuration(from: Position, to: Position, speed: num
 }
 
 export function getItemIndex(containerIndex: number, itemIndex: number): number {
-  return containerIndex * PlayContainer.MAX_SIZE + itemIndex;
+  return containerIndex * CONTAINER_SIZE + itemIndex;
 }
 
 export function getTopItemIndex(containerIndex: number): number {
-  return containerIndex * PlayContainer.MAX_SIZE + PlayContainer.MAX_SIZE - 1;
+  return containerIndex * CONTAINER_SIZE + CONTAINER_SIZE - 1;
 }
 
 export function getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {

@@ -1,5 +1,5 @@
 import { Color } from "./colors.class";
-import { PlayContainer } from "./play-container.class";
+import { CONTAINER_SIZE } from "./const.class";
 
 export class SourceContainer {
   color: Color;
@@ -8,6 +8,6 @@ export class SourceContainer {
 
   constructor(color: Color) {
     this.color = color;
-    this.count = PlayContainer.MAX_SIZE;
+    this.count = CONTAINER_SIZE;
   }
 }
