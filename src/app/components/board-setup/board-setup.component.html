@@ -45,7 +45,7 @@
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
       <div *ngFor="let container of mainService.sourceContainers" class="source-container"
-        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" >
+        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" style="border: 1px solid white;" (click)="onSourceContainerClick($event, container)">
 
         <div class="shadow" [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
           [ngStyle]="getSourceItemStyle(container)">
@@ -73,35 +73,35 @@
     </div>
   </div>
 
-    <div class="setup-containers" [ngClass]="mainService.isMobile ? 'setup-containers-small' : 'setup-containers-large'">
-      <div id="containers" class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'">
-        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
-            class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-            cdkDropList [cdkDropListData]="container.colors"
-            [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-            [cdkDropListEnterPredicate]="canDrop(container)">
+  <div class="setup-containers" [ngClass]="mainService.isMobile ? 'setup-containers-small' : 'setup-containers-large'">
+    <div id="containers" class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'">
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
+          class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+          cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
 
-            <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-              [ngStyle]="getItemStyle(color)" cdkDrag>
-            </div>
+          <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
           </div>
         </div>
+      </div>
 
-        <div *ngIf="mainService.setupContainers2.length > 0" class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
-            class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-            cdkDropList [cdkDropListData]="container.colors"
-            [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-            [cdkDropListEnterPredicate]="canDrop(container)">
+      <div *ngIf="mainService.setupContainers2.length > 0" class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id"
+          class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+          cdkDropList [cdkDropListData]="container.colors"
+          [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
+          [cdkDropListEnterPredicate]="canDrop(container)">
 
-            <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-              [ngStyle]="getItemStyle(color)" cdkDrag>
-            </div>
+          <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+            [ngStyle]="getItemStyle(color)" cdkDrag>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
   <ng-container *ngIf="mainService.isMobile">
     <div>
@@ -130,5 +130,7 @@
       <button id="button-play" class="button button-large" (click)="playClick()" [disabled]="filling">{{ "SETUP.PLAY" | translate }}</button>
     </div>
   </ng-container>
+
+  <app-moving-item class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
 
 </div>

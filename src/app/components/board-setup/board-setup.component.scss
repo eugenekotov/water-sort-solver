@@ -66,11 +66,13 @@
 }
 
 .source-containers-small {
-  padding: math.div($item-size-small, 6);
+  padding: math.div($item-size-small, 4);
+  gap: math.div($item-size-small, 4);
 }
 
 .source-containers-large {
-  padding: math.div($item-size-large, 6);
+  padding: math.div($item-size-large, 4);
+  gap: math.div($item-size-large, 4);
 }
 
 .source-container {
@@ -111,14 +113,14 @@
 
 .source-item-small {
   position: relative;
-  margin: math.div($item-size-small, 4);
-  margin-top: math.div($item-size-small, 4);
+  margin-top: math.div($item-size-small, 2.5);
+  margin-right: math.div($item-size-small, 2.5);
 }
 
 .source-item-large {
   position: relative;
-  margin: math.div($item-size-large, 4);
-  margin-top: math.div($item-size-large, 4);
+  margin-top: math.div($item-size-large, 2.5);
+  margin-right: math.div($item-size-large, 2.5);
 }
 
 .source-item-count {
@@ -134,7 +136,8 @@
 
 .source-item-count-small {
   top: 0px;
-  left: $item-size-small - math.div($item-size-small, 10);
+  // left: $item-size-small - math.div($item-size-small, 10);
+  right: 0px;
   width: 18px;
   height: 18px;
   font-size: 11px;
@@ -142,7 +145,8 @@
 
 .source-item-count-large {
   top: 0px;
-  left: $item-size-large - math.div($item-size-large, 10);
+  // left: $item-size-large - math.div($item-size-large, 10);
+  right: 0px;
   width: 22px;
   height: 22px;
   font-size: 12px;

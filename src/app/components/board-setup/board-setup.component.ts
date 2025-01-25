@@ -5,6 +5,7 @@ import { Color } from 'src/app/classes/model/colors.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { SourceContainer } from 'src/app/classes/model/source-container.class';
+import { MovingItem } from 'src/app/classes/moving-controller.class';
 import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
@@ -22,6 +23,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   tour: Tour;
   saveEnabled: boolean = false;
   loadEnabled: boolean = false;
+
+  movingItem: MovingItem = new MovingItem();
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
@@ -212,7 +215,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private addSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceContainers.push({ color: color, count: PlayContainer.MAX_SIZE });
+    this.mainService.sourceContainers.push(new SourceContainer(color));
   }
 
   removeContainer() {
@@ -254,6 +257,21 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.mainService.sourceContainers[index].count++;
     });
     this.mainService.balanceSetupContainers();
+  }
+
+  onSourceContainerClick(event: any, container: SourceContainer) {
+    event.stopPropagation();
+    if (container.selected) {
+      container.selected = !container.selected;
+      console.log("unselect");
+    } else {
+      container.selected = !container.selected;
+      console.log("select");
+    }
+  }
+
+  onMovingItemClick() {
+
   }
 
   private createTour() {

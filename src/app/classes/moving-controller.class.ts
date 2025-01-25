@@ -6,7 +6,7 @@ import { PlayContainer } from "./model/play-container.class";
 import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./utils.class";
 import { PlayStep } from "../components/board-play/board-play.component";
 
-class MovingItem {
+export class MovingItem {
 
   color: Color | undefined;
   private _position: Position;
