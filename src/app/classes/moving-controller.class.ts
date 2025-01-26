@@ -2,7 +2,7 @@ import { Subscriber } from "rxjs";
 import { ContainerComponent } from "../components/container/container.component";
 import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
-import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./utils.class";
+import { getItemIndex, getMovingPosition } from "./utils.class";
 import { PlayStep } from "../components/board-play/board-play.component";
 import { CONTAINER_SIZE } from "./model/const.class";
 import { MovingItem, Position } from "./model/item.class";
@@ -201,7 +201,7 @@ export class MovingController {
     return new Promise<void>(resolve => {
       let max_moving_duration = 0;
       for (let i = 0; i < movingItems.length; i++) {
-        const moving_duration = calculateMovingDuration(movingItems[i].position, positions[i], this.mainService.speed);
+        const moving_duration = MovingController.calculateMovingDuration(movingItems[i].position, positions[i], this.mainService.speed);
         max_moving_duration = Math.max(max_moving_duration, moving_duration);
         movingItems[i].transitionDuration = (moving_duration / 1000) + "s";
         movingItems[i].position = positions[i];
@@ -228,5 +228,18 @@ export class MovingController {
     return result;
   }
 
+  static async moving(movingItem: MovingItem, from: Position, to: Position, speed: number): Promise<void> {
+    return new Promise<void>(resolve => {
+      const moving_duration1 = MovingController.calculateMovingDuration(from, to, speed);
+      movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+      movingItem.position = to;
+      setTimeout(resolve, moving_duration1);
+    });
+  }
+
+  static calculateMovingDuration(from: Position, to: Position, speed: number): number {
+    const way = Math.sqrt(Math.pow(to.top - from.top, 2) + Math.pow(to.left - from.left, 2));
+    return (200 + way * 0.5) * 15 / speed;
+  }
 
 }

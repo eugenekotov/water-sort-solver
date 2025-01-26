@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
+import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
-import { calculateMovingDuration, getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
-import { STORAGE_KEY } from 'src/app/classes/model/const.class';
+import { MovingController } from 'src/app/classes/moving-controller.class';
 
 class PlayStep {
   index: number;
@@ -156,7 +156,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private async moving(from: Position, to: Position): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = calculateMovingDuration(from, to, this.mainService.speed);
+      const moving_duration1 = MovingController.calculateMovingDuration(from, to, this.mainService.speed);
       this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
       this.setMovingPosition(to);
       setTimeout(resolve, moving_duration1);

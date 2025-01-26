@@ -1,13 +1,21 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { debounceTime, Subscription } from 'rxjs';
+import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { MovingItem, Position, SourceItem } from 'src/app/classes/model/item.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
-import { calculateMovingDuration, getRandomInt } from 'src/app/classes/utils.class';
+import { MovingController } from 'src/app/classes/moving-controller.class';
+import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
+
+type TClick = "on-source" | "on-container";
+
+class ClickEvent {
+  clickType: TClick;
+  object: SourceItem | SetupContainer;
+}
 
 @Component({
   selector: 'app-board-setup',
@@ -18,9 +26,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private screenResizedSubscription: Subscription | undefined = undefined;
 
+  private clickSubject$ = new Subject<ClickEvent>();
+  private clickSubjectSubscription: Subscription | undefined = undefined;
+
   filling: boolean = false;
   sourceContainersWidth: number;
-  private subscription: Subscription | undefined;
+  private screenChagedSubscription: Subscription | undefined;
   tour: Tour;
   saveEnabled: boolean = false;
   loadEnabled: boolean = false;
@@ -33,30 +44,37 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calculateSourceContainersWidth();
     this.checkSaveEnabled();
     this.checkLoadEnabled();
+    this.createClickSubject();
   }
 
   ngOnInit(): void {
-    this.subscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => {
+    this.screenChagedSubscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => {
       setTimeout(() => {
         this.calculateSourceContainersWidth();
         this.createTour();
       }, 1000);
     });
+
+    this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
+      setTimeout(() => this.onScreenResized(), 500); // TODO: Add debounceTime(500)
+    });
   }
 
   ngAfterViewInit(): void {
     this.createTour();
-    this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
-      setTimeout(() => this.onScreenResized(), 500);
-    });
     this.onScreenResized();
   }
 
   ngOnDestroy(): void {
-    if (this.screenResizedSubscription) {
-      this.screenResizedSubscription.unsubscribe();
-    }
-    this.subscription?.unsubscribe();
+    this.screenResizedSubscription?.unsubscribe();
+    this.screenChagedSubscription?.unsubscribe();
+    this.clickSubjectSubscription?.unsubscribe();
+  }
+
+  private createClickSubject() {
+    this.clickSubjectSubscription = this.clickSubject$.pipe(
+      concatMap(click => this.handleClick(click)))
+      .subscribe();
   }
 
   private onScreenResized() {
@@ -71,8 +89,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sourceItemElements.set(value, element);
       }
     });
-    const c1 = document.getElementById("moving")!.parentElement!.parentElement;
-    console.log(c1);
     this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
@@ -232,6 +248,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.addSetupContainer();
       this.mainService.saveContainerCount();
       this.checkSaveEnabled();
+      // TODO: regenerate HTMLelements
     }
   }
 
@@ -253,6 +270,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.removeSetupContainer();
       this.mainService.saveContainerCount();
       this.checkSaveEnabled();
+      // TODO: regenerate HTMLelements
     }
   }
 
@@ -293,57 +311,68 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onSourceItemClick(event: any, item: SourceItem) {
     event.stopPropagation();
-    this.sourceItemClick(item);
+    this.clickSubject$.next({ clickType: "on-source", object: item });
   }
 
-  private sourceItemClick(item: SourceItem) {
-    if (item.selected) {
-      this.unselectSourceItem(item);
-    } else {
-      const selectItems = this.mainService.sourceItems.filter(item => item.selected);
-      if (selectItems.length > 0) {
-        this.unselectSourceItem(selectItems[0]).then(() => this.selectSourceItem(item));
-      } else {
-        this.selectSourceItem(item);
+  private handleClick(click: ClickEvent): Observable<void> {
+    return new Observable(observer => {
+      if (click.clickType === "on-source") {
+        const item: SourceItem = click.object as SourceItem;
+        if (item.selected) {
+          this.unselectSourceItem(item).then(() => this.notify(observer));
+        } else {
+          const selectItems = this.mainService.sourceItems.filter(item => item.selected);
+          if (selectItems.length > 0) {
+            this.unselectSourceItem(selectItems[0]).then(() => this.selectSourceItem(item).then(() => this.notify(observer)));
+          } else {
+            this.selectSourceItem(item).then(() => this.notify(observer));
+          }
+        }
       }
-    }
+    });
   }
 
-  private selectSourceItem(item: SourceItem) {
-    const element = this.sourceItemElements.get(item.color!);
-    if (!element) {
-      return;
-    }
-    this.movingItem.color = item.color;
-    const positionFrom = this.getSourcePosition(element, this.parentElementRect);
-    console.log(positionFrom);
-    this.movingItem.position = positionFrom;
-    this.movingItem.hidden = false;
-    setTimeout(() => {
-      const positionTo = this.getSelectedSourcePosition(element, this.parentElementRect);
-      this.moving(positionFrom, positionTo).then(()=>{
-        item.selected = true;
-      });
-    }, 0);
+  private notify(observer: Subscriber<void>) {
+    observer.next();
+    observer.complete();
+  }
+
+  private selectSourceItem(item: SourceItem): Promise<void> {
+    return new Promise<void>(resolve => {
+      setTimeout(() => {
+        const element = this.sourceItemElements.get(item.color!);
+        if (!element) {
+          resolve();
+          return;
+        }
+        this.movingItem.color = item.color;
+        const positionFrom = this.getSourcePosition(element, this.parentElementRect);
+        this.movingItem.position = positionFrom;
+        this.movingItem.hidden = false;
+        setTimeout(() => {
+          const positionTo = this.getSelectedSourcePosition(element, this.parentElementRect);
+          MovingController.moving(this.movingItem, positionFrom, positionTo, this.mainService.speed).then(() => {
+            item.selected = true;
+            resolve();
+          });
+        }, 0);
+      }, 0);
+    });
   }
 
   private unselectSourceItem(item: SourceItem): Promise<void> {
     return new Promise<void>(resolve => {
-      this.movingItem.hidden = true;
-      item.selected = false;
       const element = this.sourceItemElements.get(item.color!);
       if (!element) {
         resolve();
         return;
       }
-      setTimeout(() => {
-        const position = this.getSourcePosition(element, this.parentElementRect);
-        // this.movingItem.position = position;
-        setTimeout(() => {
-          this.movingItem.hidden = true;
-          resolve();
-        }, 500);
-      }, 0);
+      const position = this.getSourcePosition(element, this.parentElementRect);
+      MovingController.moving(this.movingItem, this.movingItem.position, position, this.mainService.speed).then(() => {
+        this.movingItem.hidden = true;
+        item.selected = false;
+        resolve();
+      });
     });
 
   }
@@ -362,20 +391,10 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Position(top, left);
   }
 
-    private async moving(from: Position, to: Position): Promise<void> {
-      return new Promise<void>(resolve => {
-        // const moving_duration1 = calculateMovingDuration(from, to, this.mainService.speed);
-        const moving_duration1 = calculateMovingDuration(from, to, 5);
-        this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
-        this.movingItem.position = to;
-        setTimeout(resolve, moving_duration1);
-      });
-    }
-
   onMovingItemClick(movingItem: MovingItem) {
     const item = this.mainService.sourceItems.find(sourceItem => sourceItem.color === movingItem.color);
     if (item) {
-      this.sourceItemClick(item);
+      this.clickSubject$.next({ clickType: "on-source", object: item });
     }
   }
 
