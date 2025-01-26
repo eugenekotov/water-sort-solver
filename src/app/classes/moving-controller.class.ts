@@ -6,6 +6,7 @@ import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./util
 import { PlayStep } from "../components/board-play/board-play.component";
 import { CONTAINER_SIZE } from "./model/const.class";
 import { MovingItem, Position } from "./model/item.class";
+import { MainService } from "../services/main.service";
 
 
 export class MovingController {
@@ -15,12 +16,10 @@ export class MovingController {
   private itemsElements: HTMLElement[] = [];
   private parentElementRect: DOMRect;
 
-
-  speed: number; // TODO: change speed according to que size
   stoppingInProgress: boolean = false;
 
 
-  constructor() {
+  constructor(private mainService: MainService) {
     for (let i = 0; i < 4; i++) {
       this.movingItems.push(new MovingItem());
     }
@@ -202,7 +201,7 @@ export class MovingController {
     return new Promise<void>(resolve => {
       let max_moving_duration = 0;
       for (let i = 0; i < movingItems.length; i++) {
-        const moving_duration = calculateMovingDuration(movingItems[i].position, positions[i], this.speed);
+        const moving_duration = calculateMovingDuration(movingItems[i].position, positions[i], this.mainService.speed);
         max_moving_duration = Math.max(max_moving_duration, moving_duration);
         movingItems[i].transitionDuration = (moving_duration / 1000) + "s";
         movingItems[i].position = positions[i];

@@ -35,6 +35,11 @@ export class MainService {
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
+  readonly minSpeed = 1;
+  readonly maxSpeed = 20;
+  readonly defaultSpeed = 5;
+  speed: number = this.defaultSpeed;
+
   private _view: TView | undefined = undefined;
   visible: Map<TView, boolean> = new Map<TView, boolean>();
 
@@ -49,6 +54,7 @@ export class MainService {
     this.createSourceContainers();
     this.createSetupContainers();
     this.setLanguage();
+    this.loadSpeed();
   }
 
   get view(): TView | undefined {
@@ -251,6 +257,18 @@ export class MainService {
     this.createPlayContainers();
     this.fillPlayContainers(setupContainers1, setupContainers2);
     this.setView("play");
+  }
+
+  private loadSpeed() {
+    let speed = Number(localStorage.getItem(STORAGE_KEY + "-speed"));
+    if (speed < this.minSpeed || this.maxSpeed < speed) {
+      speed = this.defaultSpeed;
+    }
+    this.speed = speed;
+  }
+
+  saveSpeed(speed: number) {
+    localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
   }
 
 }

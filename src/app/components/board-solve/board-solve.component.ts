@@ -29,7 +29,7 @@ class PlayStep {
   templateUrl: './board-solve.component.html',
   styleUrls: ['./board-solve.component.scss']
 })
-export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   playContainers: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;
@@ -38,10 +38,6 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   private parentMovingElementRect: DOMRect;
   stepIndex: number = 0;
   completeStepIndex: number = 0;
-  readonly minSpeed = 1;
-  readonly maxSpeed = 20;
-  readonly defaultSpeed = 5;
-  speed: number = this.defaultSpeed;
   playing: boolean = false;
   stopping: boolean = false;
 
@@ -51,10 +47,6 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(public mainService: MainService) {
     this.createStepsSubject();
     this.movingItem = new MovingItem();
-  }
-
-  ngOnInit(): void {
-    this.loadSpeed();
   }
 
   ngAfterViewInit(): void {
@@ -98,21 +90,9 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
       });
   }
 
-  private loadSpeed() {
-    let speed = Number(localStorage.getItem(STORAGE_KEY + "-speed"));
-    if (speed < this.minSpeed || this.maxSpeed < speed) {
-      speed = this.defaultSpeed;
-    }
-    this.speed = speed;
-  }
-
-  private saveSpeed(speed: number) {
-    localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
-  }
-
   speedChanged(event: any) {
     const speed = Number(event);
-    this.saveSpeed(speed);
+    this.mainService.saveSpeed(speed);
   }
 
   private getItemsElements() {
@@ -176,7 +156,7 @@ export class BoardSolveComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private async moving(from: Position, to: Position): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = calculateMovingDuration(from, to, this.speed);
+      const moving_duration1 = calculateMovingDuration(from, to, this.mainService.speed);
       this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
       this.setMovingPosition(to);
       setTimeout(resolve, moving_duration1);

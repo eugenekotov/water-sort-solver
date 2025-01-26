@@ -42,7 +42,7 @@
   <div class="speed-small">
     <div class="speed-small-2 shadow-inset">
       <label>{{ "SOLVE.SPEED" | translate }}</label>
-      <mat-slider [min]="minSpeed" [max]="maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="movingController.speed">
+      <mat-slider [min]="mainService.minSpeed" [max]="mainService.maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="mainService.speed">
         <input matSliderThumb>
       </mat-slider>
     </div>

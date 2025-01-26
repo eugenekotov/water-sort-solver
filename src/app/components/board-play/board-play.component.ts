@@ -15,7 +15,7 @@ export class PlayStep {
   templateUrl: './board-play.component.html',
   styleUrls: ['./board-play.component.scss']
 })
-export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   playContainers: PlayContainer[] = [];
   playContainers1: PlayContainer[] = [];
@@ -27,24 +27,15 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   completeStepIndex: number = 0;
 
-  readonly minSpeed = 1;
-  readonly maxSpeed = 20;
-  readonly defaultSpeed = 5;
-
   private clicksSubject$ = new Subject<PlayContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
 
-  movingController = new MovingController();
+  movingController = new MovingController(this.mainService);
   movingInProgress: boolean = false;
 
   constructor(public mainService: MainService) {
     this.prepareBoard();
-    this.movingController.speed = this.defaultSpeed;
-  }
-
-  ngOnInit(): void {
-    this.loadSpeed();
   }
 
   ngAfterViewInit(): void {
@@ -205,19 +196,7 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   speedChanged(event: any) {
     const speed = Number(event);
-    this.saveSpeed(speed);
-  }
-
-  private loadSpeed() {
-    let speed = Number(localStorage.getItem(STORAGE_KEY + "-speed"));
-    if (speed < this.minSpeed || this.maxSpeed < speed) {
-      speed = this.defaultSpeed;
-    }
-    this.movingController.speed = speed;
-  }
-
-  private saveSpeed(speed: number) {
-    localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
+    this.mainService.saveSpeed(speed);
   }
 
   setupClick() {
