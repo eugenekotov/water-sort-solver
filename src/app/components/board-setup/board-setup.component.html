@@ -44,17 +44,17 @@
     <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
-      <div *ngFor="let container of mainService.sourceContainers" class="source-container"
-        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" style="border: 1px solid white;" (click)="onSourceContainerClick($event, container)">
+      <div *ngFor="let item of mainService.sourceItems" class="source-container"
+        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'" (click)="onSourceItemClick($event, item)">
 
-        <div class="shadow" [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
-          [ngStyle]="getSourceItemStyle(container)">
+        <div [attr.id]="getSourceItemId(item)" class="shadow" [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
+          [ngStyle]="getSourceItemStyle(item)">
         </div>
 
         <div class="source-item-count shadow" [ngClass]="mainService.isMobile ? 'source-item-count-small' : 'source-item-count-large'"
-          [ngStyle]="container.count > 0 ? {'opacity' : 1} : {'opacity' : 1}">
+          [ngStyle]="item.count > 0 ? {'opacity' : 1} : {'opacity' : 1}">
 
-          {{container.count}}
+          {{item.count}}
         </div>
       </div>
     </div>
@@ -131,6 +131,6 @@
     </div>
   </ng-container>
 
-  <app-moving-item class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
+  <app-moving-item class="moving-item" [item]="movingItem" (click)="onMovingItemClick(movingItem)"></app-moving-item>
 
 </div>

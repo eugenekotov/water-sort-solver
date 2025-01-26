@@ -31,7 +31,7 @@ export class MainService {
   public screenResized$: Subject<void> = new Subject<void>();
 
   public containerCount = DEFAULT_CONTAINER_COUNT;
-  sourceContainers: SourceItem[] = [];
+  sourceItems: SourceItem[] = [];
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
@@ -147,10 +147,10 @@ export class MainService {
   }
 
   private createSourceContainers() {
-    this.sourceContainers = [];
+    this.sourceItems = [];
     Object.values(Color).forEach((color, index) => {
       if (index < this.containerCount - 2) {
-        this.sourceContainers.push(new SourceItem(color));
+        this.sourceItems.push(new SourceItem(color));
       }
     });
   }

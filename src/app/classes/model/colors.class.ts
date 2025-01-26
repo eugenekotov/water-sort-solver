@@ -10,6 +10,5 @@ export enum Color {
   VIOLET = "#722B93",
   PINK = "#EA5E7B",
   BROWN = "#7D4A08",
-  GREY = "#636466",
+  GREY = "#636466"
 }
-

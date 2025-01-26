@@ -1,33 +1,11 @@
 import { Subscriber } from "rxjs";
-import { Position } from "../components/board-solve/board-solve.component";
 import { ContainerComponent } from "../components/container/container.component";
 import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
 import { calculateMovingDuration, getItemIndex, getMovingPosition } from "./utils.class";
 import { PlayStep } from "../components/board-play/board-play.component";
 import { CONTAINER_SIZE } from "./model/const.class";
-
-export class MovingItem {
-
-  color: Color | undefined;
-  private _position: Position;
-  containerIndex: number;
-  hidden: boolean = true;
-  top: string | undefined;
-  left: string | undefined;
-  transitionDuration: string | undefined;
-
-  set position(position: Position) {
-    this._position = position;
-    this.top = `${position.top}px`;
-    this.left = `${position.left}px`;
-  }
-
-  get position(): Position {
-    return this._position;
-  }
-
-}
+import { MovingItem, Position } from "./model/item.class";
 
 
 export class MovingController {

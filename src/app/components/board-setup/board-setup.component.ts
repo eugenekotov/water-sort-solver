@@ -3,10 +3,9 @@ import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { debounceTime, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
-import { SourceItem } from 'src/app/classes/model/item.class';
+import { MovingItem, Position, SourceItem } from 'src/app/classes/model/item.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
-import { MovingItem } from 'src/app/classes/moving-controller.class';
-import { getRandomInt } from 'src/app/classes/utils.class';
+import { calculateMovingDuration, getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
@@ -17,6 +16,8 @@ import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 })
 export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  private screenResizedSubscription: Subscription | undefined = undefined;
+
   filling: boolean = false;
   sourceContainersWidth: number;
   private subscription: Subscription | undefined;
@@ -25,6 +26,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   loadEnabled: boolean = false;
 
   movingItem: MovingItem = new MovingItem();
+  sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
+  private parentElementRect: DOMRect;
 
   constructor(public mainService: MainService, public tourService: TourService) {
     this.calculateSourceContainersWidth();
@@ -43,10 +46,34 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.createTour();
+    this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
+      setTimeout(() => this.onScreenResized(), 500);
+    });
+    this.onScreenResized();
   }
 
   ngOnDestroy(): void {
+    if (this.screenResizedSubscription) {
+      this.screenResizedSubscription.unsubscribe();
+    }
     this.subscription?.unsubscribe();
+  }
+
+  private onScreenResized() {
+    this.getSourceItemElements();
+  }
+
+  private getSourceItemElements() {
+    this.sourceItemElements.clear();
+    Object.values(Color).forEach(value => {
+      const element = document.getElementById(value);
+      if (element) {
+        this.sourceItemElements.set(value, element);
+      }
+    });
+    const c1 = document.getElementById("moving")!.parentElement!.parentElement;
+    console.log(c1);
+    this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
   drop(event: CdkDragDrop<Color[]>) {
@@ -74,9 +101,10 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return array.filter(id => id !== currentId);
   }
 
-  getSourceItemStyle(container: SourceItem) {
-    let result: any = { 'background-color': container.color };
-    if (container.count > 0) {
+  getSourceItemStyle(item: SourceItem) {
+    let result: any = { 'background-color': item.color };
+
+    if (item.count > 0) {
       result['opacity'] = 1;
     } else {
       result['opacity'] = 0.2;
@@ -102,7 +130,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private clearBoard() {
     // this.createSourceContainers();
-    this.mainService.sourceContainers.forEach(container => container.count = CONTAINER_SIZE);
+    this.mainService.sourceItems.forEach(container => container.count = CONTAINER_SIZE);
     this.clearContainers();
     this.checkSaveEnabled();
   }
@@ -114,11 +142,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async fillRandomly() {
     this.filling = true;
-    let sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
+    let sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
     if (sourceItems.length === 0) {
       this.clearBoard();
     }
-    sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
+    sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
     while (sourceItems.length > 0) {
       const sourceIndex = getRandomInt(0, sourceItems.length - 1);
       sourceItems[sourceIndex].count--;
@@ -128,7 +156,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         ...this.mainService.setupContainers2.filter(container => container.colors.length < CONTAINER_SIZE)];
       const setupIndex = getRandomInt(0, setupContainers.length - 3);
       setupContainers[setupIndex].colors.splice(0, 0, sourceItems[sourceIndex].color!);
-      sourceItems = this.mainService.sourceContainers.filter(container => container.count > 0);
+      sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
       await this.pause(20);
     }
     this.filling = false;
@@ -140,7 +168,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveClick() {
-    const sourceContainersString = JSON.stringify(this.mainService.sourceContainers);
+    const sourceContainersString = JSON.stringify(this.mainService.sourceItems);
     const containersString1 = JSON.stringify(this.mainService.setupContainers1);
     const containersString2 = JSON.stringify(this.mainService.setupContainers2);
     localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
@@ -167,7 +195,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const setupContainers1 = JSON.parse(containersString1);
       const setupContainers2 = JSON.parse(containersString2);
       this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
-      this.mainService.sourceContainers = sourceContainers;
+      this.mainService.sourceItems = sourceContainers;
       this.mainService.setupContainers1 = setupContainers1;
       this.mainService.setupContainers2 = setupContainers2;
     }
@@ -215,7 +243,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private addSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceContainers.push(new SourceItem(color));
+    this.mainService.sourceItems.push(new SourceItem(color));
   }
 
   removeContainer() {
@@ -230,7 +258,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private removeSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 2];
-    this.mainService.sourceContainers.pop();
+    this.mainService.sourceItems.pop();
     // remove color from setup containers
     [...this.mainService.setupContainers1, ...this.mainService.setupContainers2].forEach(container => {
       let i = 0;
@@ -254,24 +282,101 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     // move colors back to source
     container!.colors.forEach(color => {
       const index = Object.values(Color).indexOf(color);
-      this.mainService.sourceContainers[index].count++;
+      this.mainService.sourceItems[index].count++;
     });
     this.mainService.balanceSetupContainers();
   }
 
-  onSourceContainerClick(event: any, item: SourceItem) {
+  getSourceItemId(item: SourceItem): string {
+    return item.color as string;
+  }
+
+  onSourceItemClick(event: any, item: SourceItem) {
     event.stopPropagation();
+    this.sourceItemClick(item);
+  }
+
+  private sourceItemClick(item: SourceItem) {
     if (item.selected) {
-      item.selected = !item.selected;
-      console.log("unselect");
+      this.unselectSourceItem(item);
     } else {
-      item.selected = !item.selected;
-      console.log("select");
+      const selectItems = this.mainService.sourceItems.filter(item => item.selected);
+      if (selectItems.length > 0) {
+        this.unselectSourceItem(selectItems[0]).then(() => this.selectSourceItem(item));
+      } else {
+        this.selectSourceItem(item);
+      }
     }
   }
 
-  onMovingItemClick() {
+  private selectSourceItem(item: SourceItem) {
+    const element = this.sourceItemElements.get(item.color!);
+    if (!element) {
+      return;
+    }
+    this.movingItem.color = item.color;
+    const positionFrom = this.getSourcePosition(element, this.parentElementRect);
+    console.log(positionFrom);
+    this.movingItem.position = positionFrom;
+    this.movingItem.hidden = false;
+    setTimeout(() => {
+      const positionTo = this.getSelectedSourcePosition(element, this.parentElementRect);
+      this.moving(positionFrom, positionTo).then(()=>{
+        item.selected = true;
+      });
+    }, 0);
+  }
 
+  private unselectSourceItem(item: SourceItem): Promise<void> {
+    return new Promise<void>(resolve => {
+      this.movingItem.hidden = true;
+      item.selected = false;
+      const element = this.sourceItemElements.get(item.color!);
+      if (!element) {
+        resolve();
+        return;
+      }
+      setTimeout(() => {
+        const position = this.getSourcePosition(element, this.parentElementRect);
+        // this.movingItem.position = position;
+        setTimeout(() => {
+          this.movingItem.hidden = true;
+          resolve();
+        }, 500);
+      }, 0);
+    });
+
+  }
+
+  private getSourcePosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
+    const itemRect = itemElement.getBoundingClientRect();
+    const top = itemRect.top - parentRect.top - 1;
+    const left = itemRect.left - parentRect.left - 1;
+    return new Position(top, left);
+  }
+
+  private getSelectedSourcePosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
+    const itemRect = itemElement.getBoundingClientRect();
+    const top = itemRect.top - parentRect.top - itemRect.height * 0.5;
+    const left = itemRect.left - parentRect.left - 1;
+    return new Position(top, left);
+  }
+
+    private async moving(from: Position, to: Position): Promise<void> {
+      return new Promise<void>(resolve => {
+        // const moving_duration1 = calculateMovingDuration(from, to, this.mainService.speed);
+        const moving_duration1 = calculateMovingDuration(from, to, 5);
+        this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+        this.movingItem.position = to;
+        setTimeout(resolve, moving_duration1);
+      });
+    }
+
+  onMovingItemClick(movingItem: MovingItem) {
+    const item = this.mainService.sourceItems.find(sourceItem => sourceItem.color === movingItem.color);
+    if (item) {
+      this.sourceItemClick(item);
+    }
   }
 
   private createTour() {

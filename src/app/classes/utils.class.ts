@@ -1,5 +1,5 @@
-import { Position } from "../components/board-solve/board-solve.component";
 import { CONTAINER_SIZE } from "./model/const.class";
+import { Position } from "./model/item.class";
 
 export function getRandomInt(min: number, max: number): number {
   min = Math.ceil(min);

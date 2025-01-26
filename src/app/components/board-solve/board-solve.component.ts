@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { MovingItem } from 'src/app/classes/model/item.class';
+import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { MainService } from 'src/app/services/main.service';
@@ -21,16 +21,6 @@ class PlayStep {
 
   static createPlayStep(index: number, step: Step) {
     return new PlayStep(index, step.iFrom, step.iTo);
-  }
-}
-
-export class Position {
-  top!: number;
-  left!: number;
-
-  constructor(top: number, left: number) {
-    this.top = top;
-    this.left = left;
   }
 }
 

@@ -54,11 +54,6 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.onScreenResized();
   }
 
-  private onScreenResized() {
-    this.movingController.getHTMLElements(this.playContainers);
-    this.getContainerHTMLElemets();
-  }
-
   ngOnDestroy(): void {
     if (this.screenResizedSubscription) {
       this.screenResizedSubscription.unsubscribe();
@@ -66,6 +61,12 @@ export class BoardPlayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.stepsSubjectSubscription.unsubscribe();
 
   }
+
+  private onScreenResized() {
+    this.movingController.getHTMLElements(this.playContainers);
+    this.getContainerHTMLElemets();
+  }
+
 
   private createStepsSubject() {
     if (this.stepsSubjectSubscription) {
