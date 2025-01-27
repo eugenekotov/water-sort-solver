@@ -13,14 +13,15 @@
   flex-wrap: nowrap;
   justify-content: center;
   align-items: flex-start;
+  position: relative;
 }
 
 .containers-small {
-  gap: 3rem 0.5rem;
+  gap: 6px;
 }
 
 .containers-large {
-  gap: 4rem 1rem;
+  gap: 10px;
 }
 
 .containers-2 {
