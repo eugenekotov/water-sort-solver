@@ -161,7 +161,7 @@ export class MainService {
     });
   }
 
-  public createSetupContainers() {
+  createSetupContainers() {
     this.setupContainers1 = [];
     this.setupContainers2 = [];
     for (let i = 0; i < this.containerCount; i++) {
@@ -170,7 +170,7 @@ export class MainService {
     this.balanceSetupContainers();
   }
 
-  public balanceSetupContainers() {
+  balanceSetupContainers() {
     if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
       this.setupContainers1 = [...this.setupContainers1, ...this.setupContainers2];
       this.setupContainers2 = [];

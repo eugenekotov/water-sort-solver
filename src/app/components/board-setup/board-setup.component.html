@@ -59,7 +59,7 @@
       </div>
     </div>
 
-    <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 10px;">
+    <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 5px;">
       <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="addContainer()">
         <div style="display: flex; justify-content: center;">
           <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">add</mat-icon>
@@ -74,13 +74,39 @@
   </div>
 
   <div class="setup-containers" [ngClass]="mainService.isMobile ? 'setup-containers-small' : 'setup-containers-large'">
-    <div id="containers" class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'">
+    <!-- Duplicate for position -->
+    <div class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'"
+      style="position: absolute; opacity: 0; z-index: 0;">
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of setupContainerPositions1" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" style="flex-direction: column-reverse;">
+
+          <div *ngFor="let color of container.colors; let itemIndex=index" [id]="getSetupContainerPositionItemId(container.id, itemIndex)"
+            class="item" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
+        </div>
+      </div>
+      <div *ngIf="mainService.setupContainers2.length > 0" class="containers"
+        [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of setupContainerPositions2" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" style="flex-direction: column-reverse;">
+
+          <div *ngFor="let color of container.colors; let itemIndex=index" [id]="getSetupContainerPositionItemId(container.id, itemIndex)"
+            class="item" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+    <div id="containers" class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'"
+      style="z-index: 6;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
         <div *ngFor="let container of mainService.setupContainers1" [id]="container.id"
           class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
           cdkDropList [cdkDropListData]="container.colors"
           [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
+          [cdkDropListEnterPredicate]="canDrop(container)"
+          (click)="onSetupContainerClick($event, container)" >
 
           <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
             [ngStyle]="getItemStyle(color)" cdkDrag>
@@ -93,7 +119,8 @@
           class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
           cdkDropList [cdkDropListData]="container.colors"
           [cdkDropListConnectedTo]="getConnectedLists(container.id)" (cdkDropListDropped)="drop($event)"
-          [cdkDropListEnterPredicate]="canDrop(container)">
+          [cdkDropListEnterPredicate]="canDrop(container)"
+          (click)="onSetupContainerClick($event, container)">
 
           <div *ngFor="let color of container.colors" class="item shadow shadow-active" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
             [ngStyle]="getItemStyle(color)" cdkDrag>

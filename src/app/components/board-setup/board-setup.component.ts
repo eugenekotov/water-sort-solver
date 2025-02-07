@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
+import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { MovingItem, Position, SourceItem } from 'src/app/classes/model/item.class';
@@ -36,6 +36,9 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   saveEnabled: boolean = false;
   loadEnabled: boolean = false;
 
+  setupContainerPositions1: SetupContainer[] = [];
+  setupContainerPositions2: SetupContainer[] = [];
+
   movingItem: MovingItem = new MovingItem();
   sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
   private parentElementRect: DOMRect;
@@ -45,6 +48,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkSaveEnabled();
     this.checkLoadEnabled();
     this.createClickSubject();
+    this.createSetupContainerPositions();
   }
 
   ngOnInit(): void {
@@ -77,6 +81,23 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe();
   }
 
+  private createSetupContainerPositions() {
+    this.setupContainerPositions1 = this.mainService.setupContainers1.map(container => this.createSetupContainerPosition(container));
+    this.setupContainerPositions2 = this.mainService.setupContainers2.map(container => this.createSetupContainerPosition(container));
+  }
+
+  private createSetupContainerPosition(container: SetupContainer): SetupContainer {
+    const colors: Color[] = [];
+    for (let i = 0; i < CONTAINER_SIZE; i++) {
+      colors.push(Color.RED);
+    }
+    return { id: container.id, colors: colors };
+  }
+
+  getSetupContainerPositionItemId(containerId: string, itemIndex: number) {
+    return `${containerId}item${itemIndex}`;
+  }
+
   private onScreenResized() {
     this.getSourceItemElements();
   }
@@ -90,6 +111,15 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
     this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
+  }
+
+  private getSetupContainersItemElement(containerId: string, itemIndex: number): HTMLElement | null {
+    return document.getElementById(this.getSetupContainerPositionItemId(containerId, itemIndex));
+  }
+
+  onSetupContainerClick(event: any, container: SetupContainer) {
+    event.stopPropagation();
+    this.clickSubject$.next({ clickType: "on-container", object: container });
   }
 
   drop(event: CdkDragDrop<Color[]>) {
@@ -316,21 +346,45 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private handleClick(click: ClickEvent): Observable<void> {
     return new Observable(observer => {
-      if (click.clickType === "on-source") {
+      if (click.clickType === "on-source") { // click.object instanceof SourceItem
         const item: SourceItem = click.object as SourceItem;
         if (item.selected) {
           this.unselectSourceItem(item).then(() => this.notify(observer));
         } else {
-          const selectItems = this.mainService.sourceItems.filter(item => item.selected);
-          if (selectItems.length > 0) {
-            this.unselectSourceItem(selectItems[0]).then(() => this.selectSourceItem(item).then(() => this.notify(observer)));
+          if (item.count > 0) {
+            const selectItem = this.getSelectedItem();
+            if (selectItem) {
+              this.unselectSourceItem(selectItem).then(() => this.selectSourceItem(item).then(() => this.notify(observer)));
+            } else {
+              this.selectSourceItem(item).then(() => this.notify(observer));
+            }
           } else {
-            this.selectSourceItem(item).then(() => this.notify(observer));
+            this.notify(observer);
           }
         }
+      } else if (click.clickType === "on-container") {
+        const selectItem = this.getSelectedItem();
+        if (selectItem == undefined) {
+          this.notify(observer);
+        } else {
+          const container: SetupContainer = click.object as SetupContainer;
+          if (container.colors.length === CONTAINER_SIZE) {
+            this.notify(observer);
+          } else {
+            this.moveSourceItem(selectItem, container).then(() => this.notify(observer));
+          }
+        }
+      } else {
+        const _n: never = click.clickType;
       }
     });
   }
+
+  private getSelectedItem(): SourceItem | undefined {
+    const items = this.mainService.sourceItems.filter(item => item.selected);
+    return items.length > 0 ? items[0] : undefined;
+  }
+
 
   private notify(observer: Subscriber<void>) {
     observer.next();
@@ -375,6 +429,24 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     });
 
+  }
+
+  private moveSourceItem(item: SourceItem, container: SetupContainer): Promise<void> {
+    return new Promise<void>(resolve => {
+      const positionItemHTMLElement = this.getSetupContainersItemElement(container.id, container.colors.length);
+      if (!positionItemHTMLElement) {
+        resolve();
+        return;
+      }
+      const positionTo = this.getSourcePosition(positionItemHTMLElement, this.parentElementRect);
+      MovingController.moving(this.movingItem, this.movingItem.position, positionTo, this.mainService.speed).then(() => {
+        this.movingItem.hidden = true;
+        item.selected = false;
+        item.count--;
+        container.colors.unshift(this.movingItem.color!);
+        resolve();
+      });
+    });
   }
 
   private getSourcePosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
