@@ -10,7 +10,7 @@ import { TourService } from './tour.service';
 import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { SourceItem } from '../classes/model/item.class';
 
-type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
+export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";

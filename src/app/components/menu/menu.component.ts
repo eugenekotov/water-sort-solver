@@ -1,15 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { MainService, TView } from 'src/app/services/main.service';
+
+class MenuItem {
+  title_param: string;
+  view: TView;
+}
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss']
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent {
 
-  constructor() { }
+  menu: MenuItem[] = [
+    { title_param: "MENU.PLAY", view: "play" },
+    { title_param: "MENU.CREATE", view: "setup" },
+    { title_param: "MENU.SETTINGS", view: "settings" }
+  ];
 
-  ngOnInit(): void {
+  constructor(public mainService: MainService) { }
+
+  onClick(item: MenuItem) {
+    this.mainService.setView(item.view);
   }
 
 }

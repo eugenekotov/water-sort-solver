@@ -1,4 +1,9 @@
 {
+  "MENU": {
+    "PLAY": "Play",
+    "CREATE": "Create custom game",
+    "SETTINGS": "Settings"
+  },
   "SETUP": {
     "TITLE_1": "Create your custom game board",
     "CLEAR": "Clear",
