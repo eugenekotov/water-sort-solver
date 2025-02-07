@@ -2,6 +2,7 @@
   "MENU": {
     "PLAY": "Play",
     "CREATE": "Create custom game",
+    "SOLVE": "Solve",
     "SETTINGS": "Settings"
   },
   "SETUP": {

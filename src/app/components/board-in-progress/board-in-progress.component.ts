@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({

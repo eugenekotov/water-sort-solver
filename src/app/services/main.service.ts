@@ -63,16 +63,16 @@ export class MainService {
 
   setView(view: TView): Promise<void> {
     return new Promise<void>(resolve => {
-      this.setVisible(false);
-      setTimeout(() => {
+      this.setVisible(false).then(() => {
         this._view = view;
         setTimeout(() => {
-          this.setVisible(true);
-          setTimeout(() => {
-            resolve();
-          }, OPACITY_DELAY);
-        }, 100)
-      }, OPACITY_DELAY);
+          this.setVisible(true).then(() => {
+            setTimeout(() => {
+              resolve();
+            }, OPACITY_DELAY);
+          });
+        }, 1000)
+      });
     });
   }
 
@@ -96,8 +96,11 @@ export class MainService {
     return this.translate.currentLang as TLang;
   }
 
-  setVisible(value: boolean) {
-    this.visible.set(this._view!, value);
+  private setVisible(value: boolean): Promise<void> {
+    return new Promise(resolve => {
+      this.visible.set(this._view!, value);
+      setTimeout(() => resolve(), OPACITY_DELAY);
+    });
   }
 
   solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {

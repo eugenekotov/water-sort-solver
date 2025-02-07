@@ -1,1 +1,11 @@
-<p>settings works!</p>
+<div class="view-container" [ngStyle]="mainService.visible.get('settings') ? {'opacity' : 1} : {'opacity' : 0}">
+  <div class="top-container">
+    <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="onBackClick()">
+
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">arrow_back</mat-icon>
+      </div>
+
+    </button>
+  </div>
+</div>
