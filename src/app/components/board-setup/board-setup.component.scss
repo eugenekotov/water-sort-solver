@@ -66,13 +66,13 @@
 }
 
 .source-containers-small {
-  padding: math.div($item-size-small, 4);
-  gap: math.div($item-size-small, 4);
+  padding: math.div($item-size-small, 6);
+  gap: math.div($item-size-small, 6);
 }
 
 .source-containers-large {
-  padding: math.div($item-size-large, 4);
-  gap: math.div($item-size-large, 4);
+  padding: math.div($item-size-large, 6);
+  gap: math.div($item-size-large, 6);
 }
 
 .source-container {
