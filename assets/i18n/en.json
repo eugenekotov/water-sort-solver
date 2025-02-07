@@ -8,9 +8,9 @@
     "SOLVE": "Solve",
     "PLAY": "Play",
     "TOUR": {
-      "COLORS": "These colored squares are meant to fill the containers below. You can fill the containers by dragging the squares into them or by using the 'Fill randomly' button",
+      "COLORS": "These colored squares are meant to fill the containers below. To move square click on it then click on container",
       "B_ADD": "Use these buttons to add or remove colors",
-      "CONTAINERS": "These are containers. The application will sort the colors into them",
+      "CONTAINERS": "These are containers. To change play board you can drag and drop squares",
       "B_CLEAR": "Clear containers to start from scratch",
       "B_FILL": "Fill play board randomly",
       "B_SAVE": "Save current board to continue later",
