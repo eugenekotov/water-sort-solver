@@ -49,17 +49,17 @@
 .container-small {
   border-radius: $container-border-radius-small;
   width: $item-size-small;
-  height: $item-size-small * 4 + $container-items-gap-small * 3;
+  height: $item-size-small * 4 + math.div($container-items-gap-small , 2) * 3;
   padding: $container-padding-small;
-  gap: $container-items-gap-small;
+  gap: math.div($container-items-gap-small ,2) $container-items-gap-small;
 }
 
 .container-large {
   border-radius: $container-border-radius-large;
   width: $item-size-large;
-  height: $item-size-large * 4 + $container-items-gap-large * 3;
+  height: $item-size-large * 4 + math.div($container-items-gap-large, 2) * 3;
   padding: $container-padding-large;
-  gap: $container-items-gap-large;
+  gap: math.div($container-items-gap-large, 2) $container-items-gap-large;
 }
 
 .item-large {
