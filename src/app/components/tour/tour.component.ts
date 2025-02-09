@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MainService } from 'src/app/services/main.service';
-import { Tour, TourService } from 'src/app/services/tour.service';
+import { TourService } from 'src/app/services/tour.service';
 
 @Component({
   selector: 'app-tour',

@@ -236,10 +236,12 @@ export class MainService {
     return undefined;
   }
 
-  changeTheme() {
-    this.theme = this.theme === "dark-theme" ? "light-theme" : "dark-theme";
-    this.applyTheme();
-    this.saveTheme();
+  setTheme(theme: TTheme) {
+    if (this.theme !== theme) {
+      this.theme = theme;
+      this.applyTheme();
+      this.saveTheme();
+    }
   }
 
   private applyTheme() {

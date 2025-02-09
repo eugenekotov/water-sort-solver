@@ -32,7 +32,7 @@
   "SOLVE": {
     "SOLUTION_COUNT": "Solution consists of {{count}} steps",
     "STEP": "Current step: {{step}}",
-    "SPEED": "Speed",
+    "SPEED": "Animation speed",
     "STEP_BACK": "Step back",
     "NEXT_STEP": "Next step",
     "PLAY_BACK": "Play back",

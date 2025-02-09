@@ -39,15 +39,6 @@
     <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
   </div>
 
-  <div class="speed-small">
-    <div class="speed-small-2 shadow-inset">
-      <label>{{ "SOLVE.SPEED" | translate }}</label>
-      <mat-slider [min]="mainService.minSpeed" [max]="mainService.maxSpeed" step="1" (valueChange)="speedChanged($event)" [(ngModel)]="mainService.speed">
-        <input matSliderThumb>
-      </mat-slider>
-    </div>
-  </div>
-
   <ng-container *ngIf="mainService.isMobile">
     <div class="buttons-container buttons-container-small">
       <button class="button button-small" (click)="restartClick()" [disabled]="movingController.stoppingInProgress || steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>

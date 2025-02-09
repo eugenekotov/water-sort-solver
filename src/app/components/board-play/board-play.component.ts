@@ -194,11 +194,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     return "container" + index;
   }
 
-  speedChanged(event: any) {
-    const speed = Number(event);
-    this.mainService.saveSpeed(speed);
-  }
-
   setupClick() {
     this.mainService.setView("setup");
   }

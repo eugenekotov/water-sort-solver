@@ -17,4 +17,9 @@ export class SettingsComponent implements OnInit {
     this.mainService.setView("menu");
   }
 
+  speedChanged(event: any) {
+    const speed = Number(event);
+    this.mainService.saveSpeed(speed);
+  }
+
 }
