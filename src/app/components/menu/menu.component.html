@@ -1,6 +1,6 @@
 <div class="view-container" [ngStyle]="mainService.visible.get('menu') ? {'opacity' : 1} : {'opacity' : 0}">
   <div class="menu-container">
-    <div *ngFor="let item of menu" class="menu-item" (click)="onClick(item)">
+    <div *ngFor="let item of menu" class="menu-item shadow" (click)="onClick(item)">
       {{item.title_param | translate}}
     </div>
   </div>
