@@ -30,9 +30,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private clickSubjectSubscription: Subscription | undefined = undefined;
 
   filling: boolean = false;
-  sourceContainersWidth: number;
   private screenChagedSubscription: Subscription | undefined;
-  tour: Tour;
+  tour: Tour | undefined;
   saveEnabled: boolean = false;
   loadEnabled: boolean = false;
 
@@ -44,7 +43,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private parentElementRect: DOMRect;
 
   constructor(public mainService: MainService, public tourService: TourService) {
-    this.calculateSourceContainersWidth();
     this.checkSaveEnabled();
     this.checkLoadEnabled();
     this.createClickSubject();
@@ -52,15 +50,9 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.screenChagedSubscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => {
-      setTimeout(() => {
-        this.calculateSourceContainersWidth();
-        this.createTour();
-      }, 1000);
-    });
-
-    this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
-      setTimeout(() => this.onScreenResized(), 500); // TODO: Add debounceTime(500)
+    this.screenChagedSubscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => this.tour = undefined);
+    this.screenResizedSubscription = this.mainService.screenResized$.pipe(debounceTime(500)).subscribe(() => {
+      setTimeout(() => this.onScreenResized(), 500);
     });
   }
 
@@ -103,14 +95,16 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getSourceItemElements() {
-    this.sourceItemElements.clear();
-    Object.values(Color).forEach(value => {
-      const element = document.getElementById(value);
-      if (element) {
-        this.sourceItemElements.set(value, element);
-      }
-    });
-    this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
+    setTimeout(() => {
+      this.sourceItemElements.clear();
+      Object.values(Color).forEach(value => {
+        const element = document.getElementById(value);
+        if (element) {
+          this.sourceItemElements.set(value, element);
+        }
+      });
+      this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
+    }, 0);
   }
 
   private getSetupContainersItemElement(containerId: string, itemIndex: number): HTMLElement | null {
@@ -258,33 +252,20 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
   }
 
-  private calculateSourceContainersWidth() {
-    let itemWidth: number;
-    let containerItemsGap: number;
-    if (this.mainService.isMobile) {
-      itemWidth = this.mainService.itemWidthSmall;
-      containerItemsGap = this.mainService.containerItemsGapSmall;
-    } else {
-      itemWidth = this.mainService.itemWidthLarge;
-      containerItemsGap = this.mainService.containerItemsGapLarge;
-    }
-    this.sourceContainersWidth = (this.mainService.containerCount - 2) * itemWidth + containerItemsGap * (this.mainService.containerCount - 3);
-  }
-
   addContainer() {
     if (this.mainService.containerCount < MAX_CONTAINER_COUNT) {
+      this.stopMovingProcess();
       this.mainService.containerCount++;
       this.addSourceContainer();
       this.addSetupContainer();
       this.mainService.saveContainerCount();
       this.checkSaveEnabled();
-      // TODO: regenerate HTMLelements
+      this.containersCountChanged();
     }
   }
 
   private addSetupContainer() {
     this.mainService.setupContainers2.push({ id: 'setup-container' + (this.mainService.containerCount - 1), colors: [] });
-    this.mainService.balanceSetupContainers();
   }
 
 
@@ -295,12 +276,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   removeContainer() {
     if (MIN_CONTAINER_COUNT < this.mainService.containerCount) {
+      this.stopMovingProcess();
       this.mainService.containerCount--;
       this.removeSourceContainer();
       this.removeSetupContainer();
       this.mainService.saveContainerCount();
       this.checkSaveEnabled();
-      // TODO: regenerate HTMLelements
+      this.containersCountChanged();
     }
   }
 
@@ -332,7 +314,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const index = Object.values(Color).indexOf(color);
       this.mainService.sourceItems[index].count++;
     });
+  }
+
+  private containersCountChanged() {
+    this.getSourceItemElements();
     this.mainService.balanceSetupContainers();
+    this.createSetupContainerPositions();
   }
 
   getSourceItemId(item: SourceItem): string {
@@ -397,7 +384,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         const element = this.sourceItemElements.get(item.color!);
         if (!element) {
           resolve();
-          return;
+          throw new Error("Cannot find HTML element of color.");
         }
         this.movingItem.color = item.color;
         const positionFrom = this.getSourcePosition(element, this.parentElementRect);
@@ -468,6 +455,22 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     if (item) {
       this.clickSubject$.next({ clickType: "on-source", object: item });
     }
+  }
+
+  private stopMovingProcess() {
+    this.movingItem.hidden = true;
+    this.mainService.sourceItems.filter(item => item.selected).forEach(item => item.selected = false);
+  }
+
+  showMenu() {
+
+  }
+
+  startTour() {
+    if (this.tour === undefined) {
+      this.createTour();
+    }
+    this.tourService.startTour(this.tour!);
   }
 
   private createTour() {
