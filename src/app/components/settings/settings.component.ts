@@ -14,7 +14,9 @@ export class SettingsComponent implements OnInit {
   }
 
   onBackClick() {
-    this.mainService.setView("menu");
+    const viewBeforeSettings = this.mainService.viewBeforeSettings;
+    this.mainService.viewBeforeSettings = undefined;
+    this.mainService.setView(viewBeforeSettings !== undefined ? viewBeforeSettings : "menu");
   }
 
   speedChanged(event: any) {

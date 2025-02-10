@@ -42,6 +42,8 @@ export class MainService {
 
   private _view: TView | undefined = undefined;
   visible: Map<TView, boolean> = new Map<TView, boolean>();
+  viewBeforeSettings: TView | undefined = undefined;
+
 
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
@@ -63,6 +65,10 @@ export class MainService {
 
   setView(view: TView): Promise<void> {
     return new Promise<void>(resolve => {
+      if (view === "settings") {
+        // remember
+        this.viewBeforeSettings = this._view;
+      }
       this.hideView().then(() => {
         this._view = view;
         setTimeout(() => {

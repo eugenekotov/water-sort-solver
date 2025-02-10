@@ -483,25 +483,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.tour.tourItems.push(new TourItem().setWidth(300).setText("SETUP.TOUR.CONTAINERS")
       .setElement(document.getElementById("containers")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_CLEAR")
-      .setElement(document.getElementById("button-clear")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_FILL")
-      .setElement(document.getElementById("button-fill")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_SAVE")
-      .setElement(document.getElementById("button-save")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_LOAD")
-      .setElement(document.getElementById("button-load")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_SOLVE")
-      .setElement(document.getElementById("button-solve")!));
-
-    this.tour.tourItems.push(new TourItem().setWidth(250).setText("SETUP.TOUR.B_PLAY")
-      .setElement(document.getElementById("button-play")!));
-
   }
 
 }

@@ -127,3 +127,7 @@ body {
   --container-source-count-background-color: var(--color-dark-06);
   --container-source-count-text-color: var(--color-dark-001);
 }
+
+.mat-menu-panel {
+  background-color: var(--button-background-color) !important;
+}

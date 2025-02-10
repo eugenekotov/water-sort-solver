@@ -1,5 +1,6 @@
 {
   "MENU": {
+    "MAIN": "Main menu",
     "PLAY": "Play",
     "CREATE": "Create custom game",
     "SOLVE": "Solve",
@@ -16,13 +17,7 @@
     "TOUR": {
       "COLORS": "These colored squares are meant to fill the containers below. To move square click on it then click on container",
       "B_ADD": "Use these buttons to add or remove colors",
-      "CONTAINERS": "These are containers. To change play board you can drag and drop squares",
-      "B_CLEAR": "Clear containers to start from scratch",
-      "B_FILL": "Fill play board randomly",
-      "B_SAVE": "Save current board to continue later",
-      "B_LOAD": "Load saved play board to continue",
-      "B_SOLVE": "Solve the game. This means AI will try to sort the colors into the containers",
-      "B_PLAY": "Play the game. Try to sort the colors into the containers"
+      "CONTAINERS": "These are containers. To change play board you can drag and drop squares"
     }
   },
   "IN_PROGRESS": "In progress...",

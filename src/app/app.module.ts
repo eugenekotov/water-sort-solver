@@ -23,7 +23,9 @@ import { TourItemComponent } from './components/tour-item/tour-item.component';
 import { TourComponent } from './components/tour/tour.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { MenuComponent } from './components/menu/menu.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -61,6 +63,9 @@ export function HttpLoaderFactory(http: HttpClient) {
     HttpClientModule,
     MatTooltipModule,
     MatIconModule,
+    BrowserAnimationsModule,
+    MatMenuModule,
+    MatDividerModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
