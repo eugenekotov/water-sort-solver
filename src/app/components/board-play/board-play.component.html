@@ -1,8 +1,43 @@
 <div class="view-container" [ngStyle]="mainService.visible.get('play') ? {'opacity' : 1} : {'opacity' : 0}">
 
+
+    <div class="title-container">
+
+      <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
+
+        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
+          </div>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
+          <mat-divider></mat-divider>
+          <!-- <button mat-menu-item (click)="clearClick()" [disabled]="filling">{{"SETUP.CLEAR" | translate}}</button>
+          <button mat-menu-item (click)="fillRandomly()" [disabled]="filling">{{"SETUP.FILL_RANDOM" | translate}}</button> -->
+          <!-- <mat-divider></mat-divider> -->
+          <!-- <button mat-menu-item (click)="saveClick()" [disabled]="filling || !saveEnabled">{{"SETUP.SAVE" |
+            translate}}</button>
+          <button mat-menu-item (click)="loadClick()" [disabled]="filling || !loadEnabled">{{"SETUP.LOAD" |
+            translate}}</button> -->
+          <!-- <mat-divider></mat-divider> -->
+          <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
+          <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
+          <!-- <mat-divider></mat-divider> -->
+          <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingInProgress">{{"MENU.SETTINGS" |
+            translate}}</button>
+        </mat-menu>
+
+        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.fullScreen()">?</button>
+
+      </div>
+    </div>
+
+
+
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-    <!-- <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solution!.steps.length} }}</p> -->
     <p>{{ "SOLVE.STEP" | translate: {step: steps.length} }}</p>
   </div>
   <div class="relative-container" (click)="onClick($event)">
@@ -43,7 +78,6 @@
     <div class="buttons-container buttons-container-small">
       <button class="button button-small" (click)="restartClick()" [disabled]="movingController.stoppingInProgress || steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
       <button class="button button-small" (click)="backClick()" [disabled]="movingController.stoppingInProgress || steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-      <button class="button button-small" (click)="setupClick()">{{ "SETUP_BOARD" | translate}}</button>
     </div>
   </ng-container>
 
@@ -51,7 +85,6 @@
     <div class="buttons-container buttons-container-large">
       <button class="button button-large" (click)="restartClick()" [disabled]="movingController.stoppingInProgress || steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
       <button class="button button-large" (click)="backClick()" [disabled]="movingController.stoppingInProgress || steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-      <button class="button button-large" (click)="setupClick()">{{ "SETUP_BOARD" | translate }}</button>
     </div>
   </ng-container>
 

@@ -194,10 +194,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     return "container" + index;
   }
 
-  setupClick() {
-    this.mainService.setView("setup");
-  }
-
   onContainerClick(event: any, container: PlayContainer) {
     this.clicksSubject$.next(container);
     event.stopPropagation();

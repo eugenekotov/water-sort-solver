@@ -61,19 +61,21 @@
 }
 
 .source-containers {
-  height: 120px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
 }
 
 .source-containers-small {
+  height: $item-size-small * 3 + math.div($item-size-small, 6) * 3;
   padding: math.div($item-size-small, 6);
   gap: math.div($item-size-small, 6);
 }
 
 .source-containers-large {
+  height: $item-size-large * 3 + math.div($item-size-large, 6) * 3;
   padding: math.div($item-size-large, 6);
   gap: math.div($item-size-large, 6);
 }

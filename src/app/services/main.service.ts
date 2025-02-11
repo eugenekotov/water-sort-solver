@@ -293,4 +293,8 @@ export class MainService {
     localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
   }
 
+  fullScreen() {
+
+  }
+
 }
