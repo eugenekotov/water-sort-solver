@@ -131,3 +131,7 @@ body {
 .mat-menu-panel {
   background-color: var(--button-background-color) !important;
 }
+
+.mat-menu-item {
+  color: var(--button-text-color);
+}
