@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription } from 'rxjs';
+import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { MovingItem, Position, SourceItem } from 'src/app/classes/model/item.class';
@@ -50,10 +50,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.screenChagedSubscription = this.mainService.screenChanged$.pipe(debounceTime(500)).subscribe(() => this.tour = undefined);
-    this.screenResizedSubscription = this.mainService.screenResized$.pipe(debounceTime(500)).subscribe(() => {
-      setTimeout(() => this.onScreenResized(), 500);
-    });
+    this.screenChagedSubscription = this.mainService.screenChanged$
+      .pipe(debounceTime(500)).subscribe(() => this.tour = undefined);
+    this.screenResizedSubscription = this.mainService.screenResized$
+      .pipe(tap(() => this.stopMovingProcess()))
+      .pipe(debounceTime(500)).subscribe(() => {
+        setTimeout(() => this.onScreenResized(), 100);
+      });
   }
 
   ngAfterViewInit(): void {
