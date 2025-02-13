@@ -8,7 +8,7 @@ import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
 import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
-import { SourceItem } from '../classes/model/item.class';
+import { Game } from '../classes/game.class';
 
 export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
@@ -31,7 +31,9 @@ export class MainService {
   public screenResized$: Subject<void> = new Subject<void>();
 
   public containerCount = DEFAULT_CONTAINER_COUNT;
-  sourceItems: SourceItem[] = [];
+
+  game: Game | undefined;
+
   setupContainers1: SetupContainer[] = [];
   setupContainers2: SetupContainer[] = [];
 
@@ -53,7 +55,7 @@ export class MainService {
 
   constructor(private translate: TranslateService, private tourService: TourService) {
     this.loadContainerCount();
-    this.createSourceContainers();
+    this.game = Game.createEmptyGame(this.containerCount - 2, this.containerCount);
     this.createSetupContainers();
     this.setLanguage();
     this.loadSpeed();
@@ -96,9 +98,6 @@ export class MainService {
       setTimeout(() => resolve(), OPACITY_DELAY);
     });
   }
-
-
-
 
   get isMobile(): boolean {
     return this._isMobile;
@@ -169,15 +168,6 @@ export class MainService {
     setupContainers2.forEach((setupContainer, containerIndex) => {
       setupContainer.colors.forEach((color, itemIndex) => this.playContainers2[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
       PlayContainer.afterChange(this.playContainers2[containerIndex]);
-    });
-  }
-
-  private createSourceContainers() {
-    this.sourceItems = [];
-    Object.values(Color).forEach((color, index) => {
-      if (index < this.containerCount - 2) {
-        this.sourceItems.push(new SourceItem(color));
-      }
     });
   }
 

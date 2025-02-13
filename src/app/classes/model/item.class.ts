@@ -45,14 +45,3 @@ export class MovingItem extends Item {
   }
 
 }
-
-export class SourceItem extends Item {
-  count: number;
-  selected: boolean = false;
-
-  constructor(color: Color) {
-    super();
-    this.color = color;
-    this.count = CONTAINER_SIZE;
-  }
-}

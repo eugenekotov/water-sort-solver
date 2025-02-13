@@ -13,16 +13,16 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="clearClick()" [disabled]="filling">{{"SETUP.CLEAR" | translate}}</button>
-        <button mat-menu-item (click)="fillRandomly()" [disabled]="filling">{{"SETUP.FILL_RANDOM" | translate}}</button>
+        <button mat-menu-item (click)="clearClick()">{{"SETUP.CLEAR" | translate}}</button>
+        <button mat-menu-item (click)="fillRandomly()">{{"SETUP.FILL_RANDOM" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="saveClick()" [disabled]="filling || !saveEnabled">{{"SETUP.SAVE" | translate}}</button>
-        <button mat-menu-item (click)="loadClick()" [disabled]="filling || !loadEnabled">{{"SETUP.LOAD" | translate}}</button>
+        <button mat-menu-item (click)="saveClick()" [disabled]="!saveEnabled">{{"SETUP.SAVE" | translate}}</button>
+        <button mat-menu-item (click)="loadClick()" [disabled]="!loadEnabled">{{"SETUP.LOAD" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
-        <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button>
+        <button mat-menu-item (click)="solveClick()">{{"SETUP.SOLVE" | translate}}</button>
+        <button mat-menu-item (click)="playClick()">{{"SETUP.PLAY" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="filling">{{"MENU.SETTINGS" | translate}}</button>
+        <button mat-menu-item (click)="mainService.setView('settings')">{{"MENU.SETTINGS" | translate}}</button>
       </mat-menu>
 
       <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
@@ -41,7 +41,7 @@
     <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
-      <div *ngFor="let item of mainService.sourceItems" class="source-container"
+      <div *ngFor="let item of mainService.game!.sourceItems" class="source-container"
         [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'"
         (click)="onSourceItemClick($event, item)">
 

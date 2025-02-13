@@ -1,9 +1,10 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
+import { GameSourceItem } from 'src/app/classes/game.class';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
-import { MovingItem, Position, SourceItem } from 'src/app/classes/model/item.class';
+import { MovingItem, Position} from 'src/app/classes/model/item.class';
 import { SetupContainer } from 'src/app/classes/model/setup-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { getRandomInt } from 'src/app/classes/utils.class';
@@ -14,7 +15,7 @@ type TClick = "on-source" | "on-container";
 
 class ClickEvent {
   clickType: TClick;
-  object: SourceItem | SetupContainer;
+  object: GameSourceItem | SetupContainer;
 }
 
 @Component({
@@ -29,7 +30,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private clickSubject$ = new Subject<ClickEvent>();
   private clickSubjectSubscription: Subscription | undefined = undefined;
 
-  filling: boolean = false;
+  selectedSourceItem: GameSourceItem | undefined;
+
   private screenChagedSubscription: Subscription | undefined;
   tour: Tour | undefined;
   saveEnabled: boolean = false;
@@ -144,7 +146,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return array.filter(id => id !== currentId);
   }
 
-  getSourceItemStyle(item: SourceItem) {
+  getSourceItemStyle(item: GameSourceItem) {
     let result: any = { 'background-color': item.color };
 
     if (item.count > 0) {
@@ -172,8 +174,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private clearBoard() {
-    // this.createSourceContainers();
-    this.mainService.sourceItems.forEach(container => container.count = CONTAINER_SIZE);
+    this.mainService.game!.clear();
     this.clearContainers();
     this.checkSaveEnabled();
   }
@@ -183,26 +184,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.setupContainers2.forEach(container => container.colors = []);
   }
 
-  async fillRandomly() {
-    this.filling = true;
-    let sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
-    if (sourceItems.length === 0) {
-      this.clearBoard();
-    }
-    sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
-    while (sourceItems.length > 0) {
-      const sourceIndex = getRandomInt(0, sourceItems.length - 1);
-      sourceItems[sourceIndex].count--;
-      await this.pause(10);
-      const setupContainers = [
-        ...this.mainService.setupContainers1.filter(container => container.colors.length < CONTAINER_SIZE),
-        ...this.mainService.setupContainers2.filter(container => container.colors.length < CONTAINER_SIZE)];
-      const setupIndex = getRandomInt(0, setupContainers.length - 3);
-      setupContainers[setupIndex].colors.splice(0, 0, sourceItems[sourceIndex].color!);
-      sourceItems = this.mainService.sourceItems.filter(container => container.count > 0);
-      await this.pause(20);
-    }
-    this.filling = false;
+  fillRandomly() {
+    this.mainService.game!.fillRandom();
     this.checkSaveEnabled();
   }
 
@@ -211,7 +194,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveClick() {
-    const sourceContainersString = JSON.stringify(this.mainService.sourceItems);
+    const sourceContainersString = JSON.stringify(this.mainService.game!.sourceItems);
     const containersString1 = JSON.stringify(this.mainService.setupContainers1);
     const containersString2 = JSON.stringify(this.mainService.setupContainers2);
     localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
@@ -238,7 +221,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const setupContainers1 = JSON.parse(containersString1);
       const setupContainers2 = JSON.parse(containersString2);
       this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
-      this.mainService.sourceItems = sourceContainers;
+      // this.mainService.sourceItems = sourceContainers;
       this.mainService.setupContainers1 = setupContainers1;
       this.mainService.setupContainers2 = setupContainers2;
     }
@@ -271,10 +254,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.mainService.setupContainers2.push({ id: 'setup-container' + (this.mainService.containerCount - 1), colors: [] });
   }
 
-
   private addSourceContainer() {
-    const color = Object.values(Color)[this.mainService.containerCount - 3];
-    this.mainService.sourceItems.push(new SourceItem(color));
+    this.mainService.game!.addSourceItems(1);
   }
 
   removeContainer() {
@@ -291,7 +272,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private removeSourceContainer() {
     const color = Object.values(Color)[this.mainService.containerCount - 2];
-    this.mainService.sourceItems.pop();
+    this.mainService.game!.sourceItems.pop();
     // remove color from setup containers
     [...this.mainService.setupContainers1, ...this.mainService.setupContainers2].forEach(container => {
       let i = 0;
@@ -315,7 +296,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     // move colors back to source
     container!.colors.forEach(color => {
       const index = Object.values(Color).indexOf(color);
-      this.mainService.sourceItems[index].count++;
+      this.mainService.game!.sourceItems[index].count++;
     });
   }
 
@@ -325,11 +306,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.createSetupContainerPositions();
   }
 
-  getSourceItemId(item: SourceItem): string {
+  getSourceItemId(item: GameSourceItem): string {
     return item.color as string;
   }
 
-  onSourceItemClick(event: any, item: SourceItem) {
+  onSourceItemClick(event: any, item: GameSourceItem) {
     event.stopPropagation();
     this.clickSubject$.next({ clickType: "on-source", object: item });
   }
@@ -337,14 +318,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private handleClick(click: ClickEvent): Observable<void> {
     return new Observable(observer => {
       if (click.clickType === "on-source") { // click.object instanceof SourceItem
-        const item: SourceItem = click.object as SourceItem;
-        if (item.selected) {
+        const item: GameSourceItem = click.object as GameSourceItem;
+        if (this.selectedSourceItem !== undefined && this.selectedSourceItem.color === item.color) {
           this.unselectSourceItem(item).then(() => this.notify(observer));
         } else {
           if (item.count > 0) {
-            const selectItem = this.getSelectedItem();
-            if (selectItem) {
-              this.unselectSourceItem(selectItem).then(() => this.selectSourceItem(item).then(() => this.notify(observer)));
+            if (this.selectedSourceItem) {
+              this.unselectSourceItem(this.selectedSourceItem).then(() => this.selectSourceItem(item).then(() => this.notify(observer)));
             } else {
               this.selectSourceItem(item).then(() => this.notify(observer));
             }
@@ -353,15 +333,14 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       } else if (click.clickType === "on-container") {
-        const selectItem = this.getSelectedItem();
-        if (selectItem == undefined) {
+        if (this.selectedSourceItem === undefined) {
           this.notify(observer);
         } else {
           const container: SetupContainer = click.object as SetupContainer;
           if (container.colors.length === CONTAINER_SIZE) {
             this.notify(observer);
           } else {
-            this.moveSourceItem(selectItem, container).then(() => this.notify(observer));
+            this.moveSourceItem(this.selectedSourceItem, container).then(() => this.notify(observer));
           }
         }
       } else {
@@ -370,18 +349,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private getSelectedItem(): SourceItem | undefined {
-    const items = this.mainService.sourceItems.filter(item => item.selected);
-    return items.length > 0 ? items[0] : undefined;
-  }
-
-
   private notify(observer: Subscriber<void>) {
     observer.next();
     observer.complete();
   }
 
-  private selectSourceItem(item: SourceItem): Promise<void> {
+  private selectSourceItem(item: GameSourceItem): Promise<void> {
     return new Promise<void>(resolve => {
       setTimeout(() => {
         const element = this.sourceItemElements.get(item.color!);
@@ -396,7 +369,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         setTimeout(() => {
           const positionTo = this.getSelectedSourcePosition(element, this.parentElementRect);
           MovingController.moving(this.movingItem, positionFrom, positionTo, this.mainService.speed).then(() => {
-            item.selected = true;
+            this.selectedSourceItem = item;
             resolve();
           });
         }, 0);
@@ -404,7 +377,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private unselectSourceItem(item: SourceItem): Promise<void> {
+  private unselectSourceItem(item: GameSourceItem): Promise<void> {
     return new Promise<void>(resolve => {
       const element = this.sourceItemElements.get(item.color!);
       if (!element) {
@@ -414,14 +387,14 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const position = this.getSourcePosition(element, this.parentElementRect);
       MovingController.moving(this.movingItem, this.movingItem.position, position, this.mainService.speed).then(() => {
         this.movingItem.hidden = true;
-        item.selected = false;
+        this.selectedSourceItem = undefined;
         resolve();
       });
     });
 
   }
 
-  private moveSourceItem(item: SourceItem, container: SetupContainer): Promise<void> {
+  private moveSourceItem(item: GameSourceItem, container: SetupContainer): Promise<void> {
     return new Promise<void>(resolve => {
       const positionItemHTMLElement = this.getSetupContainersItemElement(container.id, container.colors.length);
       if (!positionItemHTMLElement) {
@@ -431,7 +404,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const positionTo = this.getSourcePosition(positionItemHTMLElement, this.parentElementRect);
       MovingController.moving(this.movingItem, this.movingItem.position, positionTo, this.mainService.speed).then(() => {
         this.movingItem.hidden = true;
-        item.selected = false;
+        this.selectedSourceItem = undefined;
         item.count--;
         container.colors.unshift(this.movingItem.color!);
         resolve();
@@ -454,15 +427,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onMovingItemClick(movingItem: MovingItem) {
-    const item = this.mainService.sourceItems.find(sourceItem => sourceItem.color === movingItem.color);
-    if (item) {
-      this.clickSubject$.next({ clickType: "on-source", object: item });
-    }
+    this.clickSubject$.next({ clickType: "on-source", object: this.mainService.game!.getSourceItem(movingItem.color!) });
   }
 
   private stopMovingProcess() {
     this.movingItem.hidden = true;
-    this.mainService.sourceItems.filter(item => item.selected).forEach(item => item.selected = false);
+    this.selectedSourceItem = undefined;
   }
 
   showMenu() {
