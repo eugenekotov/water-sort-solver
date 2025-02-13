@@ -83,19 +83,19 @@
           style="flex-direction: column-reverse;">
 
           <div *ngFor="let color of container.colors; let itemIndex=index"
-            [id]="getSetupContainerPositionItemId(container.id, itemIndex)" class="item"
+            [id]="getSetupContainerPositionItemId(container.index, itemIndex)" class="item"
             [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
           </div>
         </div>
       </div>
-      <div *ngIf="mainService.setupContainers2.length > 0" class="containers"
+      <div *ngIf="setupContainers2.length > 0" class="containers"
         [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
         <div *ngFor="let container of setupContainerPositions2" class="container"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
           style="flex-direction: column-reverse;">
 
           <div *ngFor="let color of container.colors; let itemIndex=index"
-            [id]="getSetupContainerPositionItemId(container.id, itemIndex)" class="item"
+            [id]="getSetupContainerPositionItemId(container.index, itemIndex)" class="item"
             [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
           </div>
         </div>
@@ -105,9 +105,9 @@
     <div id="containers" class="containers-2"
       [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'" style="z-index: 6;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of mainService.setupContainers1" [id]="container.id" class="container"
+        <div *ngFor="let container of setupContainers1" [id]="getContainerId(container.index)" class="container"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList
-          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(getContainerId(container.index))"
           (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
           (click)="onSetupContainerClick($event, container)">
 
@@ -117,11 +117,11 @@
         </div>
       </div>
 
-      <div *ngIf="mainService.setupContainers2.length > 0" class="containers"
+      <div *ngIf="setupContainers2.length > 0" class="containers"
         [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of mainService.setupContainers2" [id]="container.id" class="container"
+        <div *ngFor="let container of setupContainers2" [id]="getContainerId(container.index)" class="container"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList
-          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(container.id)"
+          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(getContainerId(container.index))"
           (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
           (click)="onSetupContainerClick($event, container)">
 

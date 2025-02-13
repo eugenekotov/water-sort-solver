@@ -12,7 +12,7 @@ export class GameSourceItem {
   }
 }
 
-class GameContainer {
+export class GameContainer {
   colors: Color[] = [];
 }
 

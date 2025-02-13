@@ -1,13 +1,11 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
-import { GameSourceItem } from 'src/app/classes/game.class';
+import { GameContainer, GameSourceItem } from 'src/app/classes/game.class';
 import { Color } from 'src/app/classes/model/colors.class';
-import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
-import { MovingItem, Position} from 'src/app/classes/model/item.class';
-import { SetupContainer } from 'src/app/classes/model/setup-container.class';
+import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
+import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
-import { getRandomInt } from 'src/app/classes/utils.class';
 import { MainService } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
@@ -18,6 +16,16 @@ class ClickEvent {
   object: GameSourceItem | SetupContainer;
 }
 
+class SetupContainer {
+  index: number;
+  colors: Color[] = [];
+
+  constructor(index: number, colors: Color[]) {
+    this.index = index;
+    this.colors = colors;
+  }
+}
+
 @Component({
   selector: 'app-board-setup',
   templateUrl: './board-setup.component.html',
@@ -25,30 +33,34 @@ class ClickEvent {
 })
 export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  private screenResizedSubscription: Subscription | undefined = undefined;
-
   private clickSubject$ = new Subject<ClickEvent>();
   private clickSubjectSubscription: Subscription | undefined = undefined;
 
-  selectedSourceItem: GameSourceItem | undefined;
-
+  private screenResizedSubscription: Subscription | undefined = undefined;
   private screenChagedSubscription: Subscription | undefined;
+
   tour: Tour | undefined;
   saveEnabled: boolean = false;
   loadEnabled: boolean = false;
+
+  private selectedSourceItem: GameSourceItem | undefined;
+
+  setupContainers1: SetupContainer[] = [];
+  setupContainers2: SetupContainer[] = [];
 
   setupContainerPositions1: SetupContainer[] = [];
   setupContainerPositions2: SetupContainer[] = [];
 
   movingItem: MovingItem = new MovingItem();
-  sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
+  private sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
   private parentElementRect: DOMRect;
 
   constructor(public mainService: MainService, public tourService: TourService) {
+    this.createSetupContainers();
+    this.createSetupContainerPositions();
     this.checkSaveEnabled();
     this.checkLoadEnabled();
     this.createClickSubject();
-    this.createSetupContainerPositions();
   }
 
   ngOnInit(): void {
@@ -79,20 +91,16 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSetupContainerPositions() {
-    this.setupContainerPositions1 = this.mainService.setupContainers1.map(container => this.createSetupContainerPosition(container));
-    this.setupContainerPositions2 = this.mainService.setupContainers2.map(container => this.createSetupContainerPosition(container));
+    this.setupContainerPositions1 = this.setupContainers1.map(container => this.createSetupContainerPosition(container));
+    this.setupContainerPositions2 = this.setupContainers2.map(container => this.createSetupContainerPosition(container));
   }
 
   private createSetupContainerPosition(container: SetupContainer): SetupContainer {
-    const colors: Color[] = [];
-    for (let i = 0; i < CONTAINER_SIZE; i++) {
-      colors.push(Color.RED);
-    }
-    return { id: container.id, colors: colors };
+    return new SetupContainer(container.index, Array<Color>(CONTAINER_SIZE).fill(Color.RED));
   }
 
-  getSetupContainerPositionItemId(containerId: string, itemIndex: number) {
-    return `${containerId}item${itemIndex}`;
+  getSetupContainerPositionItemId(containerIndex: number, itemIndex: number) {
+    return `${this.getContainerId(containerIndex)}item${itemIndex}`;
   }
 
   private onScreenResized() {
@@ -102,18 +110,20 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private getSourceItemElements() {
     setTimeout(() => {
       this.sourceItemElements.clear();
-      Object.values(Color).forEach(value => {
-        const element = document.getElementById(value);
+      this.mainService.game!.sourceItems.forEach(value => {
+        const element = document.getElementById(value.color);
         if (element) {
-          this.sourceItemElements.set(value, element);
+          this.sourceItemElements.set(value.color, element);
+        } else {
+          throw new Error("Cannot find HTML element of source item");
         }
       });
       this.parentElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
     }, 0);
   }
 
-  private getSetupContainersItemElement(containerId: string, itemIndex: number): HTMLElement | null {
-    return document.getElementById(this.getSetupContainerPositionItemId(containerId, itemIndex));
+  private getSetupContainersItemElement(containerIndex: number, itemIndex: number): HTMLElement | null {
+    return document.getElementById(this.getSetupContainerPositionItemId(containerIndex, itemIndex));
   }
 
   onSetupContainerClick(event: any, container: SetupContainer) {
@@ -136,14 +146,34 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private checkSaveEnabled() {
-    this.saveEnabled = this.mainService.getSetupContainersItems() > 0;
+    // TODO: Test it
+    this.saveEnabled = this.mainService.game!.containers.some(container => container.colors.length > 0);
+  }
+
+  private createSetupContainers() {
+    const containerCount = this.mainService.game!.containers.length;
+    if (containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
+      this.setupContainers1 = this.mainService.game!.containers.map((container, index) => new SetupContainer(index, container.colors));
+      this.setupContainers2 = [];
+    } else {
+      this.setupContainers1 = [];
+      this.setupContainers2 = [];
+      const halfOfContainerCount = Math.ceil(containerCount / 2);
+      for (let i = 0; i < halfOfContainerCount; i++) {
+        this.setupContainers1.push(new SetupContainer(i, this.mainService.game!.containers[i].colors));
+      }
+      for (let i = halfOfContainerCount; i < containerCount; i++) {
+        this.setupContainers2.push(new SetupContainer(i, this.mainService.game!.containers[i].colors));
+      }
+    }
   }
 
   getConnectedLists(currentId: string): string[] {
-    const array: string[] = [
-      ...this.mainService.setupContainers1.map(c => c.id),
-      ...this.mainService.setupContainers2.map(c => c.id)];
-    return array.filter(id => id !== currentId);
+    return Array<number>(this.mainService.game!.containers.length).fill(0).map((_, index) => this.getContainerId(index)).filter(id => id !== currentId);;
+  }
+
+  getContainerId(index: number): string {
+    return `container${index}`;
   }
 
   getSourceItemStyle(item: GameSourceItem) {
@@ -162,7 +192,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  canDrop(container: SetupContainer): () => boolean {
+  canDrop(container: GameContainer): () => boolean {
     return () => {
       return container.colors.length < CONTAINER_SIZE;
     }
@@ -180,8 +210,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private clearContainers() {
-    this.mainService.setupContainers1.forEach(container => container.colors = []);
-    this.mainService.setupContainers2.forEach(container => container.colors = []);
+    this.setupContainers1.forEach(container => container.colors = []);
+    this.setupContainers2.forEach(container => container.colors = []);
   }
 
   fillRandomly() {
@@ -195,8 +225,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saveClick() {
     const sourceContainersString = JSON.stringify(this.mainService.game!.sourceItems);
-    const containersString1 = JSON.stringify(this.mainService.setupContainers1);
-    const containersString2 = JSON.stringify(this.mainService.setupContainers2);
+    const containersString1 = JSON.stringify(this.setupContainers1);
+    const containersString2 = JSON.stringify(this.setupContainers2);
     localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
     localStorage.setItem(STORAGE_KEY + "-containers-1", containersString1);
     localStorage.setItem(STORAGE_KEY + "-containers-2", containersString2);
@@ -222,40 +252,31 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const setupContainers2 = JSON.parse(containersString2);
       this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
       // this.mainService.sourceItems = sourceContainers;
-      this.mainService.setupContainers1 = setupContainers1;
-      this.mainService.setupContainers2 = setupContainers2;
+      // this.mainService.setupContainers1 = setupContainers1;
+      // this.mainService.setupContainers2 = setupContainers2;
     }
   }
 
 
   playClick() {
     // TODO: Show warning if board is not filled
-    this.mainService.play(this.mainService.setupContainers1, this.mainService.setupContainers2);
+    this.mainService.play();
   }
 
   solveClick() {
     // TODO: Show warning if board is not filled
-    this.mainService.solve(this.mainService.setupContainers1, this.mainService.setupContainers2);
+    this.mainService.solve();
   }
 
   addContainer() {
     if (this.mainService.containerCount < MAX_CONTAINER_COUNT) {
       this.stopMovingProcess();
       this.mainService.containerCount++;
-      this.addSourceContainer();
-      this.addSetupContainer();
+      this.mainService.game!.addSourceItems(1); // add sourceitem
+      this.mainService.game!.containers.push(new GameContainer()); // add container
       this.mainService.saveContainerCount();
-      this.checkSaveEnabled();
       this.containersCountChanged();
     }
-  }
-
-  private addSetupContainer() {
-    this.mainService.setupContainers2.push({ id: 'setup-container' + (this.mainService.containerCount - 1), colors: [] });
-  }
-
-  private addSourceContainer() {
-    this.mainService.game!.addSourceItems(1);
   }
 
   removeContainer() {
@@ -265,16 +286,17 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.removeSourceContainer();
       this.removeSetupContainer();
       this.mainService.saveContainerCount();
-      this.checkSaveEnabled();
       this.containersCountChanged();
     }
   }
 
   private removeSourceContainer() {
-    const color = Object.values(Color)[this.mainService.containerCount - 2];
-    this.mainService.game!.sourceItems.pop();
+    const color = this.mainService.game!.sourceItems.pop()?.color;
+    if (!color) {
+      throw new Error("Source item doesn't have color");
+    }
     // remove color from setup containers
-    [...this.mainService.setupContainers1, ...this.mainService.setupContainers2].forEach(container => {
+    this.mainService.game!.containers.forEach(container => {
       let i = 0;
       while (i < container.colors.length) {
         if (container.colors[i] === color) {
@@ -287,14 +309,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private removeSetupContainer() {
-    let container;
-    if (this.mainService.setupContainers2.length > 0) {
-      container = this.mainService.setupContainers2.pop();
-    } else {
-      container = this.mainService.setupContainers1.pop();
+    const container = this.mainService.game!.containers.pop();
+    if (!container) {
+      throw new Error("Empty container found in game");
     }
     // move colors back to source
-    container!.colors.forEach(color => {
+    container.colors.forEach(color => {
       const index = Object.values(Color).indexOf(color);
       this.mainService.game!.sourceItems[index].count++;
     });
@@ -302,8 +322,9 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private containersCountChanged() {
     this.getSourceItemElements();
-    this.mainService.balanceSetupContainers();
+    this.createSetupContainers();
     this.createSetupContainerPositions();
+    this.checkSaveEnabled();
   }
 
   getSourceItemId(item: GameSourceItem): string {
@@ -396,7 +417,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private moveSourceItem(item: GameSourceItem, container: SetupContainer): Promise<void> {
     return new Promise<void>(resolve => {
-      const positionItemHTMLElement = this.getSetupContainersItemElement(container.id, container.colors.length);
+      const positionItemHTMLElement = this.getSetupContainersItemElement(container.index, container.colors.length);
       if (!positionItemHTMLElement) {
         resolve();
         return;

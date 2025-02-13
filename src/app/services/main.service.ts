@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { Color } from '../classes/model/colors.class';
+import { Game } from '../classes/game.class';
+import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { PlayContainer } from '../classes/model/play-container.class';
-import { SetupContainer } from '../classes/model/setup-container.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
-import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
-import { Game } from '../classes/game.class';
 
 export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
 export type TLang = "en" | "uk";
@@ -34,9 +32,6 @@ export class MainService {
 
   game: Game | undefined;
 
-  setupContainers1: SetupContainer[] = [];
-  setupContainers2: SetupContainer[] = [];
-
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
   readonly defaultSpeed = 5;
@@ -55,10 +50,9 @@ export class MainService {
 
   constructor(private translate: TranslateService, private tourService: TourService) {
     this.loadContainerCount();
-    this.game = Game.createEmptyGame(this.containerCount - 2, this.containerCount);
-    this.createSetupContainers();
     this.setLanguage();
     this.loadSpeed();
+    this.game = Game.createEmptyGame(this.containerCount - 2, this.containerCount);
   }
 
   get view(): TView | undefined {
@@ -119,10 +113,10 @@ export class MainService {
     return this.translate.currentLang as TLang;
   }
 
-  solve(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
+  solve() {
     this.setView("in-progress").then(_ => {
       this.createPlayContainers();
-      this.fillPlayContainers(setupContainers1, setupContainers2);
+      this.fillPlayContainers(this.game!);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
@@ -159,44 +153,35 @@ export class MainService {
     }
   }
 
-  public fillPlayContainers(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
-    setupContainers1.forEach((setupContainer, containerIndex) => {
-      setupContainer.colors.forEach((color, itemIndex) => this.playContainers1[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
-      PlayContainer.afterChange(this.playContainers1[containerIndex]);
+  public fillPlayContainers(game: Game) {
+    this.playContainers1 = [];
+    this.playContainers2 = [];
+    game.containers.forEach(container => {
+      const playCountainer: PlayContainer = new PlayContainer();
+      container.colors.forEach(color => playCountainer.push(color));
+      this.playContainers1.push(playCountainer);
     });
-
-    setupContainers2.forEach((setupContainer, containerIndex) => {
-      setupContainer.colors.forEach((color, itemIndex) => this.playContainers2[containerIndex].items[setupContainer.colors.length - 1 - itemIndex].color = color);
-      PlayContainer.afterChange(this.playContainers2[containerIndex]);
-    });
+    this.balancePlayContainers();
   }
 
-  createSetupContainers() {
-    this.setupContainers1 = [];
-    this.setupContainers2 = [];
-    for (let i = 0; i < this.containerCount; i++) {
-      this.setupContainers1.push({ id: 'setup-container' + i, colors: [] });
-    }
-    this.balanceSetupContainers();
-  }
-
-  balanceSetupContainers() {
+  balancePlayContainers() {
     if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
-      this.setupContainers1 = [...this.setupContainers1, ...this.setupContainers2];
-      this.setupContainers2 = [];
+      this.playContainers1 = [...this.playContainers1, ...this.playContainers2];
+      this.playContainers2 = [];
     } else {
-      const allContainers = [...this.setupContainers1, ...this.setupContainers2];
-      this.setupContainers1 = [];
-      this.setupContainers2 = [];
+      const allContainers = [...this.playContainers1, ...this.playContainers2];
+      this.playContainers1 = [];
+      this.playContainers2 = [];
       const halfOfContainerCount = Math.ceil(this.containerCount / 2);
       for (let i = 0; i < halfOfContainerCount; i++) {
-        this.setupContainers1.push(allContainers[i]);
+        this.playContainers1.push(allContainers[i]);
       }
       for (let i = halfOfContainerCount; i < this.containerCount; i++) {
-        this.setupContainers2.push(allContainers[i]);
+        this.playContainers2.push(allContainers[i]);
       }
     }
   }
+
 
   private loadContainerCount() {
     let loadedValue: number = Number(localStorage.getItem(STORAGE_KEY + "-containers"));
@@ -258,16 +243,9 @@ export class MainService {
     this.applyTheme();
   }
 
-  getSetupContainersItems() {
-    let result = 0;
-    this.setupContainers1.forEach(container => result = result + container.colors.length);
-    this.setupContainers2.forEach(container => result = result + container.colors.length);
-    return result;
-  }
-
-  play(setupContainers1: SetupContainer[], setupContainers2: SetupContainer[]) {
+  play() {
     this.createPlayContainers();
-    this.fillPlayContainers(setupContainers1, setupContainers2);
+    this.fillPlayContainers(this.game!);
     this.setView("play");
   }
 
