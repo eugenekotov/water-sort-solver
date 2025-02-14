@@ -1,5 +1,4 @@
 import { Color } from "./colors.class";
-import { CONTAINER_SIZE } from "./const.class";
 
 export class Item {
   color: Color | undefined;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Game } from '../classes/game.class';
-import { DEFAULT_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
+import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
@@ -18,17 +18,12 @@ type TTheme = "light-theme" | "dark-theme";
 })
 export class MainService {
 
-  public readonly itemWidthSmall: number = 25;
-  public readonly itemWidthLarge: number = 30;
-  public readonly containerItemsGapSmall: number = 4;
-  public readonly containerItemsGapLarge: number = 6;
-
   theme: TTheme = "light-theme";
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
   public screenResized$: Subject<void> = new Subject<void>();
 
-  public containerCount = DEFAULT_CONTAINER_COUNT;
+  // public containerCount = DEFAULT_CONTAINER_COUNT;
 
   game: Game | undefined;
 
@@ -41,7 +36,6 @@ export class MainService {
   visible: Map<TView, boolean> = new Map<TView, boolean>();
   viewBeforeSettings: TView | undefined = undefined;
 
-
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
 
@@ -49,10 +43,10 @@ export class MainService {
   solution: Solution;
 
   constructor(private translate: TranslateService, private tourService: TourService) {
-    this.loadContainerCount();
+    // this.loadContainerCount();
     this.setLanguage();
     this.loadSpeed();
-    this.game = Game.createEmptyGame(this.containerCount - 2, this.containerCount);
+    this.game = Game.createEmptyGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
   }
 
   get view(): TView | undefined {
@@ -113,10 +107,9 @@ export class MainService {
     return this.translate.currentLang as TLang;
   }
 
-  solve() {
+  solve(game: Game) {
     this.setView("in-progress").then(_ => {
-      this.createPlayContainers();
-      this.fillPlayContainers(this.game!);
+      this.fillPlayContainers(game);
       this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
@@ -135,65 +128,47 @@ export class MainService {
     });
   }
 
-  private createPlayContainers() {
-    this.playContainers1 = [];
-    this.playContainers2 = [];
-    if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
-      for (let i = 0; i < this.containerCount; i++) {
-        this.playContainers1.push(PlayContainer.create(i));
-      }
-    } else {
-      const halfOfContainerCount = Math.ceil(this.containerCount / 2);
-      for (let i = 0; i < halfOfContainerCount; i++) {
-        this.playContainers1.push(PlayContainer.create(i));
-      }
-      for (let i = halfOfContainerCount; i < this.containerCount; i++) {
-        this.playContainers2.push(PlayContainer.create(i));
-      }
-    }
-  }
-
   public fillPlayContainers(game: Game) {
     this.playContainers1 = [];
     this.playContainers2 = [];
-    game.containers.forEach(container => {
-      const playCountainer: PlayContainer = new PlayContainer();
+    game.containers.forEach((container, index) => {
+      const playCountainer: PlayContainer = PlayContainer.create(index);
       container.colors.forEach(color => playCountainer.push(color));
       this.playContainers1.push(playCountainer);
     });
     this.balancePlayContainers();
   }
 
-  balancePlayContainers() {
-    if (this.containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
+  private balancePlayContainers() {
+    const containerCount = this.playContainers1.length + this.playContainers2.length;
+    if (containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
       this.playContainers1 = [...this.playContainers1, ...this.playContainers2];
       this.playContainers2 = [];
     } else {
       const allContainers = [...this.playContainers1, ...this.playContainers2];
       this.playContainers1 = [];
       this.playContainers2 = [];
-      const halfOfContainerCount = Math.ceil(this.containerCount / 2);
+      const halfOfContainerCount = Math.ceil(containerCount / 2);
       for (let i = 0; i < halfOfContainerCount; i++) {
         this.playContainers1.push(allContainers[i]);
       }
-      for (let i = halfOfContainerCount; i < this.containerCount; i++) {
+      for (let i = halfOfContainerCount; i < containerCount; i++) {
         this.playContainers2.push(allContainers[i]);
       }
     }
   }
 
+  // private loadContainerCount() {
+  //   let loadedValue: number = Number(localStorage.getItem(STORAGE_KEY + "-containers"));
+  //   if (!loadedValue || loadedValue < MIN_CONTAINER_COUNT) {
+  //     loadedValue = DEFAULT_CONTAINER_COUNT;
+  //   }
+  //   this.containerCount = loadedValue;
+  // }
 
-  private loadContainerCount() {
-    let loadedValue: number = Number(localStorage.getItem(STORAGE_KEY + "-containers"));
-    if (!loadedValue || loadedValue < MIN_CONTAINER_COUNT) {
-      loadedValue = DEFAULT_CONTAINER_COUNT;
-    }
-    this.containerCount = loadedValue;
-  }
-
-  saveContainerCount() {
-    localStorage.setItem(STORAGE_KEY + "-containers", String(this.containerCount));
-  }
+  // saveContainerCount() {
+  //   localStorage.setItem(STORAGE_KEY + "-containers", String(this.containerCount));
+  // }
 
   private setLanguage() {
     this.translate.setDefaultLang('en');
@@ -243,9 +218,8 @@ export class MainService {
     this.applyTheme();
   }
 
-  play() {
-    this.createPlayContainers();
-    this.fillPlayContainers(this.game!);
+  play(game: Game) {
+    this.fillPlayContainers(game);
     this.setView("play");
   }
 

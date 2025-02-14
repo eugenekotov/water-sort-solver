@@ -27,6 +27,10 @@ export class PlayContainer {
   items: PlayItem[] = [];
   selected: boolean = false;
 
+  private constructor() {
+    // Use static method create()
+  }
+
   getTopColorCount(): number {
     return PlayContainer.getTopColorCount(this);
   }

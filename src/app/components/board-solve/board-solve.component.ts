@@ -59,7 +59,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private onScreenResized() {
     this.getItemsElements();
-    this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
+    this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
   ngOnDestroy(): void {

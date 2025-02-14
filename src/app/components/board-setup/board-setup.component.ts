@@ -250,7 +250,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       const sourceContainers = JSON.parse(sourceContainersString);
       const setupContainers1 = JSON.parse(containersString1);
       const setupContainers2 = JSON.parse(containersString2);
-      this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
+      // this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
       // this.mainService.sourceItems = sourceContainers;
       // this.mainService.setupContainers1 = setupContainers1;
       // this.mainService.setupContainers2 = setupContainers2;
@@ -260,32 +260,31 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playClick() {
     // TODO: Show warning if board is not filled
-    this.mainService.play();
+    this.mainService.play(this.mainService.game!);
   }
 
   solveClick() {
     // TODO: Show warning if board is not filled
-    this.mainService.solve();
+    this.mainService.solve(this.mainService.game!);
   }
 
   addContainer() {
-    if (this.mainService.containerCount < MAX_CONTAINER_COUNT) {
+    if (this.mainService.game!.containers.length < MAX_CONTAINER_COUNT) {
       this.stopMovingProcess();
-      this.mainService.containerCount++;
       this.mainService.game!.addSourceItems(1); // add sourceitem
       this.mainService.game!.containers.push(new GameContainer()); // add container
-      this.mainService.saveContainerCount();
+      // this.mainService.saveContainerCount();
       this.containersCountChanged();
     }
   }
 
   removeContainer() {
-    if (MIN_CONTAINER_COUNT < this.mainService.containerCount) {
+    if (MIN_CONTAINER_COUNT < this.mainService.game!.containers.length) {
       this.stopMovingProcess();
-      this.mainService.containerCount--;
+      // this.mainService.containerCount--;
       this.removeSourceContainer();
       this.removeSetupContainer();
-      this.mainService.saveContainerCount();
+      // this.mainService.saveContainerCount();
       this.containersCountChanged();
     }
   }
