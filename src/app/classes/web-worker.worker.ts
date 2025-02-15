@@ -6,13 +6,15 @@ import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
 import { BoardContainer } from "./model/board/board-container.class";
 import { boardSetAdd, boardSetContains } from "./model/board/board-set.class";
-import { Board, boardClone, boardCreate, boardIsResolved } from "./model/board/board.class";
+import { Board, boardClone, boardCreate, boardCreate2, boardIsResolved2 } from "./model/board/board.class";
+import { GameContainer } from "./model/game/game-container.class";
 import { PlayContainer } from "./model/play-container.class";
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
 class SolutionData {
   containers: PlayContainer[] = [];
+  containers2: GameContainer[] = [];
   oldBoards: Board[] = [];
   steps: Step[] = [];
   solutions: SolutionSet = new SolutionSet();
@@ -21,9 +23,10 @@ class SolutionData {
   logicFunctions: TLogicFunction[] = [];
 }
 
-function solve(containers: PlayContainer[]) {
+function solve(containers: GameContainer[]) {
   const solutionData = new SolutionData();
-  solutionData.containers = containers;
+  // solutionData.containers = containers;
+  solutionData.containers2 = containers;
   solutionData.oldBoards = [];
   solutionData.steps = [];
   solutionData.solutions.solutions = [];
@@ -32,7 +35,7 @@ function solve(containers: PlayContainer[]) {
   solutionData.logicFunctions.push(getLogic1To3());
   solutionData.logicFunctions.push(getLogic2To2());
   solutionData.logicFunctions.push(getLogic3To1());
-  tryToResolve(solutionData, boardCreate(solutionData.containers), 0);
+  tryToResolve(solutionData, boardCreate2(solutionData.containers2), 0);
   if (solutionData.bestSolution === undefined) {
     postSolution(EWorkerResult.NO_SOLUTION, undefined);
   } else {
@@ -44,7 +47,7 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
   console.log(stepCount);
   solutionData.counter++;
   // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
-  if (boardIsResolved(board)) {
+  if (boardIsResolved2(board)) {
     foundSolution(solutionData);
     return;
   }
@@ -55,7 +58,7 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
     stepCount = stepCount + logcResult.stepCount;
     boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
     solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-    if (boardIsResolved(board)) {
+    if (boardIsResolved2(board)) {
       foundSolution(solutionData);
       return;
     }
@@ -260,5 +263,5 @@ function optimizeSolution(solution: Solution): Solution {
 }
 
 addEventListener('message', ({ data }) => {
-  solve(data as PlayContainer[]);
+  solve(data as GameContainer[]);
 });
