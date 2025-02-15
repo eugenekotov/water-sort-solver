@@ -1,4 +1,4 @@
-import { PlayContainer } from "./play-container.class";
+import { PlayContainer } from "../play-container.class";
 
 export class Board {
 

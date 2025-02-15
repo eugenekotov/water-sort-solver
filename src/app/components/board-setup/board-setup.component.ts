@@ -1,9 +1,10 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
-import { GameContainer, GameSourceItem } from 'src/app/classes/game.class';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
+import { GameContainer } from 'src/app/classes/model/game/game-container.class';
+import { GameSourceItem } from 'src/app/classes/model/game/game-source-item.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { MainService } from 'src/app/services/main.service';

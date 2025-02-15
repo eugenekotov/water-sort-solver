@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { Game } from '../classes/game.class';
+import { Game } from '../classes/model/game/game.class';
 import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { Solution } from '../classes/model/solution-set.class';

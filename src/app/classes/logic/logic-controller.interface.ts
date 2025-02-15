@@ -1,5 +1,5 @@
-import { boardSetAdd } from "../model/board-set.class";
-import { Board, boardClone } from "../model/board.class";
+import { boardSetAdd } from "../model/board/board-set.class";
+import { Board, boardClone } from "../model/board/board.class";
 import { PlayContainer } from "../model/play-container.class";
 import { Step } from "../solution-controller.class";
 

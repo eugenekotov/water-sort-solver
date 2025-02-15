@@ -1,4 +1,4 @@
-import { Board } from "../model/board.class";
+import { Board } from "../model/board/board.class";
 import { Color } from "../model/colors.class";
 import { PlayContainer } from "../model/play-container.class";
 import { LogicResult, makeStep, TLogicFunction } from "./logic-controller.interface";
