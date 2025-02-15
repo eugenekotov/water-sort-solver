@@ -1,18 +1,80 @@
-import { PlayContainer } from "./play-container.class";
+import { GameContainer } from "../game.class";
+import { Color } from "./colors.class";
+import { CONTAINER_SIZE } from "./const.class";
 
-export class Board {
 
-  containers: PlayContainer[] = [];
+export class BoardContainer {
+
+  gameContainer: GameContainer;
+  resolved: boolean = false;
+  index: number;
+
+  static checkRsolved(container: BoardContainer) {
+    container.resolved = BoardContainer.isFull(container) && BoardContainer.hasOnlyOneColor(container);
+  }
+
+  static size(container: BoardContainer): number {
+    return container.gameContainer.colors.length;
+  }
+
+  static isEmpty(container: BoardContainer): boolean {
+    return BoardContainer.size(container) === 0;
+  }
+
+  static isFull(container: BoardContainer): boolean {
+    return BoardContainer.size(container) === CONTAINER_SIZE;
+  }
+
+  static peek(container: BoardContainer): Color {
+    return container.gameContainer.colors[container.gameContainer.colors.length - 1];
+  }
+
+  static push(container: BoardContainer, color: Color): void {
+    container.gameContainer.colors.push(color);
+    BoardContainer.checkRsolved(container);
+  }
+
+  static pop(container: BoardContainer): Color {
+    container.resolved = false;
+    const color = container.gameContainer.colors.pop();
+    if (!color) {
+      throw new Error("Cannot pop color from empty container");
+    }
+    return color;
+  }
+
+  static hasOnlyThreeOfOneColor(container: BoardContainer): boolean {
+    return BoardContainer.size(container) === 3
+      && container.gameContainer.colors[0] === container.gameContainer.colors[1]
+      && container.gameContainer.colors[0] === container.gameContainer.colors[2];
+  }
+
+  static hasOnlyTwoOfOneColor(container: BoardContainer): boolean {
+    return BoardContainer.size(container) === 2 && container.gameContainer.colors[0] === container.gameContainer.colors[1];
+  }
+
+  static hasOnlyOneOfOneColor(container: BoardContainer): boolean {
+    return BoardContainer.size(container) === 1;
+  }
+
+  static hasOnlyOneColor(container: BoardContainer): boolean {
+    if (BoardContainer.isEmpty(container)) {
+      return false;
+    }
+    return container.gameContainer.colors.every(color => color === container.gameContainer.colors[0]);
+  }
+
 
 }
 
-export function boardCreate(): Board;
-export function boardCreate(containers: PlayContainer[]): Board;
-export function boardCreate(containers?: PlayContainer[]): Board {
+export class Board {
+  boardContainers: BoardContainer[] = [];
+}
+
+export function boardCreate(containers: GameContainer[]): Board {
   const board = new Board();
   if (containers !== undefined) {
-    board.containers = containers;
-    board.containers.forEach(container => PlayContainer.afterChange(container));
+    board.boardContainers = containers.map((container, index) => ({ gameContainer: container, resolved: false, index: index }));
   }
   return board;
 }
@@ -20,12 +82,12 @@ export function boardCreate(containers?: PlayContainer[]): Board {
 export function boardIsResolved(board: Board): boolean {
   let result = true;
   let i = 0;
-  while (i < board.containers.length) {
-    let container = board.containers[i];
-    if (PlayContainer.isEmpty(container)) {
+  while (i < board.boardContainers.length) {
+    let container = board.boardContainers[i];
+    if (container.gameContainer.colors.length === 0) {
       i++;
-    } else if (PlayContainer.isResolved(container)) {
-      board.containers.splice(i, 1);
+    } else if (container.resolved) {
+      board.boardContainers.splice(i, 1);
     } else {
       result = false;
       i++;
@@ -36,17 +98,26 @@ export function boardIsResolved(board: Board): boolean {
 
 export function boardClone(board: Board): Board {
   const newBoard = new Board();
-  newBoard.containers = board.containers.map(container => PlayContainer.containerClone(container));
+  newBoard.boardContainers = board.boardContainers.map(container => boardContainerClone(container));
   return newBoard;
 }
 
+export function boardContainerClone(boardContainer: BoardContainer): BoardContainer {
+  const newContainer = new BoardContainer();
+  newContainer.gameContainer = new GameContainer();
+  newContainer.gameContainer.colors = [...boardContainer.gameContainer.colors];
+  newContainer.resolved = boardContainer.resolved;
+  newContainer.index = boardContainer.index;
+  return newContainer;
+}
+
 export function boardEquals(board1: Board, board2: Board): boolean {
-  if (board1.containers.length !== board2.containers.length) {
+  if (board1.boardContainers.length !== board2.boardContainers.length) {
     return false;
   }
-  for (let i = 0; i < board1.containers.length; i++) {
-    const count1 = boardGetContainerCount(board2, board1.containers[i]);
-    const count2 = boardGetContainerCount(board1, board1.containers[i]);
+  for (let i = 0; i < board1.boardContainers.length; i++) {
+    const count1 = boardGetContainerCount(board2, board1.boardContainers[i]);
+    const count2 = boardGetContainerCount(board1, board1.boardContainers[i]);
     if (count1 !== count2) {
       return false;
     }
@@ -54,6 +125,6 @@ export function boardEquals(board1: Board, board2: Board): boolean {
   return true;
 }
 
-export function boardGetContainerCount(board: Board, container2: PlayContainer): number {
-  return board.containers.filter(container1 => PlayContainer.equals(container1, container2)).length;
+export function boardGetContainerCount(board: Board, container2: BoardContainer): number {
+  return board.boardContainers.filter(container1 => GameContainer.equal(container1.gameContainer, container2.gameContainer)).length;
 }

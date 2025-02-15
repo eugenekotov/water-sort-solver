@@ -1,6 +1,5 @@
-import { Board } from "../model/board.class";
+import { Board, BoardContainer } from "../model/board.class";
 import { Color } from "../model/colors.class";
-import { PlayContainer } from "../model/play-container.class";
 import { LogicResult, makeStep, TLogicFunction } from "./logic-controller.interface";
 
 export function getLogic1To3(): TLogicFunction {
@@ -9,9 +8,9 @@ export function getLogic1To3(): TLogicFunction {
     let hasStep = true;
     while (hasStep) {
       hasStep = false;
-      for (let iTo = 0; iTo < board.containers.length; iTo++) {
-        if (PlayContainer.hasOnlyThreeOfOneColor(board.containers[iTo])) {
-          const iFrom = getColorContainerIndex(board, board.containers[iTo].items[0].color!, iTo);
+      for (let iTo = 0; iTo < board.boardContainers.length; iTo++) {
+        if (BoardContainer.hasOnlyThreeOfOneColor(board.boardContainers[iTo])) {
+          const iFrom = getColorContainerIndex(board, board.boardContainers[iTo].gameContainer.colors[0], iTo);
           if (iFrom !== -1) {
             board = makeStep(board, iFrom, iTo, 1, result);
             hasStep = true;
@@ -25,8 +24,8 @@ export function getLogic1To3(): TLogicFunction {
   }
 
   function getColorContainerIndex(board: Board, color: Color, excludeIndex: number): number {
-    for (let i = 0; i < board.containers.length; i++) {
-      if (i !== excludeIndex && !PlayContainer.isEmpty(board.containers[i]) && PlayContainer.peek(board.containers[i]) === color) {
+    for (let i = 0; i < board.boardContainers.length; i++) {
+      if (i !== excludeIndex && !BoardContainer.isEmpty(board.boardContainers[i]) && BoardContainer.peek(board.boardContainers[i]) === color) {
         return i;
       }
     }
