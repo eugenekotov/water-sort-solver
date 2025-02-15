@@ -63,5 +63,13 @@ export class BoardContainer {
     return container.gameContainer.colors.every(color => color === container.gameContainer.colors[0]);
   }
 
+  static clone(boardContainer: BoardContainer): BoardContainer {
+    const newContainer = new BoardContainer();
+    newContainer.gameContainer = new GameContainer();
+    newContainer.gameContainer.colors = [...boardContainer.gameContainer.colors];
+    newContainer.resolved = boardContainer.resolved;
+    newContainer.index = boardContainer.index;
+    return newContainer;
+  }
 
 }

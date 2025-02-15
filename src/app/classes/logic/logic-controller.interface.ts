@@ -1,6 +1,6 @@
 import { BoardContainer } from "../model/board/board-container.class";
 import { boardSetAdd } from "../model/board/board-set.class";
-import { Board, boardClone } from "../model/board/board.class";
+import { Board } from "../model/board/board.class";
 import { Step } from "../solution-controller.class";
 
 export class LogicResult {
@@ -13,7 +13,7 @@ export class LogicResult {
 export type TLogicFunction = (board: Board) => LogicResult;
 
 export function makeStep(board: Board, iFrom: number, iTo: number, stepCount: number, result: LogicResult): Board {
-  board = boardClone(board);
+  board = Board.clone(board);
   for (let i = 0; i < stepCount; i++) {
     BoardContainer.push(board.boardContainers[iTo], BoardContainer.pop(board.boardContainers[iFrom]));
     result.steps.push(new Step(

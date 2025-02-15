@@ -6,7 +6,7 @@ import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
 import { BoardContainer } from "./model/board/board-container.class";
 import { boardSetAdd, boardSetContains } from "./model/board/board-set.class";
-import { Board, boardClone, boardCreate2, boardIsResolved2 } from "./model/board/board.class";
+import { Board } from "./model/board/board.class";
 import { GameContainer } from "./model/game/game-container.class";
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
@@ -32,7 +32,7 @@ function solve(containers: GameContainer[]) {
   solutionData.logicFunctions.push(getLogic1To3());
   solutionData.logicFunctions.push(getLogic2To2());
   solutionData.logicFunctions.push(getLogic3To1());
-  tryToResolve(solutionData, boardCreate2(solutionData.containers), 0);
+  tryToResolve(solutionData, Board.create(solutionData.containers), 0);
   if (solutionData.bestSolution === undefined) {
     postSolution(EWorkerResult.NO_SOLUTION, undefined);
   } else {
@@ -44,7 +44,7 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
   console.log(stepCount);
   solutionData.counter++;
   // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
-  if (boardIsResolved2(board)) {
+  if (Board.isResolved(board)) {
     foundSolution(solutionData);
     return;
   }
@@ -55,16 +55,16 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
     stepCount = stepCount + logcResult.stepCount;
     boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
     solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-    if (boardIsResolved2(board)) {
+    if (Board.isResolved(board)) {
       foundSolution(solutionData);
       return;
     }
   }
 
   // Try to check all options
-  for (let iFrom = 0; iFrom < board.containers.length; iFrom++) {
+  for (let iFrom = 0; iFrom < board.boardContainers.length; iFrom++) {
     // Try to find place for each
-    for (let iTo = 0; iTo < board.containers.length; iTo++) {
+    for (let iTo = 0; iTo < board.boardContainers.length; iTo++) {
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
         tryToMove(solutionData, board, iFrom, iTo, stepCount);
@@ -129,8 +129,8 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
     return;
   }
   solutionData.steps.push(new Step(
-    board.containers[iFrom].index,
-    board.containers[iTo].index,
+    board.boardContainers[iFrom].index,
+    board.boardContainers[iTo].index,
     BoardContainer.peek(board.boardContainers[iTo])));
   boardSetAdd(solutionData.oldBoards, board);
   tryToResolve(solutionData, board, stepCount + 1);
@@ -138,7 +138,7 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
 }
 
 function move(board: Board, iFrom: number, iTo: number): Board {
-  board = boardClone(board);
+  board = Board.clone(board);
   BoardContainer.push(board.boardContainers[iTo], BoardContainer.pop(board.boardContainers[iFrom]));
   return board;
 }

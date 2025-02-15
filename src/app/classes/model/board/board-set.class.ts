@@ -1,7 +1,7 @@
-import { Board, boardEquals } from "./board.class";
+import { Board } from "./board.class";
 
 export function boardSetContains(boardSet: Board[], board: Board): boolean {
-  return boardSet.some(existsBoard => boardEquals(existsBoard, board));
+  return boardSet.some(existsBoard => Board.equal(existsBoard, board));
 }
 
 export function boardSetAdd(boardSet: Board[], board: Board): void;
