@@ -132,7 +132,7 @@ export class MainService {
     this.playContainers1 = [];
     this.playContainers2 = [];
     game.containers.forEach((container, index) => {
-      const playCountainer: PlayContainer = PlayContainer.create(index);
+      const playCountainer: PlayContainer = new PlayContainer(index);
       container.colors.forEach(color => playCountainer.push(color));
       this.playContainers1.push(playCountainer);
     });

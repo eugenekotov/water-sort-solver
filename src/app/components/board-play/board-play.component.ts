@@ -22,6 +22,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private playContainers: PlayContainer[] = [];
   protected playContainers1: PlayContainer[] = [];
   protected playContainers2: PlayContainer[] = [];
+  private selectedContainer: PlayContainer | undefined;
+
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: any[] = [];
 
@@ -94,20 +96,19 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private makeAction(container: PlayContainer): Observable<PlayStep | undefined> {
     return new Observable(observer => {
       this.movingInProgress = true;
-      const selectedContainer = this.getSelectedContainer();
-      if (selectedContainer) {
-        if (container.selected) {
+      if (this.selectedContainer) {
+        if (container.index === this.selectedContainer.index) {
           // Move colors back down
           this.movingController.moveDown(container, observer);
-          container.selected = false;
+          this.selectedContainer = undefined;
         } else {
           if (container.isEmpty() || (!container.isFull() && container.peek() === this.movingController.getColor())) {
             // Move colors if it is possible
-            this.movingController.moveTo(selectedContainer, container, observer);
+            this.movingController.moveTo(this.selectedContainer, container, observer);
           } else {
-            this.movingController.moveDown(selectedContainer, observer);
+            this.movingController.moveDown(this.selectedContainer, observer);
           }
-          selectedContainer.selected = false;
+          this.selectedContainer = undefined;
         }
       } else {
         if (this.movingController.stoppingInProgress) {
@@ -115,10 +116,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
           return;
         }
         // No selected container
-        if (!PlayContainer.isEmpty(container)) {
+        if (!container.isEmpty()) {
           // We selected container, move colors up
           this.movingController.moveUp(container, observer);
-          container.selected = true;
+          this.selectedContainer = container;
         } else {
           observer.next();
           observer.complete();
@@ -136,14 +137,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     event.stopPropagation();
   }
 
-  private static selectedContainerPredicate(container: PlayContainer): boolean {
-    return container.selected;
-  }
-
-  private getSelectedContainer(): PlayContainer | undefined {
-    return this.playContainers.find(BoardPlayComponent.selectedContainerPredicate);
-  }
-
   protected backClick() {
     if (this.movingInProgress) {
       this.movingController.stoppingInProgress = true;
@@ -152,10 +145,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.stepBack();
       });
     } else {
-      const selectedContainer = this.getSelectedContainer();
-      if (selectedContainer) {
+      if (this.selectedContainer) {
         new Observable(observer => {
-          this.movingController.moveDown(selectedContainer, observer);
+          this.movingController.moveDown(this.selectedContainer!, observer);
         }).subscribe(() => this.stepBack());
       } else {
         this.stepBack();
@@ -166,7 +158,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private stepBack() {
     const step = this.steps.pop();
     for (let i = 0; i < step!.count; i++) {
-      PlayContainer.push(this.playContainers[step!.iFrom], this.playContainers[step!.iTo].pop())
+      this.playContainers[step!.iFrom].push(this.playContainers[step!.iTo].pop());
     }
   }
 
@@ -194,7 +186,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       container1Count = Math.ceil(containerCount / 2);
     }
     this.game.containers.forEach((container, index) => {
-      const playCountainer: PlayContainer = PlayContainer.create(index);
+      const playCountainer: PlayContainer = new PlayContainer(index);
       container.colors.forEach(color => playCountainer.push(color));
       if (index < container1Count) {
         this.playContainers1.push(playCountainer);
@@ -245,10 +237,15 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     if (this.movingInProgress) {
       return;
     }
-    const selectedContainer = this.getSelectedContainer();
-    if (selectedContainer) {
-      this.clicksSubject$.next(selectedContainer);
+    if (this.selectedContainer) {
+      this.clicksSubject$.next(this.selectedContainer);
     }
+  }
+
+  protected playClick() {
+    this.mainService.game!.clear();
+    this.mainService.game!.fillRandom();
+    this.prepareBoard();
   }
 
 }

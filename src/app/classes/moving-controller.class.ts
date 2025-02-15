@@ -53,7 +53,6 @@ export class MovingController {
         await this.moving(movingItems, topPositions);
         if (this.stoppingInProgress) {
           this.moveDown(container, observer);
-          container.selected = false;
           return;
         }
         observer.next();

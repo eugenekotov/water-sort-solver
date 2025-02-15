@@ -14,9 +14,8 @@
         <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
           <mat-divider></mat-divider>
-          <!-- <button mat-menu-item (click)="clearClick()" [disabled]="filling">{{"SETUP.CLEAR" | translate}}</button>
-          <button mat-menu-item (click)="fillRandomly()" [disabled]="filling">{{"SETUP.FILL_RANDOM" | translate}}</button> -->
-          <!-- <mat-divider></mat-divider> -->
+          <button mat-menu-item (click)="playClick()">{{"MENU.PLAY" | translate}}</button>
+          <mat-divider></mat-divider>
           <!-- <button mat-menu-item (click)="saveClick()" [disabled]="filling || !saveEnabled">{{"SETUP.SAVE" |
             translate}}</button>
           <button mat-menu-item (click)="loadClick()" [disabled]="filling || !loadEnabled">{{"SETUP.LOAD" |
@@ -40,38 +39,23 @@
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
     <p>{{ "SOLVE.STEP" | translate: {step: steps.length} }}</p>
   </div>
-  <div class="relative-container" (click)="onClick($event)">
-    <ng-container *ngIf="mainService.isMobile">
-      <div class="play-containers-small">
-        <div class="containers containers-small">
-          <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
-        <div class="containers containers-small">
-          <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
-      </div>
-    </ng-container>
 
-    <ng-container *ngIf="!mainService.isMobile">
-      <div class="play-containers-large">
-        <div class="containers containers-large">
-          <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
-        <div class="containers containers-large">
-          <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
-            [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
+  <div class="relative-container" (click)="onClick($event)">
+    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
+          [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
+        </app-container>
       </div>
-    </ng-container>
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
+          [attr.id]="getContainerId(container.index)" (click)="onContainerClick($event, container)">
+        </app-container>
+      </div>
+    </div>
 
     <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
+
   </div>
 
   <ng-container *ngIf="mainService.isMobile">

@@ -8,8 +8,6 @@ import { PlayItem } from "./item.class";
  */
 export class PlayContainer {
 
-  resolved = false;
-
   /**
    * Structure Items stores items like stack with indexes
    *
@@ -25,24 +23,23 @@ export class PlayContainer {
   _size: number = 0;
   index: number;
   items: PlayItem[] = [];
-  selected: boolean = false;
 
-  private constructor() {
-    // Use static method create()
+  constructor(index: number) {
+    this.index = index;
+    for (let i = 0; i < CONTAINER_SIZE; i++) {
+      this.items.push(PlayItem.create(undefined, index, false));
+    }
+    this.afterChange();
   }
 
   getTopColorCount(): number {
-    return PlayContainer.getTopColorCount(this);
-  }
-
-  static getTopColorCount(container: PlayContainer): number {
-    if (PlayContainer.isEmpty(container)) {
+    if (this.isEmpty()) {
       return 0;
     }
     let result = 1;
-    const color = PlayContainer.peek(container);
-    let i = PlayContainer.size(container) - 2;
-    while (i >= 0 && container.items[i].color === color) {
+    const color = this.peek();
+    let i = this.size() - 2;
+    while (i >= 0 && this.items[i].color === color) {
       result++;
       i--;
     }
@@ -50,144 +47,50 @@ export class PlayContainer {
   }
 
   peek(): Color {
-    return PlayContainer.peek(this);
-  }
-
-  static peek(container: PlayContainer): Color {
-    const size = PlayContainer.size(container);
+    const size = this.size();
     if (size == 0) {
       throw Error("Container is empty.");
     }
-    return container.items[size - 1].color!;
+    return this.items[size - 1].color!;
   }
 
   size(): number {
     return this._size;
   }
 
-  static size(container: PlayContainer) {
-    return container._size
-  }
-
   pop(): Color {
-    return PlayContainer.pop(this);
-  }
-
-  static pop(container: PlayContainer): Color {
-    const size = container.size();
+    const size = this.size();
     if (size == 0) {
       throw Error("Container is empty.");
     }
-    const color = container.items[size - 1].color!;
-    container.items[size - 1].color = undefined;
-    PlayContainer.afterChange(container);
+    const color = this.items[size - 1].color!;
+    this.items[size - 1].color = undefined;
+    this.afterChange();
     return color;
   }
 
   push(color: Color): void {
-    PlayContainer.push(this, color);
-  }
-
-  static push(container: PlayContainer, color: Color): void {
-    // Search first empty item
-    const size = PlayContainer.size(container);
-    if (size == CONTAINER_SIZE) {
-      throw Error("Size limit exists.");
-    }
-    container.items[size].color = color;
-    PlayContainer.afterChange(container);
+    this.items[this.size()].color = color;
+    this.afterChange();
   }
 
   isEmpty(): boolean {
-    return PlayContainer.isEmpty(this);
-  }
-
-  static isEmpty(container: PlayContainer): boolean {
-    return container.items[0].color === undefined;
+    return this.items[0].color === undefined;
   }
 
   isFull(): boolean {
-    return PlayContainer.isFull(this);
+    return this.size() === CONTAINER_SIZE;
   }
 
-  static isFull(container: PlayContainer): boolean {
-    return PlayContainer.size(container) === CONTAINER_SIZE;
+  private afterChange() {
+    this.calculateSize();
   }
 
-  static afterChange(container: PlayContainer) {
-    PlayContainer.calculateSize(container);
-    PlayContainer.checkResolved(container);
-  }
-
-  private static calculateSize(container: PlayContainer) {
-    container._size = container.items.findIndex(item => item.color === undefined);
-    if (container._size === -1) {
-      container._size = CONTAINER_SIZE;
+  private calculateSize() {
+    this._size = this.items.findIndex(item => item.color === undefined);
+    if (this._size === -1) {
+      this._size = CONTAINER_SIZE;
     }
-  }
-
-  private static checkResolved(container: PlayContainer): void {
-    if (PlayContainer.size(container) !== CONTAINER_SIZE) {
-      container.resolved = false;
-    } else {
-      container.resolved = container.items.every(item => item.color === PlayContainer.peek(container));
-    }
-  }
-
-  static create(index: number): PlayContainer {
-    const container = new PlayContainer();
-    container.index = index;
-    for (let i = 0; i < CONTAINER_SIZE; i++) {
-      container.items.push(PlayItem.create(undefined, index, false));
-    }
-    PlayContainer.afterChange(container);
-    return container;
-  }
-
-  static isResolved(container: PlayContainer): boolean {
-    return container.resolved;
-  }
-
-  static equals(container1: PlayContainer, container2: PlayContainer): boolean {
-    if (PlayContainer.size(container1) !== PlayContainer.size(container2)) {
-      return false;
-    }
-    for (let i = 0; i < PlayContainer.size(container1); i++) {
-      if (container1.items[i].color !== container2.items[i].color) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  static hasOnlyThreeOfOneColor(container: PlayContainer): boolean {
-    return PlayContainer.size(container) === 3 && container.items[0].color === container.items[1].color && container.items[0].color === container.items[2].color;
-  }
-
-  static hasOnlyTwoOfOneColor(container: PlayContainer): boolean {
-    return PlayContainer.size(container) === 2 && container.items[0].color === container.items[1].color;
-  }
-
-  static hasOnlyOneOfOneColor(container: PlayContainer): boolean {
-    return PlayContainer.size(container) === 1;
-  }
-
-  static hasOnlyOneColor(container: PlayContainer): boolean {
-    if (PlayContainer.isEmpty(container)) {
-      return false;
-    }
-    return container.items.every(item => item.color === undefined || item.color === container.items[0].color);
-  }
-
-  static containerClone(c: PlayContainer): PlayContainer {
-    const newContainer = PlayContainer.create(c.index);
-    c.items.forEach((item, index) => newContainer.items[index].color = item.color);
-    PlayContainer.afterChange(newContainer);
-    return newContainer;
-  }
-
-  static containersClone(containers: PlayContainer[]): PlayContainer[] {
-    return containers.map(container => PlayContainer.containerClone(container));
   }
 
 }

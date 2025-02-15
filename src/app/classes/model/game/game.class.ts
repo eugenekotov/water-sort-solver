@@ -14,6 +14,10 @@ export class Game {
 
   fillRandom() {
     let availableSourceItems = this.getAvailableSourceItems();
+    if (availableSourceItems.length === 0) {
+      this.clear();
+      availableSourceItems = this.getAvailableSourceItems();
+    }
     while (availableSourceItems.length > 0) {
       const sourceIndex = getRandomInt(0, availableSourceItems.length - 1);
       availableSourceItems[sourceIndex].count--;

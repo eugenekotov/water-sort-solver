@@ -169,15 +169,15 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  getConnectedLists(currentId: string): string[] {
+  protected getConnectedLists(currentId: string): string[] {
     return Array<number>(this.mainService.game!.containers.length).fill(0).map((_, index) => this.getContainerId(index)).filter(id => id !== currentId);;
   }
 
-  getContainerId(index: number): string {
+  protected getContainerId(index: number): string {
     return `container${index}`;
   }
 
-  getSourceItemStyle(item: GameSourceItem) {
+  protected getSourceItemStyle(item: GameSourceItem) {
     let result: any = { 'background-color': item.color };
 
     if (item.count > 0) {
@@ -188,18 +188,18 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return result;
   }
 
-  getItemStyle(color: Color) {
+  protected getItemStyle(color: Color) {
     return { 'background-color': color };
   }
 
 
-  canDrop(container: GameContainer): () => boolean {
+  protected canDrop(container: GameContainer): () => boolean {
     return () => {
       return container.colors.length < CONTAINER_SIZE;
     }
   }
 
-  clearClick() {
+  protected clearClick() {
     // TODO: Ask confirmation
     this.clearBoard();
   }
@@ -217,6 +217,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   fillRandomly() {
     this.mainService.game!.fillRandom();
+    this.createSetupContainers();
     this.checkSaveEnabled();
   }
 
