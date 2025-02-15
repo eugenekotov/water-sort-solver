@@ -17,22 +17,22 @@ export class PlayStep {
 })
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
-  playContainers: PlayContainer[] = [];
-  playContainers1: PlayContainer[] = [];
-  playContainers2: PlayContainer[] = [];
+  protected playContainers: PlayContainer[] = [];
+  protected playContainers1: PlayContainer[] = [];
+  protected playContainers2: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: any[] = [];
 
-  steps: PlayStep[] = [];
+  protected steps: PlayStep[] = [];
 
-  completeStepIndex: number = 0;
+  protected completeStepIndex: number = 0;
 
   private clicksSubject$ = new Subject<PlayContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
 
-  movingController = new MovingController(this.mainService);
-  movingInProgress: boolean = false;
+  protected movingController = new MovingController(this.mainService);
+  protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService) {
     this.prepareBoard();

@@ -45,9 +45,9 @@ export class SolutionController {
 
   private canFinish: boolean = false;
 
-  observer: Subscriber<WorkerResult>;
-  worker: Worker | undefined;
-  tempResult: WorkerResult | undefined;
+  private observer: Subscriber<WorkerResult>;
+  private worker: Worker | undefined;
+  private tempResult: WorkerResult | undefined;
 
   constructor() {
   }
