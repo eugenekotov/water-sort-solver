@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { STORAGE_KEY } from 'src/app/classes/model/const.class';
+import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
+import { Game } from 'src/app/classes/model/game/game.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { MainService } from 'src/app/services/main.service';
@@ -17,7 +18,8 @@ export class PlayStep {
 })
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
-  protected playContainers: PlayContainer[] = [];
+  private game: Game;
+  private playContainers: PlayContainer[] = [];
   protected playContainers1: PlayContainer[] = [];
   protected playContainers2: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;
@@ -35,6 +37,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService) {
+    if (this.mainService.game) {
+      this.game = this.mainService.game;
+    } else {
+      this.game = Game.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+    }
     this.prepareBoard();
   }
 
@@ -57,7 +64,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.movingController.getHTMLElements(this.playContainers);
     this.getContainerHTMLElemets();
   }
-
 
   private createStepsSubject() {
     if (this.stepsSubjectSubscription) {
@@ -121,80 +127,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  // private moveUp(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-  //   setTimeout(() => {
-  //     const movingCount = containerGetTopColorCount(container);
-  //     this.movingItem0.color = container.peek();
-  //     const index = getItemIndex(container.index, PlayContainer.size(container) - 1);
-  //     const startPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-  //     this.setMovingPosition(startPosition);
-  //     container.pop();
-  //     this.movingItem.hidden = false;
-  //     // moving
-  //     setTimeout(async () => {
-  //       const topPosition = new Position(this.getMovingTopCoordinate(container.index), startPosition.left);
-  //       await this.moving(startPosition, topPosition);
-  //       if (this.stoppingInProgress) {
-  //         this.moveDown(container, observer);
-  //         container.selected = false;
-  //         return;
-  //       }
-  //       observer.next(container);
-  //       observer.complete();
-  //     }, 0);
-  //   }, 0);
-  // }
-
-  // private moveDown(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-  //   // moving
-  //   setTimeout(async () => {
-  //     const index = getItemIndex(container.index, PlayContainer.size(container));
-  //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-  //     await this.moving(this.movingCurrentPosition, finishPosition);
-  //     PlayContainer.push(container, this.movingItem.color!);
-  //     this.movingItem.hidden = true;
-  //     if (this.stoppingInProgress) {
-  //       observer.error({ message: "Stop" });
-  //       return;
-  //     }
-  //     observer.next(container);
-  //     observer.complete();
-  //   }, 0);
-  // }
-
-  // private moveTo(container: PlayContainer, observer: Subscriber<PlayContainer>) {
-  //   setTimeout(async () => {
-  //     const startPosition = this.movingCurrentPosition;
-  //     const index = getItemIndex(container.index, PlayContainer.size(container));
-  //     const finishPosition = getMovingPosition(this.itemsElements[index], this.parentMovingElementRect);
-  //     const leftPosition = new Position(this.getMovingTopCoordinate(container.index), finishPosition.left);
-  //     await this.moving(startPosition, leftPosition);
-  //     await this.moving(leftPosition, finishPosition);
-  //     PlayContainer.push(container, this.movingItem.color!);
-  //     this.movingItem.hidden = true;
-  //     if (this.stoppingInProgress) {
-  //       observer.error({ message: "Stop" });
-  //       return;
-  //     }
-  //     observer.next(container);
-  //     observer.complete();
-  //   }, 0);
-  // }
-
-  // private async moving(from: Position, to: Position): Promise<void> {
-  //   return new Promise<void>(resolve => {
-  //     const moving_duration1 = calculateMovingDuration(from, to, this.speed);
-  //     this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
-  //     this.setMovingPosition(to);
-  //     setTimeout(resolve, moving_duration1);
-  //   });
-  // }
-
-  getContainerId(index: number): string {
+  protected getContainerId(index: number): string {
     return "container" + index;
   }
 
-  onContainerClick(event: any, container: PlayContainer) {
+  protected onContainerClick(event: any, container: PlayContainer) {
     this.clicksSubject$.next(container);
     event.stopPropagation();
   }
@@ -207,19 +144,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     return this.playContainers.find(BoardPlayComponent.selectedContainerPredicate);
   }
 
-  // private getMovingTopCoordinate(containerIndex: number): number {
-  //   const index = getTopItemIndex(containerIndex);
-  //   const itemElement = this.itemsElements[index];
-  //   return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
-  // }
-
-  // private setMovingPosition(position: Position) {
-  //   this.movingCurrentPosition = position;
-  //   this.movingItem.top = `${position.top}px`;
-  //   this.movingItem.left = `${position.left}px`;
-  // }
-
-  backClick() {
+  protected backClick() {
     if (this.movingInProgress) {
       this.movingController.stoppingInProgress = true;
       const stopSubscriber = this.stopSubject$.subscribe(() => {
@@ -245,7 +170,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  restartClick() {
+  protected restartClick() {
     // TODO: Ask confirmation
     if (this.movingInProgress) {
       this.movingController.stoppingInProgress = true;
@@ -261,8 +186,22 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   private prepareBoard() {
-    this.playContainers1 = PlayContainer.containersClone(this.mainService.playContainers1);
-    this.playContainers2 = PlayContainer.containersClone(this.mainService.playContainers2);
+    this.playContainers1 = [];
+    this.playContainers2 = [];
+    const containerCount = this.game.containers.length;
+    let container1Count = containerCount;
+    if (containerCount > MAX_CONTAINER_COUNT_IN_LINE) {
+      container1Count = Math.ceil(containerCount / 2);
+    }
+    this.game.containers.forEach((container, index) => {
+      const playCountainer: PlayContainer = PlayContainer.create(index);
+      container.colors.forEach(color => playCountainer.push(color));
+      if (index < container1Count) {
+        this.playContainers1.push(playCountainer);
+      } else {
+        this.playContainers2.push(playCountainer);
+      }
+    });
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.steps = [];
     this.createStepsSubject();
@@ -272,7 +211,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => this.onScreenResized(), 0);
   }
 
-  onClick(event: any) {
+  protected onClick(event: any) {
     const x = event.clientX;
     const y = event.clientY;
     const container = this.getContainer(x, y);
@@ -302,7 +241,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onMovingItemClick() {
+  protected onMovingItemClick() {
     if (this.movingInProgress) {
       return;
     }

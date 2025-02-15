@@ -46,7 +46,7 @@ export class MainService {
     // this.loadContainerCount();
     this.setLanguage();
     this.loadSpeed();
-    this.game = Game.createEmptyGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+    this.game = Game.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
   }
 
   get view(): TView | undefined {
