@@ -48,17 +48,17 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
     return;
   }
 
-  // const logcResult = tryLogicPatterns(solutionData, board);
-  // if (logcResult.stepCount > 0) {
-  //   board = logcResult.board;
-  //   stepCount = stepCount + logcResult.stepCount;
-  //   boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
-  //   solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-  //   if (boardIsResolved(board)) {
-  //     foundSolution(solutionData);
-  //     return;
-  //   }
-  // }
+  const logcResult = tryLogicPatterns(solutionData, board);
+  if (logcResult.stepCount > 0) {
+    board = logcResult.board;
+    stepCount = stepCount + logcResult.stepCount;
+    boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
+    solutionData.steps = [...solutionData.steps, ...logcResult.steps];
+    if (boardIsResolved(board)) {
+      foundSolution(solutionData);
+      return;
+    }
+  }
 
   // Try to check all options
   for (let iFrom = 0; iFrom < board.containers.length; iFrom++) {
@@ -66,84 +66,84 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
     for (let iTo = 0; iTo < board.containers.length; iTo++) {
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
-        // tryToMove(solutionData, board, iFrom, iTo, stepCount);
+        tryToMove(solutionData, board, iFrom, iTo, stepCount);
       }
     }
   }
 }
 
-// function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult {
-//   const result = new LogicResult();
-//   let hasStep = true;
-//   while (hasStep) {
-//     hasStep = false;
-//     solutionData.logicFunctions.forEach(logicFunction => {
-//       const logicResult = logicFunction(board);
-//       if (logicResult.stepCount > 0) {
-//         hasStep = true;
-//         board = logicResult.board;
-//         result.stepCount = result.stepCount + logicResult.stepCount;
-//         boardSetAdd(result.oldBoards, logicResult.oldBoards);
-//         result.steps = [...result.steps, ...logicResult.steps];
-//       }
-//     });
-//   }
-//   result.board = board;
-//   return result;
-// }
+function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult {
+  const result = new LogicResult();
+  let hasStep = true;
+  while (hasStep) {
+    hasStep = false;
+    solutionData.logicFunctions.forEach(logicFunction => {
+      const logicResult = logicFunction(board);
+      if (logicResult.stepCount > 0) {
+        hasStep = true;
+        board = logicResult.board;
+        result.stepCount = result.stepCount + logicResult.stepCount;
+        boardSetAdd(result.oldBoards, logicResult.oldBoards);
+        result.steps = [...result.steps, ...logicResult.steps];
+      }
+    });
+  }
+  result.board = board;
+  return result;
+}
 
-// function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
-//   if (PlayContainer.isEmpty(board.containers[iFrom])) {
-//     // Nothing to take
-//     return;
-//   }
-//   if (PlayContainer.isFull(board.containers[iTo])) {
-//     // No place to put
-//     return;
-//   }
-//   if (!PlayContainer.isEmpty(board.containers[iTo]) && PlayContainer.peek(board.containers[iFrom]) != PlayContainer.peek(board.containers[iTo])) {
-//     // Not suitable color
-//     return;
-//   }
-//   if (PlayContainer.size(board.containers[iFrom]) == 1 && PlayContainer.isEmpty(board.containers[iTo])) {
-//     // Stupid move;
-//     return;
-//   }
-//   if (PlayContainer.hasOnlyThreeOfOneColor(board.containers[iFrom])) {
-//     // Stupid move;
-//     return;
-//   }
-//   if (PlayContainer.hasOnlyOneColor(board.containers[iFrom]) && PlayContainer.isEmpty(board.containers[iTo])) {
-//     // if we have only one color and move to empty container
-//     // Stupid move;
-//     return;
-//   }
+function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
+  if (PlayContainer.isEmpty(board.containers[iFrom])) {
+    // Nothing to take
+    return;
+  }
+  if (PlayContainer.isFull(board.containers[iTo])) {
+    // No place to put
+    return;
+  }
+  if (!PlayContainer.isEmpty(board.containers[iTo]) && PlayContainer.peek(board.containers[iFrom]) != PlayContainer.peek(board.containers[iTo])) {
+    // Not suitable color
+    return;
+  }
+  if (PlayContainer.size(board.containers[iFrom]) == 1 && PlayContainer.isEmpty(board.containers[iTo])) {
+    // Stupid move;
+    return;
+  }
+  if (PlayContainer.hasOnlyThreeOfOneColor(board.containers[iFrom])) {
+    // Stupid move;
+    return;
+  }
+  if (PlayContainer.hasOnlyOneColor(board.containers[iFrom]) && PlayContainer.isEmpty(board.containers[iTo])) {
+    // if we have only one color and move to empty container
+    // Stupid move;
+    return;
+  }
 
-//   // We can try to move
-//   board = move(board, iFrom, iTo);
-//   // console.log("Moved one from " + iFrom + " to " + iTo);
-//   if (boardSetContains(solutionData.oldBoards, board)) {
-//     // We already tried it
-//     // console.log("We already tried it!");
-//     return;
-//   }
-//   solutionData.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[PlayContainer.size(board.containers[iTo]) - 1].color!));
-//   boardSetAdd(solutionData.oldBoards, board);
-//   tryToResolve(solutionData, board, stepCount + 1);
-//   removeSteps(solutionData, stepCount);
-// }
+  // We can try to move
+  board = move(board, iFrom, iTo);
+  // console.log("Moved one from " + iFrom + " to " + iTo);
+  if (boardSetContains(solutionData.oldBoards, board)) {
+    // We already tried it
+    // console.log("We already tried it!");
+    return;
+  }
+  solutionData.steps.push(new Step(board.containers[iFrom].index, board.containers[iTo].index, board.containers[iTo].items[PlayContainer.size(board.containers[iTo]) - 1].color!));
+  boardSetAdd(solutionData.oldBoards, board);
+  tryToResolve(solutionData, board, stepCount + 1);
+  removeSteps(solutionData, stepCount);
+}
 
-// function move(board: Board, iFrom: number, iTo: number): Board {
-//   board = boardClone(board);
-//   PlayContainer.push(board.containers[iTo], PlayContainer.pop(board.containers[iFrom]));
-//   return board;
-// }
+function move(board: Board, iFrom: number, iTo: number): Board {
+  board = boardClone(board);
+  PlayContainer.push(board.containers[iTo], PlayContainer.pop(board.containers[iFrom]));
+  return board;
+}
 
-// function removeSteps(solutionData: SolutionData, stepCount: number) {
-//   while (solutionData.steps.length > stepCount) {
-//     solutionData.steps.pop();
-//   }
-// }
+function removeSteps(solutionData: SolutionData, stepCount: number) {
+  while (solutionData.steps.length > stepCount) {
+    solutionData.steps.pop();
+  }
+}
 
 function foundSolution(solutionData: SolutionData) {
   const solution = optimizeSolution(solutionCreate(solutionData.steps));
