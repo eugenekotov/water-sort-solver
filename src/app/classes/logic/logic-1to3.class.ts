@@ -9,9 +9,9 @@ export function getLogic1To3(): TLogicFunction {
     let hasStep = true;
     while (hasStep) {
       hasStep = false;
-      for (let iTo = 0; iTo < board.containers.length; iTo++) {
+      for (let iTo = 0; iTo < board.boardContainers.length; iTo++) {
         if (BoardContainer.hasOnlyThreeOfOneColor(board.boardContainers[iTo])) {
-          const iFrom = getColorContainerIndex(board, board.containers[iTo].items[0].color!, iTo);
+          const iFrom = getColorContainerIndex(board, board.boardContainers[iTo].gameContainer.colors[0], iTo);
           if (iFrom !== -1) {
             board = makeStep(board, iFrom, iTo, 1, result);
             hasStep = true;
@@ -25,7 +25,7 @@ export function getLogic1To3(): TLogicFunction {
   }
 
   function getColorContainerIndex(board: Board, color: Color, excludeIndex: number): number {
-    for (let i = 0; i < board.containers.length; i++) {
+    for (let i = 0; i < board.boardContainers.length; i++) {
       if (i !== excludeIndex && !BoardContainer.isEmpty(board.boardContainers[i]) && BoardContainer.peek(board.boardContainers[i]) === color) {
         return i;
       }

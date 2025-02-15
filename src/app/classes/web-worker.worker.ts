@@ -6,15 +6,13 @@ import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
 import { BoardContainer } from "./model/board/board-container.class";
 import { boardSetAdd, boardSetContains } from "./model/board/board-set.class";
-import { Board, boardClone, boardCreate, boardCreate2, boardIsResolved2 } from "./model/board/board.class";
+import { Board, boardClone, boardCreate2, boardIsResolved2 } from "./model/board/board.class";
 import { GameContainer } from "./model/game/game-container.class";
-import { PlayContainer } from "./model/play-container.class";
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
 class SolutionData {
-  containers: PlayContainer[] = [];
-  containers2: GameContainer[] = [];
+  containers: GameContainer[] = [];
   oldBoards: Board[] = [];
   steps: Step[] = [];
   solutions: SolutionSet = new SolutionSet();
@@ -25,8 +23,7 @@ class SolutionData {
 
 function solve(containers: GameContainer[]) {
   const solutionData = new SolutionData();
-  // solutionData.containers = containers;
-  solutionData.containers2 = containers;
+  solutionData.containers = containers;
   solutionData.oldBoards = [];
   solutionData.steps = [];
   solutionData.solutions.solutions = [];
@@ -35,7 +32,7 @@ function solve(containers: GameContainer[]) {
   solutionData.logicFunctions.push(getLogic1To3());
   solutionData.logicFunctions.push(getLogic2To2());
   solutionData.logicFunctions.push(getLogic3To1());
-  tryToResolve(solutionData, boardCreate2(solutionData.containers2), 0);
+  tryToResolve(solutionData, boardCreate2(solutionData.containers), 0);
   if (solutionData.bestSolution === undefined) {
     postSolution(EWorkerResult.NO_SOLUTION, undefined);
   } else {
