@@ -1,5 +1,6 @@
-import { Board, BoardContainer } from "../model/board.class";
+import { Board } from "../model/board.class";
 import { Color } from "../model/colors.class";
+import { PlayContainer } from "../model/play-container.class";
 import { LogicResult, makeStep, TLogicFunction } from "./logic-controller.interface";
 
 export function getLogic3To1(): TLogicFunction {
@@ -9,9 +10,9 @@ export function getLogic3To1(): TLogicFunction {
     let hasStep = true;
     while (hasStep) {
       hasStep = false;
-      for (let iTo = 0; iTo < board.boardContainers.length; iTo++) {
-        if (BoardContainer.hasOnlyOneOfOneColor(board.boardContainers[iTo])) {
-          const iFrom = getColorThreeContainerIndex(board, board.boardContainers[iTo].gameContainer.colors[0], iTo);
+      for (let iTo = 0; iTo < board.containers.length; iTo++) {
+        if (PlayContainer.hasOnlyOneOfOneColor(board.containers[iTo])) {
+          const iFrom = getColorThreeContainerIndex(board, board.containers[iTo].items[0].color!, iTo);
           if (iFrom !== -1) {
             board = makeStep(board, iFrom, iTo, 3, result);
             hasStep = true;
@@ -25,11 +26,11 @@ export function getLogic3To1(): TLogicFunction {
   }
 
   function getColorThreeContainerIndex(board: Board, color: Color, excludeIndex: number): number {
-    for (let i = 0; i < board.boardContainers.length; i++) {
-      if (i !== excludeIndex && BoardContainer.size(board.boardContainers[i]) == 4
-        && board.boardContainers[i].gameContainer.colors[BoardContainer.size(board.boardContainers[i]) - 1] === color
-        && board.boardContainers[i].gameContainer.colors[BoardContainer.size(board.boardContainers[i]) - 2] === color
-        && board.boardContainers[i].gameContainer.colors[BoardContainer.size(board.boardContainers[i]) - 3] === color) {
+    for (let i = 0; i < board.containers.length; i++) {
+      if (i !== excludeIndex && PlayContainer.size(board.containers[i]) == 4
+        && board.containers[i].items[PlayContainer.size(board.containers[i]) - 1].color === color
+        && board.containers[i].items[PlayContainer.size(board.containers[i]) - 2].color === color
+        && board.containers[i].items[PlayContainer.size(board.containers[i]) - 3].color === color) {
         return i;
       }
     }
