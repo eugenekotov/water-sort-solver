@@ -1,14 +1,26 @@
+@use 'src/styles/variables' as *;
+
 .view-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+}
+
+.title-buttons {
+  display: flex;
+  justify-content: end;
+}
+
+.title-buttons-small {
+  margin: $margin-small;
+}
+
+.title-buttons-large {
+  margin: $margin-large;
 }
 
 .menu-container {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   justify-content: center;
   gap: 15px;
   margin-bottom: 50px;
@@ -26,3 +38,4 @@
   font-weight: 800;
   background-color: var(--button-background-color-active);
 }
+

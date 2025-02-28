@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { Game } from '../classes/model/game/game.class';
@@ -22,6 +22,10 @@ export class MainService {
   private _isMobile: boolean = false;
   public screenChanged$: Subject<void> = new Subject<void>();
   public screenResized$: Subject<void> = new Subject<void>();
+
+  public isFullScreen: boolean = false;
+  public mainElement: any;
+  public document: any;
 
   // public containerCount = DEFAULT_CONTAINER_COUNT;
 
@@ -109,8 +113,8 @@ export class MainService {
 
   solve(game: Game) {
     this.setView("in-progress").then(_ => {
-      this.fillPlayContainers(game);
-      this.solutionController.solve([...this.playContainers1, ...this.playContainers2]).subscribe((result: WorkerResult) => {
+      // this.fillPlayContainers(game);
+      this.solutionController.solve(game.containers).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
           this.setView("solve");
@@ -235,8 +239,35 @@ export class MainService {
     localStorage.setItem(STORAGE_KEY + "-speed", String(speed));
   }
 
-  fullScreen() {
-
+  setFullScreen(value: boolean) {
+    this.isFullScreen = value;
+    if (value) {
+      if (this.mainElement.requestFullscreen) {
+        this.mainElement.requestFullscreen();
+      } else if (this.mainElement.mozRequestFullScreen) {
+        /* Firefox */
+        this.mainElement.mozRequestFullScreen();
+      } else if (this.mainElement.webkitRequestFullscreen) {
+        /* Chrome, Safari and Opera */
+        this.mainElement.webkitRequestFullscreen();
+      } else if (this.mainElement.msRequestFullscreen) {
+        /* IE/Edge */
+        this.mainElement.msRequestFullscreen();
+      }
+    } else {
+      if (this.document.exitFullscreen) {
+        this.document.exitFullscreen();
+      } else if (this.document.mozCancelFullScreen) {
+        /* Firefox */
+        this.document.mozCancelFullScreen();
+      } else if (this.document.webkitExitFullscreen) {
+        /* Chrome, Safari and Opera */
+        this.document.webkitExitFullscreen();
+      } else if (this.document.msExitFullscreen) {
+        /* IE/Edge */
+        this.document.msExitFullscreen();
+      }
+    }
   }
 
 }

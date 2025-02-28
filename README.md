@@ -9,3 +9,12 @@ To get unique code of game:
 2. Concatenate bits of colors for each containers (without container number).
 3. Transform to HEX.
 
+-----------------------------------------------------------------
+
+
+check ports:
+
+netstat -a -n -o
+  find 4200, copy PID
+  execute 
+taskkill -f /pid 16468

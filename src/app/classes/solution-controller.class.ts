@@ -1,6 +1,6 @@
 import { Observable, Subscriber } from "rxjs";
 import { Color } from "./model/colors.class";
-import { PlayContainer } from "./model/play-container.class";
+import { GameContainer } from "./model/game/game-container.class";
 import { Solution } from "./model/solution-set.class";
 
 export class Step {
@@ -52,7 +52,7 @@ export class SolutionController {
   constructor() {
   }
 
-  solve(containers: PlayContainer[]): Observable<WorkerResult> {
+  solve(containers: GameContainer[]): Observable<WorkerResult> {
 
     return new Observable<WorkerResult>(observer => {
       this.startTimer();

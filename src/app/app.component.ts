@@ -12,6 +12,8 @@ import { TourService } from './services/tour.service';
 })
 export class AppComponent implements OnInit, AfterViewInit {
 
+  title = "Water sort solver";
+
   constructor(public mainService: MainService, private tourService: TourService) {
   }
 
@@ -22,7 +24,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.mainService.screenResized$.next();
   }
 
+  @HostListener('window:fullscreenchange', ['$event'])
+  @HostListener('window:webkitfullscreenchange', ['$event'])
+  @HostListener('window:mozfullscreenchange', ['$event'])
+  @HostListener('window:MSFullscreenChange', ['$event'])
+  screenChange(event: any) {
+    console.log(event);
+  }
+
+
   ngOnInit() {
+    this.mainService.mainElement = document.documentElement;
+    this.mainService.document = document;
     this.checkScreenSize();
     this.mainService.loadTheme();
   }

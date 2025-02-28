@@ -2,13 +2,12 @@ import { GameContainer } from "../game/game-container.class";
 import { BoardContainer } from "./board-container.class";
 
 export class Board {
+
   boardContainers: BoardContainer[] = [];
 
   static create(containers: GameContainer[]): Board {
     const board = new Board();
-    if (containers !== undefined) {
-      board.boardContainers = containers.map((container, index) => ({ gameContainer: container, resolved: false, index: index }));
-    }
+    board.boardContainers = containers.map((container, index) => ({ gameContainer: container, resolved: false, index: index }));
     return board;
   }
 
