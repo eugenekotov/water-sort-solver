@@ -25,17 +25,3 @@
   gap: 15px;
   margin-bottom: 50px;
 }
-
-.menu-item {
-  color: var(--button-text-color);
-  background-color: var(--button-background-color);  padding: 10px 40px;
-  text-align: center;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.menu-item:active {
-  font-weight: 800;
-  background-color: var(--button-background-color-active);
-}
-

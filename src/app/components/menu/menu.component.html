@@ -24,9 +24,9 @@
 
   <div style="display: flex; justify-content: center; flex-grow: 1;">
     <div class="menu-container">
-      <div *ngFor="let item of menu" class="menu-item shadow" (click)="onClick(item)">
+      <button *ngFor="let item of menu" class="button button-large" (click)="onClick(item)" [disabled]="itemDisabled(item)">
         {{item.title_param | translate}}
-      </div>
+      </button>
     </div>
   </div>
 </div>
