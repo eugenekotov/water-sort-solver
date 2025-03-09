@@ -1,4 +1,4 @@
-<div class="view-container" [ngStyle]="mainService.visible.get('menu') ? {'opacity' : 1} : {'opacity' : 0}">
+<div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
 
     <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
       <ng-container *ngIf="!mainService.isFullScreen">

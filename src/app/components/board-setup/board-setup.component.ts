@@ -7,7 +7,7 @@ import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { GameSourceItem } from 'src/app/classes/model/game/game-source-item.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
-import { MainService } from 'src/app/services/main.service';
+import { MainService, TView } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
 type TClick = "on-source" | "on-container";
@@ -33,6 +33,8 @@ class SetupContainer {
   styleUrls: ['./board-setup.component.scss']
 })
 export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  protected readonly view: TView = 'setup';
 
   private clickSubject$ = new Subject<ClickEvent>();
   private clickSubjectSubscription: Subscription | undefined = undefined;

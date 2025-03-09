@@ -4,7 +4,7 @@ import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
-import { MainService } from 'src/app/services/main.service';
+import { MainService, TView } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 
@@ -30,6 +30,8 @@ class PlayStep {
   styleUrls: ['./board-solve.component.scss']
 })
 export class BoardSolveComponent implements AfterViewInit, OnDestroy {
+
+  protected readonly view: TView = 'solve';
 
   playContainers: PlayContainer[] = [];
   private screenResizedSubscription: Subscription | undefined = undefined;

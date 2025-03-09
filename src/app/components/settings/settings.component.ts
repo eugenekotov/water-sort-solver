@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MainService } from 'src/app/services/main.service';
+import { MainService, TView } from 'src/app/services/main.service';
 
 @Component({
   selector: 'app-settings',
@@ -8,15 +8,11 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class SettingsComponent implements OnInit {
 
+  protected readonly view: TView = 'settings';
+
   constructor(public mainService: MainService) { }
 
   ngOnInit(): void {
-  }
-
-  onBackClick() {
-    const viewBeforeSettings = this.mainService.viewBeforeSettings;
-    this.mainService.viewBeforeSettings = undefined;
-    this.mainService.setView(viewBeforeSettings !== undefined ? viewBeforeSettings : "menu");
   }
 
   speedChanged(event: any) {

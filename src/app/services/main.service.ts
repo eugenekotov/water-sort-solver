@@ -8,7 +8,7 @@ import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { TourService } from './tour.service';
 
-export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings";
+export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings" | "save" | "load";
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";
@@ -29,7 +29,7 @@ export class MainService {
 
   // public containerCount = DEFAULT_CONTAINER_COUNT;
 
-  game: Game | undefined;
+  game: Game | undefined = undefined;
 
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
@@ -38,7 +38,7 @@ export class MainService {
 
   private _view: TView | undefined = undefined;
   visible: Map<TView, boolean> = new Map<TView, boolean>();
-  viewBeforeSettings: TView | undefined = undefined;
+  previousView: TView | undefined = undefined; // remember it to have oportunity to go back
 
   playContainers1: PlayContainer[] = [];
   playContainers2: PlayContainer[] = [];
@@ -59,10 +59,7 @@ export class MainService {
 
   setView(view: TView): Promise<void> {
     return new Promise<void>(resolve => {
-      if (view === "settings") {
-        // remember
-        this.viewBeforeSettings = this._view;
-      }
+      this.previousView = this._view;
       this.hideView().then(() => {
         this._view = view;
         setTimeout(() => {
@@ -268,6 +265,12 @@ export class MainService {
         this.document.msExitFullscreen();
       }
     }
+  }
+
+  goBack() {
+    const previousView = this.previousView;
+    this.previousView = undefined;
+    this.setView(previousView !== undefined ? previousView : "menu");
   }
 
 }

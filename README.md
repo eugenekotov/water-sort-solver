@@ -17,4 +17,11 @@ check ports:
 netstat -a -n -o
   find 4200, copy PID
   execute 
-taskkill -f /pid 16468
+taskkill -f /pid 19016
+
+
+-----------------------------------------------------------------
+1. In Main menu add item load game
+2. In Play view add menu item save game
+3. Save game view
+4. Load game view.

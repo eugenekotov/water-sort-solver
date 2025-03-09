@@ -4,7 +4,7 @@ import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classe
 import { Game } from 'src/app/classes/model/game/game.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
-import { MainService } from 'src/app/services/main.service';
+import { MainService, TView } from 'src/app/services/main.service';
 
 
 export class PlayStep {
@@ -17,6 +17,8 @@ export class PlayStep {
   styleUrls: ['./board-play.component.scss']
 })
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
+
+  protected readonly view: TView = 'play';
 
   private game: Game;
   private playContainers: PlayContainer[] = [];
