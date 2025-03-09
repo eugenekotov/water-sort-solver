@@ -7,7 +7,24 @@
       </div>
     </button>
 
-    <div style="flex-grow: 1; text-align: center;">{{ 'MENU.SETTINGS' | translate }}</div>
+    <div style="flex-grow: 1; text-align: center;">{{ 'SAVE.TITLE' | translate }}</div>
 
     <div [ngClass]="mainService.isMobile ? 'top-right-container-small' : 'top-right-container-large'"></div>
   </div>
+
+
+    <ng-container *ngIf="mainService.isMobile">
+      <div class="buttons-container buttons-container-small">
+        <button class="button button-small" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate }}</button>
+        <button class="button button-small" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!mainService.isMobile">
+      <div class="buttons-container buttons-container-large">
+        <button class="button button-large" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate }}</button>
+        <button class="button button-large" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
+      </div>
+    </ng-container>
+
+</div>

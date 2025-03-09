@@ -27,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { SaveGameComponent } from './components/save-game/save-game.component';
+import { LoadGameComponent } from './components/load-game/load-game.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -47,7 +48,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BoardPlayComponent,
     SettingsComponent,
     MenuComponent,
-    SaveGameComponent
+    SaveGameComponent,
+    LoadGameComponent
   ],
   imports: [
     BrowserModule,

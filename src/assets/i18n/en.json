@@ -41,6 +41,14 @@
   },
   "PLAY": {
     "RESTART": "Restart"
+  },
+  "SAVE": {
+    "TITLE": "Save game",
+    "SAVE": "Save"
+  },
+  "LOAD": {
+    "TITLE": "Load game",
+    "LOAD": "Load"
   }
 
 }
