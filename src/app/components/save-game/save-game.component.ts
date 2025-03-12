@@ -34,7 +34,7 @@ export class SaveGameComponent implements OnInit {
   }
 
   onSaveClick() {
-
+    // const gameCode: String = GameController.getGameCode(this.mainService.game!);
   }
 
 }

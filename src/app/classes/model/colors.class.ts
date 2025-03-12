@@ -1,4 +1,5 @@
 export enum Color {
+  // when comparing colors, the undefined value is considered the biggest
   RED = "#C52B23",
   ORANGE = "#E88C41 ",
   YELLOW = "#F1DA58",

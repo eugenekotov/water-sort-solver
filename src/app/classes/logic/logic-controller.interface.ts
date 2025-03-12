@@ -17,8 +17,8 @@ export function makeStep(board: Board, iFrom: number, iTo: number, stepCount: nu
   for (let i = 0; i < stepCount; i++) {
     BoardContainer.push(board.boardContainers[iTo], BoardContainer.pop(board.boardContainers[iFrom]));
     result.steps.push(new Step(
-      board.boardContainers[iFrom].index,
-      board.boardContainers[iTo].index,
+      board.boardContainers[iFrom].gameContainer.index,
+      board.boardContainers[iTo].gameContainer.index,
       BoardContainer.peek(board.boardContainers[iTo])));
   }
   result.board = board;

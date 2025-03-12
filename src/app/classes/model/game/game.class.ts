@@ -59,7 +59,7 @@ export class Game {
     result.addSourceItems(colorCount);
     // create containers
     for (let i = 0; i < containerCount; i++) {
-      result.containers.push(new GameContainer());
+      result.containers.push(new GameContainer(i));
     }
     return result;
   }
@@ -68,6 +68,10 @@ export class Game {
     const result = this.createEmptyGame(colorCount, containerCount);
     result.fillRandom();
     return result;
+  }
+
+  public getClonedContainers(): GameContainer[] {
+    return this.containers.map(container => GameContainer.clone(container));
   }
 
 }

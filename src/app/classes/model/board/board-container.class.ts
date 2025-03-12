@@ -6,7 +6,6 @@ export class BoardContainer {
 
   gameContainer: GameContainer;
   resolved: boolean = false;
-  index: number;
 
   static checkRsolved(container: BoardContainer) {
     container.resolved = BoardContainer.isFull(container) && BoardContainer.hasOnlyOneColor(container);
@@ -65,10 +64,8 @@ export class BoardContainer {
 
   static clone(boardContainer: BoardContainer): BoardContainer {
     const newContainer = new BoardContainer();
-    newContainer.gameContainer = new GameContainer();
-    newContainer.gameContainer.colors = [...boardContainer.gameContainer.colors];
+    newContainer.gameContainer = GameContainer.clone(boardContainer.gameContainer);
     newContainer.resolved = boardContainer.resolved;
-    newContainer.index = boardContainer.index;
     return newContainer;
   }
 

@@ -276,7 +276,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.mainService.game!.containers.length < MAX_CONTAINER_COUNT) {
       this.stopMovingProcess();
       this.mainService.game!.addSourceItems(1); // add sourceitem
-      this.mainService.game!.containers.push(new GameContainer()); // add container
+      this.mainService.game!.containers.push(new GameContainer(this.mainService.game!.containers.length)); // add container
       // this.mainService.saveContainerCount();
       this.containersCountChanged();
     }

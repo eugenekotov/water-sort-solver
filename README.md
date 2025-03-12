@@ -8,6 +8,7 @@ To get unique code of game:
 1. Sort containers by color.
 2. Concatenate bits of colors for each containers (without container number).
 3. Transform to HEX.
+4. Use container index.
 
 -----------------------------------------------------------------
 

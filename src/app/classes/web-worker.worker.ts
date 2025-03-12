@@ -129,8 +129,8 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
     return;
   }
   solutionData.steps.push(new Step(
-    board.boardContainers[iFrom].index,
-    board.boardContainers[iTo].index,
+    board.boardContainers[iFrom].gameContainer.index,
+    board.boardContainers[iTo].gameContainer.index,
     BoardContainer.peek(board.boardContainers[iTo])));
   boardSetAdd(solutionData.oldBoards, board);
   tryToResolve(solutionData, board, stepCount + 1);
