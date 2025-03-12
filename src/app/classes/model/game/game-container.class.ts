@@ -46,17 +46,17 @@ export class GameContainer {
     return newContainer;
   }
 
-  // public static getColor(container: GameContainer, index: number): Color | undefined {
-  //   return index < container.colors.length ? container.colors[index] : undefined;
-  // }
+  public static getColor(container: GameContainer, index: number): Color | undefined {
+    return index < container.colors.length ? container.colors[index] : undefined;
+  }
 
-  // public static containerToHex(container: GameContainer): string {
-  //   let result = "";
-  //   for (let i = CONTAINER_SIZE - 1; i >= 0; i--) {
-  //     let color = GameContainer.getColor(container, i);
-  //     result = result + ColorUtils.colorToHex(color);
-  //   }
-  //   return result;
-  // }
+  public static containerToHex(container: GameContainer): string {
+    let result = "";
+    for (let i = CONTAINER_SIZE - 1; i >= 0; i--) {
+      let color = GameContainer.getColor(container, i);
+      result = result + ColorUtils.colorToHex(color);
+    }
+    return result;
+  }
 
 }

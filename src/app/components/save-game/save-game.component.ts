@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameController } from 'src/app/classes/controller/game-controller.class';
 import { MainService, TView } from 'src/app/services/main.service';
 
 @Component({
@@ -34,7 +35,8 @@ export class SaveGameComponent implements OnInit {
   }
 
   onSaveClick() {
-    // const gameCode: String = GameController.getGameCode(this.mainService.game!);
+    const gameCode: String = GameController.getGameCode(this.mainService.game!.containers);
+    console.log("game hex", gameCode);
   }
 
 }

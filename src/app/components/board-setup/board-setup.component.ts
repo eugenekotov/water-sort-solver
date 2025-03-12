@@ -228,14 +228,15 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveClick() {
-    const sourceContainersString = JSON.stringify(this.mainService.game!.sourceItems);
-    const containersString1 = JSON.stringify(this.setupContainers1);
-    const containersString2 = JSON.stringify(this.setupContainers2);
-    localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
-    localStorage.setItem(STORAGE_KEY + "-containers-1", containersString1);
-    localStorage.setItem(STORAGE_KEY + "-containers-2", containersString2);
-    this.saveEnabled = false;
-    this.checkLoadEnabled();
+    this.mainService.setView("save");
+    // const sourceContainersString = JSON.stringify(this.mainService.game!.sourceItems);
+    // const containersString1 = JSON.stringify(this.setupContainers1);
+    // const containersString2 = JSON.stringify(this.setupContainers2);
+    // localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
+    // localStorage.setItem(STORAGE_KEY + "-containers-1", containersString1);
+    // localStorage.setItem(STORAGE_KEY + "-containers-2", containersString2);
+    // this.saveEnabled = false;
+    // this.checkLoadEnabled();
   }
 
   private checkLoadEnabled() {
