@@ -195,7 +195,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  protected canDrop(container: GameContainer): () => boolean {
+  protected canDrop(container: SetupContainer): () => boolean {
     return () => {
       return container.colors.length < CONTAINER_SIZE;
     }

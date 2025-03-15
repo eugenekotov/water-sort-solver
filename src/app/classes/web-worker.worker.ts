@@ -4,7 +4,6 @@ import { getLogic1To3 } from "./logic/logic-1to3.class";
 import { getLogic2To2 } from "./logic/logic-2to2.class";
 import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
-import { BoardContainer } from "./model/board/board-container.class";
 import { boardSetAdd, boardSetContains } from "./model/board/board-set.class";
 import { Board } from "./model/board/board.class";
 import { GameContainer } from "./model/game/game-container.class";
@@ -62,9 +61,9 @@ function tryToResolve(solutionData: SolutionData, board: Board, stepCount: numbe
   }
 
   // Try to check all options
-  for (let iFrom = 0; iFrom < board.boardContainers.length; iFrom++) {
+  for (let iFrom = 0; iFrom < board.gameContainers.length; iFrom++) {
     // Try to find place for each
-    for (let iTo = 0; iTo < board.boardContainers.length; iTo++) {
+    for (let iTo = 0; iTo < board.gameContainers.length; iTo++) {
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
         tryToMove(solutionData, board, iFrom, iTo, stepCount);
@@ -94,27 +93,27 @@ function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult
 }
 
 function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
-  if (BoardContainer.isEmpty(board.boardContainers[iFrom])) {
+  if (GameContainer.isEmpty(board.gameContainers[iFrom])) {
     // Nothing to take
     return;
   }
-  if (BoardContainer.isFull(board.boardContainers[iTo])) {
+  if (GameContainer.isFull(board.gameContainers[iTo])) {
     // No place to put
     return;
   }
-  if (!BoardContainer.isEmpty(board.boardContainers[iTo]) && BoardContainer.peek(board.boardContainers[iFrom]) != BoardContainer.peek(board.boardContainers[iTo])) {
+  if (!GameContainer.isEmpty(board.gameContainers[iTo]) && GameContainer.peek(board.gameContainers[iFrom]) != GameContainer.peek(board.gameContainers[iTo])) {
     // Not suitable color
     return;
   }
-  if (BoardContainer.size(board.boardContainers[iFrom]) == 1 && BoardContainer.isEmpty(board.boardContainers[iTo])) {
+  if (GameContainer.size(board.gameContainers[iFrom]) == 1 && GameContainer.isEmpty(board.gameContainers[iTo])) {
     // Stupid move;
     return;
   }
-  if (BoardContainer.hasOnlyThreeOfOneColor(board.boardContainers[iFrom])) {
+  if (GameContainer.hasOnlyThreeOfOneColor(board.gameContainers[iFrom])) {
     // Stupid move;
     return;
   }
-  if (BoardContainer.hasOnlyOneColor(board.boardContainers[iFrom]) && BoardContainer.isEmpty(board.boardContainers[iTo])) {
+  if (GameContainer.hasOnlyOneColor(board.gameContainers[iFrom]) && GameContainer.isEmpty(board.gameContainers[iTo])) {
     // if we have only one color and move to empty container
     // Stupid move;
     return;
@@ -129,9 +128,9 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
     return;
   }
   solutionData.steps.push(new Step(
-    board.boardContainers[iFrom].gameContainer.index,
-    board.boardContainers[iTo].gameContainer.index,
-    BoardContainer.peek(board.boardContainers[iTo])));
+    board.gameContainers[iFrom].index,
+    board.gameContainers[iTo].index,
+    GameContainer.peek(board.gameContainers[iTo])));
   boardSetAdd(solutionData.oldBoards, board);
   tryToResolve(solutionData, board, stepCount + 1);
   removeSteps(solutionData, stepCount);
@@ -139,7 +138,7 @@ function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo:
 
 function move(board: Board, iFrom: number, iTo: number): Board {
   board = Board.clone(board);
-  BoardContainer.push(board.boardContainers[iTo], BoardContainer.pop(board.boardContainers[iFrom]));
+  GameContainer.push(board.gameContainers[iTo], GameContainer.pop(board.gameContainers[iFrom]));
   return board;
 }
 

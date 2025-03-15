@@ -6,6 +6,7 @@ export class GameContainer {
 
   colors: Color[] = [];
   index: number;
+  resolved: boolean = false;
 
   constructor(index: number) {
     this.index = index;
@@ -43,6 +44,7 @@ export class GameContainer {
   public static clone(container: GameContainer): GameContainer {
     const newContainer = new GameContainer(container.index);
     newContainer.colors = [...container.colors];
+    newContainer.resolved = container.resolved;
     return newContainer;
   }
 
@@ -57,6 +59,61 @@ export class GameContainer {
       result = result + ColorUtils.colorToHex(color);
     }
     return result;
+  }
+
+  static checkRsolved(container: GameContainer) {
+    container.resolved = GameContainer.isFull(container) && GameContainer.hasOnlyOneColor(container);
+  }
+
+  static size(container: GameContainer): number {
+    return container.colors.length;
+  }
+
+  static isEmpty(container: GameContainer): boolean {
+    return GameContainer.size(container) === 0;
+  }
+
+  static isFull(container: GameContainer): boolean {
+    return GameContainer.size(container) === CONTAINER_SIZE;
+  }
+
+  static peek(container: GameContainer): Color {
+    return container.colors[container.colors.length - 1];
+  }
+
+  static push(container: GameContainer, color: Color): void {
+    container.colors.push(color);
+    GameContainer.checkRsolved(container);
+  }
+
+  static pop(container: GameContainer): Color {
+    container.resolved = false;
+    const color = container.colors.pop();
+    if (!color) {
+      throw new Error("Cannot pop color from empty container");
+    }
+    return color;
+  }
+
+  static hasOnlyThreeOfOneColor(container: GameContainer): boolean {
+    return GameContainer.size(container) === 3
+      && container.colors[0] === container.colors[1]
+      && container.colors[0] === container.colors[2];
+  }
+
+  static hasOnlyTwoOfOneColor(container: GameContainer): boolean {
+    return GameContainer.size(container) === 2 && container.colors[0] === container.colors[1];
+  }
+
+  static hasOnlyOneOfOneColor(container: GameContainer): boolean {
+    return GameContainer.size(container) === 1;
+  }
+
+  static hasOnlyOneColor(container: GameContainer): boolean {
+    if (GameContainer.isEmpty(container)) {
+      return false;
+    }
+    return container.colors.every(color => color === container.colors[0]);
   }
 
 }

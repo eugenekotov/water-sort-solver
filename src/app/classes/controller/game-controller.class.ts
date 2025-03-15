@@ -6,7 +6,11 @@ export type TBinaryData = TBit[];
 
 export class GameController {
 
-  public static getGameCode(containers: GameContainer[]): string {
+  /**
+   * @returns Game Hash - hex code which contains sorted containers with colors.
+   * The hash can be used to compare games.
+   */
+  public static getGameHash(containers: GameContainer[]): string {
     let result: string = "";
     containers = containers.map(container => GameContainer.clone(container));
     containers.sort(GameContainer.compare);

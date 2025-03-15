@@ -35,7 +35,7 @@ export class SaveGameComponent implements OnInit {
   }
 
   onSaveClick() {
-    const gameCode: String = GameController.getGameCode(this.mainService.game!.containers);
+    const gameCode: String = GameController.getGameHash(this.mainService.game!.containers);
     console.log("game hex", gameCode);
   }
 
