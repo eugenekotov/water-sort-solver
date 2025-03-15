@@ -1,18 +1,17 @@
 /// <reference lib="webworker" />
 
+import { GameController } from "./controller/game-controller.class";
 import { getLogic1To3 } from "./logic/logic-1to3.class";
 import { getLogic2To2 } from "./logic/logic-2to2.class";
 import { getLogic3To1 } from "./logic/logic-3to1.class";
 import { LogicResult, TLogicFunction } from "./logic/logic-controller.interface";
-import { boardSetAdd, boardSetContains } from "./model/board/board-set.class";
-import { Board } from "./model/board/board.class";
 import { GameContainer } from "./model/game/game-container.class";
 import { Solution, solutionCreate, SolutionSet, solutionSetAdd } from "./model/solution-set.class";
 import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
 class SolutionData {
   containers: GameContainer[] = [];
-  oldBoards: Board[] = [];
+  oldContainersCodes: Set<string> = new Set();
   steps: Step[] = [];
   solutions: SolutionSet = new SolutionSet();
   bestSolution: Solution | undefined = undefined;
@@ -23,7 +22,7 @@ class SolutionData {
 function solve(containers: GameContainer[]) {
   const solutionData = new SolutionData();
   solutionData.containers = containers;
-  solutionData.oldBoards = [];
+  solutionData.oldContainersCodes = new Set();
   solutionData.steps = [];
   solutionData.solutions.solutions = [];
   solutionData.bestSolution = undefined;
@@ -31,7 +30,7 @@ function solve(containers: GameContainer[]) {
   solutionData.logicFunctions.push(getLogic1To3());
   solutionData.logicFunctions.push(getLogic2To2());
   solutionData.logicFunctions.push(getLogic3To1());
-  tryToResolve(solutionData, Board.create(solutionData.containers), 0);
+  tryToResolve(solutionData, GameContainer.cloneContainers(solutionData.containers), 0);
   if (solutionData.bestSolution === undefined) {
     postSolution(EWorkerResult.NO_SOLUTION, undefined);
   } else {
@@ -39,107 +38,110 @@ function solve(containers: GameContainer[]) {
   }
 }
 
-function tryToResolve(solutionData: SolutionData, board: Board, stepCount: number) {
+function tryToResolve(solutionData: SolutionData, gameContainers: GameContainer[], stepCount: number) {
   console.log(stepCount);
   solutionData.counter++;
   // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
-  if (Board.isResolved(board)) {
+  if (GameContainer.isResolvedContainers(gameContainers)) {
     foundSolution(solutionData);
     return;
   }
 
-  const logcResult = tryLogicPatterns(solutionData, board);
+  const logcResult = tryLogicPatterns(solutionData, gameContainers);
   if (logcResult.stepCount > 0) {
-    board = logcResult.board;
+    gameContainers = logcResult.gameContainers;
     stepCount = stepCount + logcResult.stepCount;
-    boardSetAdd(solutionData.oldBoards, logcResult.oldBoards);
+    solutionData.oldContainersCodes = new Set([...solutionData.oldContainersCodes, ...logcResult.hashes]);
     solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-    if (Board.isResolved(board)) {
+    if (GameContainer.isResolvedContainers(gameContainers)) {
       foundSolution(solutionData);
       return;
     }
   }
 
   // Try to check all options
-  for (let iFrom = 0; iFrom < board.gameContainers.length; iFrom++) {
+  for (let iFrom = 0; iFrom < gameContainers.length; iFrom++) {
     // Try to find place for each
-    for (let iTo = 0; iTo < board.gameContainers.length; iTo++) {
+    for (let iTo = 0; iTo < gameContainers.length; iTo++) {
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
-        tryToMove(solutionData, board, iFrom, iTo, stepCount);
+        tryToMove(solutionData, gameContainers, iFrom, iTo, stepCount);
       }
     }
   }
 }
 
-function tryLogicPatterns(solutionData: SolutionData, board: Board): LogicResult {
+function tryLogicPatterns(solutionData: SolutionData, gameContainers: GameContainer[]): LogicResult {
   const result = new LogicResult();
   let hasStep = true;
   while (hasStep) {
     hasStep = false;
     solutionData.logicFunctions.forEach(logicFunction => {
-      const logicResult = logicFunction(board);
+      const logicResult = logicFunction(gameContainers);
       if (logicResult.stepCount > 0) {
         hasStep = true;
-        board = logicResult.board;
+        gameContainers = logicResult.gameContainers;
         result.stepCount = result.stepCount + logicResult.stepCount;
-        boardSetAdd(result.oldBoards, logicResult.oldBoards);
+        result.hashes = new Set([...result.hashes, ...logicResult.hashes]);
         result.steps = [...result.steps, ...logicResult.steps];
       }
     });
   }
-  result.board = board;
+  result.gameContainers = gameContainers;
   return result;
 }
 
-function tryToMove(solutionData: SolutionData, board: Board, iFrom: number, iTo: number, stepCount: number) {
-  if (GameContainer.isEmpty(board.gameContainers[iFrom])) {
+function tryToMove(solutionData: SolutionData, gameContainers: GameContainer[], iFrom: number, iTo: number, stepCount: number) {
+  if (GameContainer.isEmpty(gameContainers[iFrom])) {
     // Nothing to take
     return;
   }
-  if (GameContainer.isFull(board.gameContainers[iTo])) {
+  if (GameContainer.isFull(gameContainers[iTo])) {
     // No place to put
     return;
   }
-  if (!GameContainer.isEmpty(board.gameContainers[iTo]) && GameContainer.peek(board.gameContainers[iFrom]) != GameContainer.peek(board.gameContainers[iTo])) {
+  if (!GameContainer.isEmpty(gameContainers[iTo]) && GameContainer.peek(gameContainers[iFrom]) != GameContainer.peek(gameContainers[iTo])) {
     // Not suitable color
     return;
   }
-  if (GameContainer.size(board.gameContainers[iFrom]) == 1 && GameContainer.isEmpty(board.gameContainers[iTo])) {
+  if (GameContainer.size(gameContainers[iFrom]) == 1 && GameContainer.isEmpty(gameContainers[iTo])) {
     // Stupid move;
     return;
   }
-  if (GameContainer.hasOnlyThreeOfOneColor(board.gameContainers[iFrom])) {
+  if (GameContainer.hasOnlyThreeOfOneColor(gameContainers[iFrom])) {
     // Stupid move;
     return;
   }
-  if (GameContainer.hasOnlyOneColor(board.gameContainers[iFrom]) && GameContainer.isEmpty(board.gameContainers[iTo])) {
+  if (GameContainer.hasOnlyOneColor(gameContainers[iFrom]) && GameContainer.isEmpty(gameContainers[iTo])) {
     // if we have only one color and move to empty container
     // Stupid move;
     return;
   }
 
   // We can try to move
-  board = move(board, iFrom, iTo);
+  gameContainers = move(gameContainers, iFrom, iTo);
   // console.log("Moved one from " + iFrom + " to " + iTo);
-  if (boardSetContains(solutionData.oldBoards, board)) {
+
+
+  if (solutionData.oldContainersCodes.has(GameController.getGameHash(gameContainers))) {
     // We already tried it
     // console.log("We already tried it!");
     return;
   }
   solutionData.steps.push(new Step(
-    board.gameContainers[iFrom].index,
-    board.gameContainers[iTo].index,
-    GameContainer.peek(board.gameContainers[iTo])));
-  boardSetAdd(solutionData.oldBoards, board);
-  tryToResolve(solutionData, board, stepCount + 1);
+    gameContainers[iFrom].index,
+    gameContainers[iTo].index,
+    GameContainer.peek(gameContainers[iTo])));
+
+  solutionData.oldContainersCodes.add(GameController.getGameHash(gameContainers));
+  tryToResolve(solutionData, gameContainers, stepCount + 1);
   removeSteps(solutionData, stepCount);
 }
 
-function move(board: Board, iFrom: number, iTo: number): Board {
-  board = Board.clone(board);
-  GameContainer.push(board.gameContainers[iTo], GameContainer.pop(board.gameContainers[iFrom]));
-  return board;
+function move(gameContainers: GameContainer[], iFrom: number, iTo: number): GameContainer[] {
+  gameContainers = GameContainer.cloneContainers(gameContainers);
+  GameContainer.push(gameContainers[iTo], GameContainer.pop(gameContainers[iFrom]));
+  return gameContainers;
 }
 
 function removeSteps(solutionData: SolutionData, stepCount: number) {

@@ -1,29 +1,27 @@
-import { boardSetAdd } from "../model/board/board-set.class";
-import { Board } from "../model/board/board.class";
+import { GameController } from "../controller/game-controller.class";
 import { GameContainer } from "../model/game/game-container.class";
 import { Step } from "../solution-controller.class";
 
 export class LogicResult {
-  board: Board;
+  gameContainers: GameContainer[];
   stepCount: number = 0;
-  oldBoards: Board[] = [];
+  hashes: Set<string> = new Set();
   steps: Step[] = [];
 }
 
-export type TLogicFunction = (board: Board) => LogicResult;
+export type TLogicFunction = (gameContainers: GameContainer[]) => LogicResult;
 
-export function makeStep(board: Board, iFrom: number, iTo: number, stepCount: number, result: LogicResult): Board {
-  board = Board.clone(board);
+export function makeStep(gameContainers: GameContainer[], iFrom: number, iTo: number, stepCount: number, result: LogicResult): GameContainer[] {
+  gameContainers = GameContainer.cloneContainers(gameContainers);
   for (let i = 0; i < stepCount; i++) {
-    GameContainer.push(board.gameContainers[iTo], GameContainer.pop(board.gameContainers[iFrom]));
+    GameContainer.push(gameContainers[iTo], GameContainer.pop(gameContainers[iFrom]));
     result.steps.push(new Step(
-      board.gameContainers[iFrom].index,
-      board.gameContainers[iTo].index,
-      GameContainer.peek(board.gameContainers[iTo])));
+      gameContainers[iFrom].index,
+      gameContainers[iTo].index,
+      GameContainer.peek(gameContainers[iTo])));
   }
-  result.board = board;
+  result.gameContainers = gameContainers;
   result.stepCount = result.stepCount + stepCount;
-  boardSetAdd(result.oldBoards, board);
-
-  return board;
+  result.hashes.add(GameController.getGameHash(gameContainers));
+  return gameContainers;
 }
