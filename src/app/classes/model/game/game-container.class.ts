@@ -48,6 +48,28 @@ export class GameContainer {
     return newContainer;
   }
 
+  public static cloneContainers(containers: GameContainer[]): GameContainer[] {
+    return containers.map(container => GameContainer.clone(container));
+  }
+
+  public static isResolvedContainers(gameContainers: GameContainer[]): boolean {
+    let result = true;
+    let i = 0;
+    while (i < gameContainers.length) {
+      let container = gameContainers[i];
+      if (container.colors.length === 0) {
+        i++;
+      } else if (container.resolved) {
+//        gameContainers.splice(i, 1);
+      } else {
+        result = false;
+        i++;
+      }
+    }
+    return result;
+  }
+
+
   public static getColor(container: GameContainer, index: number): Color | undefined {
     return index < container.colors.length ? container.colors[index] : undefined;
   }
