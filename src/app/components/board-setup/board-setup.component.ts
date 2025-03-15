@@ -15,17 +15,7 @@ type TClick = "on-source" | "on-container";
 
 class ClickEvent {
   clickType: TClick;
-  object: GameSourceItem | SetupContainer;
-}
-
-class SetupContainer {
-  index: number;
-  colors: Color[] = [];
-
-  constructor(index: number, colors: Color[]) {
-    this.index = index;
-    this.colors = colors;
-  }
+  object: GameSourceItem | GameContainer;
 }
 
 @Component({
@@ -49,11 +39,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private selectedSourceItem: GameSourceItem | undefined;
 
-  setupContainers1: SetupContainer[] = [];
-  setupContainers2: SetupContainer[] = [];
+  setupContainers1: GameContainer[] = [];
+  setupContainers2: GameContainer[] = [];
 
-  setupContainerPositions1: SetupContainer[] = [];
-  setupContainerPositions2: SetupContainer[] = [];
+  setupContainerPositions1: GameContainer[] = [];
+  setupContainerPositions2: GameContainer[] = [];
 
   movingItem: MovingItem = new MovingItem();
   private sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
@@ -99,8 +89,10 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setupContainerPositions2 = this.setupContainers2.map(container => this.createSetupContainerPosition(container));
   }
 
-  private createSetupContainerPosition(container: SetupContainer): SetupContainer {
-    return new SetupContainer(container.index, Array<Color>(CONTAINER_SIZE).fill(Color.RED));
+  private createSetupContainerPosition(container: GameContainer): GameContainer {
+    const result = new GameContainer(container.index);
+    result.colors = Array<Color>(CONTAINER_SIZE).fill(Color.RED);
+    return result;
   }
 
   getSetupContainerPositionItemId(containerIndex: number, itemIndex: number) {
@@ -130,7 +122,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return document.getElementById(this.getSetupContainerPositionItemId(containerIndex, itemIndex));
   }
 
-  onSetupContainerClick(event: any, container: SetupContainer) {
+  onSetupContainerClick(event: any, container: GameContainer) {
     event.stopPropagation();
     this.clickSubject$.next({ clickType: "on-container", object: container });
   }
@@ -158,17 +150,17 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private createSetupContainers() {
     const containerCount = this.gameService.setupContainers.length;
     if (containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
-      this.setupContainers1 = this.gameService.setupContainers.map((container, index) => new SetupContainer(index, container.colors));
+      this.setupContainers1 = this.gameService.setupContainers;
       this.setupContainers2 = [];
     } else {
       this.setupContainers1 = [];
       this.setupContainers2 = [];
       const halfOfContainerCount = Math.ceil(containerCount / 2);
       for (let i = 0; i < halfOfContainerCount; i++) {
-        this.setupContainers1.push(new SetupContainer(i, this.gameService.setupContainers[i].colors));
+        this.setupContainers1.push(this.gameService.setupContainers[i]);
       }
       for (let i = halfOfContainerCount; i < containerCount; i++) {
-        this.setupContainers2.push(new SetupContainer(i, this.gameService.setupContainers[i].colors));
+        this.setupContainers2.push(this.gameService.setupContainers[i]);
       }
     }
   }
@@ -197,7 +189,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-  protected canDrop(container: SetupContainer): () => boolean {
+  protected canDrop(container: GameContainer): () => boolean {
     return () => {
       return container.colors.length < CONTAINER_SIZE;
     }
@@ -210,13 +202,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private clearBoard() {
     this.gameService.clearSetup();
-    this.clearContainers();
     this.checkSaveEnabled();
-  }
-
-  private clearContainers() {
-    this.setupContainers1.forEach(container => container.colors = []);
-    this.setupContainers2.forEach(container => container.colors = []);
   }
 
   fillRandomly() {
@@ -361,7 +347,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.selectedSourceItem === undefined) {
           this.notify(observer);
         } else {
-          const container: SetupContainer = click.object as SetupContainer;
+          const container: GameContainer = click.object as GameContainer;
           if (container.colors.length === CONTAINER_SIZE) {
             this.notify(observer);
           } else {
@@ -419,7 +405,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  private moveSourceItem(item: GameSourceItem, container: SetupContainer): Promise<void> {
+  private moveSourceItem(item: GameSourceItem, container: GameContainer): Promise<void> {
     return new Promise<void>(resolve => {
       const positionItemHTMLElement = this.getSetupContainersItemElement(container.index, container.colors.length);
       if (!positionItemHTMLElement) {
