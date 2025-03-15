@@ -41,7 +41,7 @@
     <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
-      <div *ngFor="let item of mainService.game!.sourceItems" class="source-container"
+      <div *ngFor="let item of gameService.sourceItems.items" class="source-container"
         [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'"
         (click)="onSourceItemClick($event, item)">
 
@@ -79,8 +79,7 @@
       style="position: absolute; opacity: 0; z-index: 0;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
         <div *ngFor="let container of setupContainerPositions1" class="container"
-          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-          style="flex-direction: column-reverse;">
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" style="flex-direction: column;">
 
           <div *ngFor="let color of container.colors; let itemIndex=index"
             [id]="getSetupContainerPositionItemId(container.index, itemIndex)" class="item"

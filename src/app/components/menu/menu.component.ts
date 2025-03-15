@@ -20,7 +20,7 @@ export class MenuComponent {
     { title_param: "MENU.PLAY", view: "play", disabled: false },
     { title_param: "MENU.CREATE", view: "setup", disabled: false },
     { title_param: "MENU.SOLVE", view: "solve", disabled: false },
-    { title_param: "MENU.SAVE", view: "save", disabled: () => this.mainService.game !== undefined },
+    { title_param: "MENU.SAVE", view: "save", disabled: false },
     { title_param: "MENU.LOAD", view: "load", disabled: false },
     { title_param: "MENU.SETTINGS", view: "settings", disabled: false }
   ];

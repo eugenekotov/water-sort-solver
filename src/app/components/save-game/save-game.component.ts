@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameController } from 'src/app/classes/controller/game-controller.class';
+import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
 @Component({
@@ -25,17 +26,15 @@ export class SaveGameComponent implements OnInit {
    * Реалізувати валідацію введених назв (уникати спецсимволів, обмеження довжини).
    */
 
-
-
   protected readonly view: TView = 'save';
 
-  constructor(public mainService: MainService) { }
+  constructor(protected mainService:MainService, public gameService: GameService) { }
 
   ngOnInit(): void {
   }
 
   onSaveClick() {
-    const gameCode: String = GameController.getGameHash(this.mainService.game!.containers);
+    const gameCode: String = GameController.getGameHash(this.gameService.getContainers());
     console.log("game hex", gameCode);
   }
 

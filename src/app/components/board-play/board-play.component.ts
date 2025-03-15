@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
-import { Game } from 'src/app/classes/model/game/game.class';
+import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
+import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
 
@@ -20,7 +21,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   protected readonly view: TView = 'play';
 
-  private game: Game;
+  private containers: GameContainer[];
+
   private playContainers: PlayContainer[] = [];
   protected playContainers1: PlayContainer[] = [];
   protected playContainers2: PlayContainer[] = [];
@@ -40,12 +42,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingController = new MovingController(this.mainService);
   protected movingInProgress: boolean = false;
 
-  constructor(public mainService: MainService) {
-    if (this.mainService.game) {
-      this.game = this.mainService.game;
-    } else {
-      this.game = Game.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+  constructor(public mainService: MainService, public gameService: GameService) {
+    if (!this.gameService.hasGame()) {
+      this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     }
+    this.containers = this.gameService.getContainers();
     this.prepareBoard();
   }
 
@@ -182,12 +183,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private prepareBoard() {
     this.playContainers1 = [];
     this.playContainers2 = [];
-    const containerCount = this.game.containers.length;
+    const containerCount = this.containers.length;
     let container1Count = containerCount;
     if (containerCount > MAX_CONTAINER_COUNT_IN_LINE) {
       container1Count = Math.ceil(containerCount / 2);
     }
-    this.game.containers.forEach((container, index) => {
+    this.containers.forEach((container, index) => {
       const playCountainer: PlayContainer = new PlayContainer(index);
       container.colors.forEach(color => playCountainer.push(color));
       if (index < container1Count) {
@@ -245,8 +246,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected playClick() {
-    this.mainService.game!.clear();
-    this.mainService.game!.fillRandom();
+    this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     this.prepareBoard();
   }
 

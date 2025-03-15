@@ -1,12 +1,11 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { Game } from '../classes/model/game/game.class';
-import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
+import { MAX_CONTAINER_COUNT_IN_LINE, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { PlayContainer } from '../classes/model/play-container.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
-import { TourService } from './tour.service';
+import { GameService } from './game.service';
 
 export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings" | "save" | "load";
 export type TLang = "en" | "uk";
@@ -29,8 +28,6 @@ export class MainService {
 
   // public containerCount = DEFAULT_CONTAINER_COUNT;
 
-  game: Game | undefined = undefined;
-
   readonly minSpeed = 1;
   readonly maxSpeed = 20;
   readonly defaultSpeed = 5;
@@ -46,11 +43,10 @@ export class MainService {
   solutionController: SolutionController = new SolutionController();
   solution: Solution;
 
-  constructor(private translate: TranslateService, private tourService: TourService) {
+  constructor(private translate: TranslateService, private gameService: GameService) {
     // this.loadContainerCount();
     this.setLanguage();
     this.loadSpeed();
-    this.game = Game.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
   }
 
   get view(): TView | undefined {
@@ -108,10 +104,10 @@ export class MainService {
     return this.translate.currentLang as TLang;
   }
 
-  solve(game: Game) {
+  solve() {
     this.setView("in-progress").then(_ => {
       // this.fillPlayContainers(game);
-      this.solutionController.solve(game.containers).subscribe((result: WorkerResult) => {
+      this.solutionController.solve(this.gameService.getContainers()).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
           this.setView("solve");
@@ -129,10 +125,11 @@ export class MainService {
     });
   }
 
-  public fillPlayContainers(game: Game) {
+  public fillPlayContainers() {
     this.playContainers1 = [];
     this.playContainers2 = [];
-    game.containers.forEach((container, index) => {
+    const cont = this.gameService.getContainers();
+    cont.forEach((container, index) => {
       const playCountainer: PlayContainer = new PlayContainer(index);
       container.colors.forEach(color => playCountainer.push(color));
       this.playContainers1.push(playCountainer);
@@ -219,8 +216,8 @@ export class MainService {
     this.applyTheme();
   }
 
-  play(game: Game) {
-    this.fillPlayContainers(game);
+  play() {
+    this.fillPlayContainers();
     this.setView("play");
   }
 
