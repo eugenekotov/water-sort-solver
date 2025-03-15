@@ -4,16 +4,16 @@ import { LogicResult, makeStep, TLogicFunction } from "./logic-controller.interf
 
 export function getLogic3To1(): TLogicFunction {
 
-  return (gameContainers: GameContainer[]) => {
+  return (containers: GameContainer[]) => {
     const result = new LogicResult();
     let hasStep = true;
     while (hasStep) {
       hasStep = false;
-      for (let iTo = 0; iTo < gameContainers.length; iTo++) {
-        if (GameContainer.hasOnlyOneOfOneColor(gameContainers[iTo])) {
-          const iFrom = getColorThreeContainerIndex(gameContainers, gameContainers[iTo].colors[0], iTo);
+      for (let iTo = 0; iTo < containers.length; iTo++) {
+        if (GameContainer.hasOnlyOneOfOneColor(containers[iTo])) {
+          const iFrom = getColorThreeContainerIndex(containers, containers[iTo].colors[0], iTo);
           if (iFrom !== -1) {
-            gameContainers = makeStep(gameContainers, iFrom, iTo, 3, result);
+            containers = makeStep(containers, iFrom, iTo, 3, result);
             hasStep = true;
             break;
           }
@@ -24,12 +24,12 @@ export function getLogic3To1(): TLogicFunction {
     return result;
   }
 
-  function getColorThreeContainerIndex(gameContainers: GameContainer[], color: Color, excludeIndex: number): number {
-    for (let i = 0; i < gameContainers.length; i++) {
-      if (i !== excludeIndex && GameContainer.size(gameContainers[i]) == 4
-        && gameContainers[i].colors[GameContainer.size(gameContainers[i]) - 1] === color
-        && gameContainers[i].colors[GameContainer.size(gameContainers[i]) - 2] === color
-        && gameContainers[i].colors[GameContainer.size(gameContainers[i]) - 3] === color) {
+  function getColorThreeContainerIndex(containers: GameContainer[], color: Color, excludeIndex: number): number {
+    for (let i = 0; i < containers.length; i++) {
+      if (i !== excludeIndex && GameContainer.size(containers[i]) == 4
+        && containers[i].colors[GameContainer.size(containers[i]) - 1] === color
+        && containers[i].colors[GameContainer.size(containers[i]) - 2] === color
+        && containers[i].colors[GameContainer.size(containers[i]) - 3] === color) {
         return i;
       }
     }

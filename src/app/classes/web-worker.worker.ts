@@ -11,7 +11,7 @@ import { EWorkerResult, Step, WorkerResult } from "./solution-controller.class";
 
 class SolutionData {
   containers: GameContainer[] = [];
-  oldContainersCodes: Set<string> = new Set();
+  hashes: Set<string> = new Set();
   steps: Step[] = [];
   solutions: SolutionSet = new SolutionSet();
   bestSolution: Solution | undefined = undefined;
@@ -22,7 +22,7 @@ class SolutionData {
 function solve(containers: GameContainer[]) {
   const solutionData = new SolutionData();
   solutionData.containers = containers;
-  solutionData.oldContainersCodes = new Set();
+  solutionData.hashes = new Set();
   solutionData.steps = [];
   solutionData.solutions.solutions = [];
   solutionData.bestSolution = undefined;
@@ -38,110 +38,110 @@ function solve(containers: GameContainer[]) {
   }
 }
 
-function tryToResolve(solutionData: SolutionData, gameContainers: GameContainer[], stepCount: number) {
+function tryToResolve(solutionData: SolutionData, containers: GameContainer[], stepCount: number) {
   console.log(stepCount);
   solutionData.counter++;
   // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
-  if (GameContainer.isResolvedContainers(gameContainers)) {
+  if (GameContainer.isResolvedContainers(containers)) {
     foundSolution(solutionData);
     return;
   }
 
-  const logcResult = tryLogicPatterns(solutionData, gameContainers);
+  const logcResult = tryLogicPatterns(solutionData, containers);
   if (logcResult.stepCount > 0) {
-    gameContainers = logcResult.gameContainers;
+    containers = logcResult.containers;
     stepCount = stepCount + logcResult.stepCount;
-    solutionData.oldContainersCodes = new Set([...solutionData.oldContainersCodes, ...logcResult.hashes]);
+    solutionData.hashes = new Set([...solutionData.hashes, ...logcResult.hashes]);
     solutionData.steps = [...solutionData.steps, ...logcResult.steps];
-    if (GameContainer.isResolvedContainers(gameContainers)) {
+    if (GameContainer.isResolvedContainers(containers)) {
       foundSolution(solutionData);
       return;
     }
   }
 
   // Try to check all options
-  for (let iFrom = 0; iFrom < gameContainers.length; iFrom++) {
+  for (let iFrom = 0; iFrom < containers.length; iFrom++) {
     // Try to find place for each
-    for (let iTo = 0; iTo < gameContainers.length; iTo++) {
+    for (let iTo = 0; iTo < containers.length; iTo++) {
       if (iFrom !== iTo) {
         // console.log("Level " + stepCount + " check step " + iFrom + " -> " + iTo);
-        tryToMove(solutionData, gameContainers, iFrom, iTo, stepCount);
+        tryToMove(solutionData, containers, iFrom, iTo, stepCount);
       }
     }
   }
 }
 
-function tryLogicPatterns(solutionData: SolutionData, gameContainers: GameContainer[]): LogicResult {
+function tryLogicPatterns(solutionData: SolutionData, containers: GameContainer[]): LogicResult {
   const result = new LogicResult();
   let hasStep = true;
   while (hasStep) {
     hasStep = false;
     solutionData.logicFunctions.forEach(logicFunction => {
-      const logicResult = logicFunction(gameContainers);
+      const logicResult = logicFunction(containers);
       if (logicResult.stepCount > 0) {
         hasStep = true;
-        gameContainers = logicResult.gameContainers;
+        containers = logicResult.containers;
         result.stepCount = result.stepCount + logicResult.stepCount;
         result.hashes = new Set([...result.hashes, ...logicResult.hashes]);
         result.steps = [...result.steps, ...logicResult.steps];
       }
     });
   }
-  result.gameContainers = gameContainers;
+  result.containers = containers;
   return result;
 }
 
-function tryToMove(solutionData: SolutionData, gameContainers: GameContainer[], iFrom: number, iTo: number, stepCount: number) {
-  if (GameContainer.isEmpty(gameContainers[iFrom])) {
+function tryToMove(solutionData: SolutionData, containers: GameContainer[], iFrom: number, iTo: number, stepCount: number) {
+  if (GameContainer.isEmpty(containers[iFrom])) {
     // Nothing to take
     return;
   }
-  if (GameContainer.isFull(gameContainers[iTo])) {
+  if (GameContainer.isFull(containers[iTo])) {
     // No place to put
     return;
   }
-  if (!GameContainer.isEmpty(gameContainers[iTo]) && GameContainer.peek(gameContainers[iFrom]) != GameContainer.peek(gameContainers[iTo])) {
+  if (!GameContainer.isEmpty(containers[iTo]) && GameContainer.peek(containers[iFrom]) != GameContainer.peek(containers[iTo])) {
     // Not suitable color
     return;
   }
-  if (GameContainer.size(gameContainers[iFrom]) == 1 && GameContainer.isEmpty(gameContainers[iTo])) {
+  if (GameContainer.size(containers[iFrom]) == 1 && GameContainer.isEmpty(containers[iTo])) {
     // Stupid move;
     return;
   }
-  if (GameContainer.hasOnlyThreeOfOneColor(gameContainers[iFrom])) {
+  if (GameContainer.hasOnlyThreeOfOneColor(containers[iFrom])) {
     // Stupid move;
     return;
   }
-  if (GameContainer.hasOnlyOneColor(gameContainers[iFrom]) && GameContainer.isEmpty(gameContainers[iTo])) {
+  if (GameContainer.hasOnlyOneColor(containers[iFrom]) && GameContainer.isEmpty(containers[iTo])) {
     // if we have only one color and move to empty container
     // Stupid move;
     return;
   }
 
   // We can try to move
-  gameContainers = move(gameContainers, iFrom, iTo);
+  containers = move(containers, iFrom, iTo);
   // console.log("Moved one from " + iFrom + " to " + iTo);
 
 
-  if (solutionData.oldContainersCodes.has(GameController.getGameHash(gameContainers))) {
+  if (solutionData.hashes.has(GameController.getGameHash(containers))) {
     // We already tried it
     // console.log("We already tried it!");
     return;
   }
   solutionData.steps.push(new Step(
-    gameContainers[iFrom].index,
-    gameContainers[iTo].index,
-    GameContainer.peek(gameContainers[iTo])));
+    containers[iFrom].index,
+    containers[iTo].index,
+    GameContainer.peek(containers[iTo])));
 
-  solutionData.oldContainersCodes.add(GameController.getGameHash(gameContainers));
-  tryToResolve(solutionData, gameContainers, stepCount + 1);
+  solutionData.hashes.add(GameController.getGameHash(containers));
+  tryToResolve(solutionData, containers, stepCount + 1);
   removeSteps(solutionData, stepCount);
 }
 
-function move(gameContainers: GameContainer[], iFrom: number, iTo: number): GameContainer[] {
-  gameContainers = GameContainer.cloneContainers(gameContainers);
-  GameContainer.push(gameContainers[iTo], GameContainer.pop(gameContainers[iFrom]));
-  return gameContainers;
+function move(containers: GameContainer[], iFrom: number, iTo: number): GameContainer[] {
+  containers = GameContainer.cloneContainers(containers);
+  GameContainer.push(containers[iTo], GameContainer.pop(containers[iFrom]));
+  return containers;
 }
 
 function removeSteps(solutionData: SolutionData, stepCount: number) {
