@@ -37,9 +37,6 @@ export class MainService {
   visible: Map<TView, boolean> = new Map<TView, boolean>();
   previousView: TView | undefined = undefined; // remember it to have oportunity to go back
 
-  playContainers1: PlayContainer[] = [];
-  playContainers2: PlayContainer[] = [];
-
   solutionController: SolutionController = new SolutionController();
   solution: Solution;
 
@@ -106,7 +103,6 @@ export class MainService {
 
   solve() {
     this.setView("in-progress").then(_ => {
-      // this.fillPlayContainers(game);
       this.solutionController.solve(this.gameService.getContainers()).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.solution = result.solution!;
@@ -123,37 +119,6 @@ export class MainService {
         }
       });
     });
-  }
-
-  public fillPlayContainers() {
-    this.playContainers1 = [];
-    this.playContainers2 = [];
-    const cont = this.gameService.getContainers();
-    cont.forEach((container, index) => {
-      const playCountainer: PlayContainer = new PlayContainer(index);
-      container.colors.forEach(color => playCountainer.push(color));
-      this.playContainers1.push(playCountainer);
-    });
-    this.balancePlayContainers();
-  }
-
-  private balancePlayContainers() {
-    const containerCount = this.playContainers1.length + this.playContainers2.length;
-    if (containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
-      this.playContainers1 = [...this.playContainers1, ...this.playContainers2];
-      this.playContainers2 = [];
-    } else {
-      const allContainers = [...this.playContainers1, ...this.playContainers2];
-      this.playContainers1 = [];
-      this.playContainers2 = [];
-      const halfOfContainerCount = Math.ceil(containerCount / 2);
-      for (let i = 0; i < halfOfContainerCount; i++) {
-        this.playContainers1.push(allContainers[i]);
-      }
-      for (let i = halfOfContainerCount; i < containerCount; i++) {
-        this.playContainers2.push(allContainers[i]);
-      }
-    }
   }
 
   // private loadContainerCount() {
@@ -217,7 +182,7 @@ export class MainService {
   }
 
   play() {
-    this.fillPlayContainers();
+    // this.fillPlayContainers();
     this.setView("play");
   }
 

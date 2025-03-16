@@ -39,7 +39,7 @@ function solve(containers: GameContainer[]) {
 }
 
 function tryToResolve(solutionData: SolutionData, containers: GameContainer[], stepCount: number) {
-  console.log(stepCount);
+  // console.log(stepCount);
   solutionData.counter++;
   // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");
   if (GameContainer.isResolvedContainers(containers)) {

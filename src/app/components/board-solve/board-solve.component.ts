@@ -7,6 +7,8 @@ import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemInde
 import { MainService, TView } from 'src/app/services/main.service';
 import { ContainerComponent } from '../container/container.component';
 import { MovingController } from 'src/app/classes/moving-controller.class';
+import { GameService } from 'src/app/services/game.service';
+import { MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 
 class PlayStep {
   index: number;
@@ -34,6 +36,10 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected readonly view: TView = 'solve';
 
   playContainers: PlayContainer[] = [];
+  playContainers1: PlayContainer[] = [];
+  playContainers2: PlayContainer[] = [];
+
+
   private screenResizedSubscription: Subscription | undefined = undefined;
 
   private itemsElements: HTMLElement[] = [];
@@ -44,15 +50,15 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   stopping: boolean = false;
 
   private stepsSubject$ = new Subject<PlayStep>();
-  movingItem: MovingItem; // Item for moving animation
+  movingItem: MovingItem = new MovingItem(); // Item for moving animation
 
-  constructor(public mainService: MainService) {
+  constructor(public mainService: MainService, private gameService: GameService) {
     this.createStepsSubject();
-    this.movingItem = new MovingItem();
+    this.fillPlayContainers();
   }
 
   ngAfterViewInit(): void {
-    this.playContainers = [...this.mainService.playContainers1, ...this.mainService.playContainers2];
+    this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.screenResizedSubscription = this.mainService.screenResized$.subscribe(() => {
       setTimeout(() => this.onScreenResized(), 500);
     });
@@ -205,5 +211,36 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   setupClick() {
     this.mainService.setView("setup");
   }
+
+    private fillPlayContainers() {
+      this.playContainers1 = [];
+      this.playContainers2 = [];
+      const cont = this.gameService.getContainers();
+      cont.forEach((container, index) => {
+        const playCountainer: PlayContainer = new PlayContainer(index);
+        container.colors.forEach(color => playCountainer.push(color));
+        this.playContainers1.push(playCountainer);
+      });
+      this.balancePlayContainers();
+    }
+
+    private balancePlayContainers() {
+      const containerCount = this.playContainers1.length + this.playContainers2.length;
+      if (containerCount <= MAX_CONTAINER_COUNT_IN_LINE) {
+        this.playContainers1 = [...this.playContainers1, ...this.playContainers2];
+        this.playContainers2 = [];
+      } else {
+        const allContainers = [...this.playContainers1, ...this.playContainers2];
+        this.playContainers1 = [];
+        this.playContainers2 = [];
+        const halfOfContainerCount = Math.ceil(containerCount / 2);
+        for (let i = 0; i < halfOfContainerCount; i++) {
+          this.playContainers1.push(allContainers[i]);
+        }
+        for (let i = halfOfContainerCount; i < containerCount; i++) {
+          this.playContainers2.push(allContainers[i]);
+        }
+      }
+    }
 
 }
