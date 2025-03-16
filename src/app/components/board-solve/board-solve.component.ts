@@ -53,6 +53,12 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   movingItem: MovingItem = new MovingItem(); // Item for moving animation
 
   constructor(public mainService: MainService, private gameService: GameService) {
+    // TODO: temporary
+    const containersString = localStorage.getItem("temp-sorter-containersString");
+    this.gameService.setContainers(JSON.parse(containersString!));
+    const solution = localStorage.getItem("temp-sorter-solution");
+    this.mainService.solution = JSON.parse(solution!);
+    //
     this.createStepsSubject();
     this.fillPlayContainers();
   }
@@ -187,6 +193,12 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   nextClick() {
+    // TODO: temporary
+    // const containersString = JSON.stringify(this.gameService.getContainers());
+    // localStorage.setItem("temp-sorter-containersString", containersString);
+    // const solution = JSON.stringify(this.mainService.solution);
+    // localStorage.setItem("temp-sorter-solution", solution);
+    //
     this.makeStepForward();
   }
 

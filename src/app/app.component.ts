@@ -48,7 +48,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.mainService.setView("menu"), 1000);
+    setTimeout(() => this.mainService.setView("solve"), 1000);
   }
 
 }

@@ -5,38 +5,22 @@
     <p>{{ "SOLVE.SOLUTION_COUNT" | translate: { count: mainService.solution!.steps.length} }}</p>
     <p>{{ "SOLVE.STEP" | translate: {step: completeStepIndex} }}</p>
   </div>
+
+
   <div class="relative-container">
 
-    <ng-container *ngIf="mainService.isMobile">
-      <div class="play-containers-small">
-        <div class="containers containers-small">
+      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
+        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
           <app-container *ngFor="let container of playContainers1" [container]="container"
             [attr.id]="getContainerId(container.index)">
           </app-container>
         </div>
-        <div class="containers containers-small">
+        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
           <app-container *ngFor="let container of playContainers2" [container]="container"
             [attr.id]="getContainerId(container.index)">
           </app-container>
         </div>
       </div>
-    </ng-container>
-
-    <ng-container *ngIf="!mainService.isMobile">
-      <div class="play-containers-large">
-        <div class="containers containers-large">
-          <app-container *ngFor="let container of playContainers1" [container]="container"
-            [attr.id]="getContainerId(container.index)">
-          </app-container>
-        </div>
-        <div class="containers containers-large">
-          <app-container *ngFor="let container of playContainers2" [container]="container"
-            [attr.id]="getContainerId(container.index)">
-          </app-container>
-        </div>
-      </div>
-    </ng-container>
-
 
     <app-moving-item class="moving-item" [item]="movingItem"></app-moving-item>
   </div>
