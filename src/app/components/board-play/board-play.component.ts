@@ -247,7 +247,19 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   protected playClick() {
     this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+    this.containers = this.gameService.getContainers();
     this.prepareBoard();
+  }
+
+  protected createClick() {
+    this.containers = this.playContainers.map(playContainer => {
+      const gameContainer = new GameContainer(playContainer.index);
+      gameContainer.colors = playContainer.items.filter(item => item.color !== undefined).map(item => item.color!);
+      return gameContainer;
+    });
+    this.gameService.setContainers(this.containers);
+    this.gameService.fromContainersToSetupContainers();
+    this.mainService.setView("setup");
   }
 
 }

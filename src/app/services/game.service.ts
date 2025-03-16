@@ -20,9 +20,7 @@ export class GameService {
   }
 
   public hasGame(): boolean {
-    // TODO: change condition
-    // return this.containers.length > 0 && this.sourceItems.getAvailableSourceItems().length === 0;
-    return this.containers.length > 0;
+    return this.containers.length > 0 && this.containers.some(container => container.colors.length > 0);
   }
 
   public fillRandomSetup() {
@@ -46,9 +44,22 @@ export class GameService {
     this.setupContainers.forEach(container => container.colors = []);
   }
 
-  public setupFinished() {
-    this.containers = GameContainer.cloneContainers(this.setupContainers);
+  public fromSetupContainersToContainers() {
+    this.containers = this.setupContainers.map(container => {
+      const newContainer = GameContainer.clone(container);
+      newContainer.colors = newContainer.colors.reverse();
+      return newContainer;
+    });
   }
+
+  public fromContainersToSetupContainers() {
+    this.setupContainers = this.containers.map(container => {
+      const newContainer = GameContainer.clone(container);
+      newContainer.colors = newContainer.colors.reverse();
+      return newContainer;
+    });
+  }
+
 
   public createEmptyGame(colorCount: number, containerCount: number) {
     // create sourceItems
@@ -58,17 +69,23 @@ export class GameService {
     for (let i = 0; i < containerCount; i++) {
       this.containers.push(new GameContainer(i));
     }
+    // create setupContainers
     this.setupContainers = this.getContainers();
   }
 
   public createRandomGame(colorCount: number, containerCount: number) {
     this.createEmptyGame(colorCount, containerCount);
     this.fillRandomSetup();
-    this.containers = GameContainer.cloneContainers(this.setupContainers);
+    this.fromSetupContainersToContainers();
   }
 
   public getContainers(): GameContainer[] {
     return this.containers.map(container => GameContainer.clone(container));
   }
+
+  public setContainers(containers: GameContainer[]): void {
+    this.containers = GameContainer.cloneContainers(containers);
+  }
+
 
 }

@@ -34,7 +34,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private screenChagedSubscription: Subscription | undefined;
 
   tour: Tour | undefined;
-  saveEnabled: boolean = false;
+  hasGame: boolean = false;
   loadEnabled: boolean = false;
 
   private selectedSourceItem: GameSourceItem | undefined;
@@ -52,7 +52,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(public mainService: MainService, public gameService: GameService, public tourService: TourService) {
     this.createSetupContainers();
     this.createSetupContainerPositions();
-    this.checkSaveEnabled();
+    this.checkHasGame();
     this.checkLoadEnabled();
     this.createClickSubject();
   }
@@ -137,14 +137,12 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         event.previousIndex,
         event.currentIndex,
       );
-      this.checkSaveEnabled();
+      this.checkHasGame();
     }
   }
 
-  private checkSaveEnabled() {
-    // TODO: Test it
-    this.saveEnabled = this.gameService.setupContainers.some(container => container.colors.length > 0);
-    console.log("private checkSaveEnabled()", this.saveEnabled);
+  private checkHasGame() {
+    this.hasGame = this.gameService.setupContainers.some(container => container.colors.length > 0);
   }
 
   private createSetupContainers() {
@@ -202,13 +200,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private clearBoard() {
     this.gameService.clearSetup();
-    this.checkSaveEnabled();
+    this.checkHasGame();
   }
 
   fillRandomly() {
     this.gameService.fillRandomSetup();
     this.createSetupContainers();
-    this.checkSaveEnabled();
+    this.checkHasGame();
   }
 
   async pause(delay: number): Promise<void> {
@@ -254,7 +252,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   playClick() {
     // TODO: Show error if board is not filled
-    this.gameService.setupFinished();
+    this.gameService.fromSetupContainersToContainers();
     this.mainService.play();
   }
 
@@ -314,7 +312,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getSourceItemElements();
     this.createSetupContainers();
     this.createSetupContainerPositions();
-    this.checkSaveEnabled();
+    this.checkHasGame();
   }
 
   getSourceItemId(item: GameSourceItem): string {
@@ -418,7 +416,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedSourceItem = undefined;
         item.count--;
         container.colors.unshift(this.movingItem.color!);
-        this.checkSaveEnabled();
+        this.checkHasGame();
         resolve();
       });
     });

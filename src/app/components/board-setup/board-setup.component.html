@@ -16,11 +16,11 @@
         <button mat-menu-item (click)="clearClick()">{{"SETUP.CLEAR" | translate}}</button>
         <button mat-menu-item (click)="fillRandomly()">{{"SETUP.FILL_RANDOM" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="saveClick()" [disabled]="!saveEnabled">{{"MENU.SAVE" | translate}}</button>
+        <button mat-menu-item (click)="saveClick()" [disabled]="!hasGame">{{"MENU.SAVE" | translate}}</button>
         <button mat-menu-item (click)="loadClick()" [disabled]="!loadEnabled">{{"MENU.LOAD" | translate}}</button>
         <mat-divider></mat-divider>
-        <button mat-menu-item (click)="solveClick()">{{"SETUP.SOLVE" | translate}}</button>
-        <button mat-menu-item (click)="playClick()">{{"SETUP.PLAY" | translate}}</button>
+        <button mat-menu-item (click)="solveClick()"[disabled]="!hasGame">{{"SETUP.SOLVE" | translate}}</button>
+        <button mat-menu-item (click)="playClick()" [disabled]="!hasGame">{{"SETUP.PLAY" | translate}}</button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="mainService.setView('settings')">{{"MENU.SETTINGS" | translate}}</button>
       </mat-menu>
