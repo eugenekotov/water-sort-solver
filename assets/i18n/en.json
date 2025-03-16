@@ -4,14 +4,14 @@
     "PLAY": "Play",
     "CREATE": "Create custom game",
     "SOLVE": "Solve",
-    "SETTINGS": "Settings"
+    "SETTINGS": "Settings",
+    "SAVE": "Save game",
+    "LOAD": "Load game"
   },
   "SETUP": {
     "TITLE_1": "Create your custom game board",
     "CLEAR": "Clear",
     "FILL_RANDOM": "Fill randomly",
-    "SAVE": "Save",
-    "LOAD": "Load",
     "SOLVE": "Solve",
     "PLAY": "Play",
     "TOUR": {
@@ -40,7 +40,16 @@
     "FINISH": "Finish"
   },
   "PLAY": {
+    "PLAY": "Play new game",
     "RESTART": "Restart"
+  },
+  "SAVE": {
+    "TITLE": "Save game",
+    "SAVE": "Save"
+  },
+  "LOAD": {
+    "TITLE": "Load game",
+    "LOAD": "Load"
   }
 
 }
