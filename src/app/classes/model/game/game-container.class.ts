@@ -12,6 +12,50 @@ export class GameContainer {
     this.index = index;
   }
 
+  public peek(): Color {
+    if (this.isEmpty()) {
+      throw Error("Container is empty.");
+    }
+    return this.colors[this.colors.length - 1];
+  }
+
+  public size(): number {
+    return this.colors.length;
+  }
+
+  public pop(): Color {
+    if (this.isEmpty()) {
+      throw Error("Container is empty.");
+    }
+    return this.colors.pop()!;
+  }
+
+  public push(color: Color): void {
+    this.colors.push(color);
+  }
+
+  public isEmpty(): boolean {
+    return this.size() === 0;
+  }
+
+  public isFull(): boolean {
+    return this.size() === CONTAINER_SIZE;
+  }
+
+  public getTopColorCount(): number {
+    if (this.isEmpty()) {
+      return 0;
+    }
+    let result = 1;
+    const color = this.peek();
+    let i = this.size() - 2;
+    while (i >= 0 && this.colors[i] === color) {
+      result++;
+      i--;
+    }
+    return result
+  }
+
   public static equal(container1: GameContainer, container2: GameContainer): boolean {
     if (container1.colors.length !== container2.colors.length) {
       return false;
