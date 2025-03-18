@@ -4,6 +4,7 @@ import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classe
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
+import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
@@ -19,6 +20,7 @@ export class PlayStep {
 })
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
+  protected utils = Utils;
   protected readonly view: TView = 'play';
 
   private containers: GameContainer[];
@@ -131,11 +133,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  // TODO: Move it to utils. It has duplicates.
-  protected getContainerId(index: number): string {
-    return "container" + index;
-  }
-
   protected onContainerClick(event: any, container: PlayContainer) {
     this.clicksSubject$.next(container);
     event.stopPropagation();
@@ -233,7 +230,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private getContainerHTMLElemets() {
     this.containerHTMLElements = [];
     for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
-      this.containerHTMLElements.push(document.getElementById(this.getContainerId(containerIndex)));
+      this.containerHTMLElements.push(document.getElementById(Utils.getContainerId(containerIndex)));
     }
   }
 

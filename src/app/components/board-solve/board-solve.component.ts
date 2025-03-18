@@ -6,10 +6,9 @@ import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Step } from 'src/app/classes/solution-controller.class';
-import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex } from 'src/app/classes/utils.class';
+import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex, Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
-import { ContainerComponent } from '../container/container.component';
 
 class PlayStep {
   index: number;
@@ -34,6 +33,7 @@ class PlayStep {
 })
 export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
+  protected utils = Utils;
   protected readonly view: TView = 'solve';
 
   playContainers: PlayContainer[] = [];
@@ -80,6 +80,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
+    this.movingController.getHTMLElements(this.playContainers);
     this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
@@ -112,23 +113,14 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  speedChanged(event: any) {
-    const speed = Number(event);
-    this.mainService.saveSpeed(speed);
-  }
-
   private getItemsElements() {
     this.itemsElements = [];
     for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
       const container = this.playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+        this.itemsElements.push(document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex))!);
       }
     }
-  }
-
-  getContainerId(index: number): string {
-    return "container" + index;
   }
 
   private makeStepForward() {
@@ -275,10 +267,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     result.push(Color.RED);
     result.push(Color.RED);
     return result;
-  }
-
-  getSetupContainerPositionItemId(containerIndex: number, itemIndex: number) {
-    return `${this.getContainerId(containerIndex)}item${itemIndex}`;
   }
 
   // TODO: It has duplicates

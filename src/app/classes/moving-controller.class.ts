@@ -156,7 +156,6 @@ export class MovingController {
     return new Position(top, left);
   }
 
-
   private pop(container: PlayContainer, count: number) {
     for (let i = 0; i < count; i++) {
       container.pop();

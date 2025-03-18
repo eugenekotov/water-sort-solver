@@ -28,3 +28,14 @@ export function getMovingTopCoordinate(itemElement: HTMLElement, parentRect: DOM
   return top;
 }
 
+export class Utils {
+
+  public static getContainerItemId(containerIndex: number, itemIndex: number): string {
+    return `${Utils.getContainerId(containerIndex)}item${itemIndex}`;
+  }
+
+  public static getContainerId(index: number): string {
+    return "container" + index;
+  }
+
+}

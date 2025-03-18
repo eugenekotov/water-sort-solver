@@ -7,6 +7,7 @@ import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { GameSourceItem } from 'src/app/classes/model/game/game-source-item.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
+import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
@@ -25,6 +26,7 @@ class ClickEvent {
 })
 export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  protected utils = Utils;
   protected readonly view: TView = 'setup';
 
   private clickSubject$ = new Subject<ClickEvent>();
@@ -95,10 +97,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return result;
   }
 
-  getSetupContainerPositionItemId(containerIndex: number, itemIndex: number) {
-    return `${this.getContainerId(containerIndex)}item${itemIndex}`;
-  }
-
   private onScreenResized() {
     this.getSourceItemElements();
   }
@@ -119,7 +117,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private getSetupContainersItemElement(containerIndex: number, itemIndex: number): HTMLElement | null {
-    return document.getElementById(this.getSetupContainerPositionItemId(containerIndex, itemIndex));
+    return document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex));
   }
 
   onSetupContainerClick(event: any, container: GameContainer) {
@@ -164,11 +162,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   protected getConnectedLists(currentId: string): string[] {
-    return Array<number>(this.gameService.setupContainers.length).fill(0).map((_, index) => this.getContainerId(index)).filter(id => id !== currentId);
-  }
-
-  protected getContainerId(index: number): string {
-    return `container${index}`;
+    return Array<number>(this.gameService.setupContainers.length).fill(0).map((_, index) => Utils.getContainerId(index)).filter(id => id !== currentId);
   }
 
   protected getSourceItemStyle(item: GameSourceItem) {
