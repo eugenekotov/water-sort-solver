@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MainService } from 'src/app/services/main.service';
 
@@ -14,7 +14,7 @@ export class ContainerComponent {
 
   constructor(public mainService: MainService) { }
 
-  getItemId(containerIndex: number, itemIndex: number) {
+  getItemId(containerIndex: number, itemIndex: number): string {
     return ContainerComponent.getItemId(containerIndex, itemIndex);
   }
 

@@ -9,18 +9,61 @@
 
   <div class="relative-container">
 
-      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
-        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <app-container *ngFor="let container of playContainers1" [container]="container"
-            [attr.id]="getContainerId(container.index)">
-          </app-container>
+    <!-- Duplicate for position -->
+    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'"
+      style="position: absolute; opacity: 0; z-index: 0;">
+
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+        <div *ngFor="let container of containersPositions1" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" style="flex-direction: column-reverse;">
+
+          <div *ngFor="let item of container.items; let itemIndex=index"
+            [id]="getSetupContainerPositionItemId(container.index, itemIndex)" class="item"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
         </div>
-        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <app-container *ngFor="let container of playContainers2" [container]="container"
-            [attr.id]="getContainerId(container.index)">
-          </app-container>
+
+      </div>
+
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+        <div *ngFor="let container of containersPositions2" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" style="flex-direction: column-reverse;">
+
+          <div *ngFor="let item of container.items; let itemIndex=index"
+            [id]="getSetupContainerPositionItemId(container.index, itemIndex)" class="item"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
         </div>
       </div>
+    </div>
+    <!--  -->
+    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 6;">
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+        <div *ngFor="let container of playContainers1" [id]="getContainerId(container.index)" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+
+          <div *ngFor="let item of container.items" class="item shadow shadow-active"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(item.color!)" cdkDrag>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+        <div *ngFor="let container of playContainers2" [id]="getContainerId(container.index)" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+
+          <div *ngFor="let item of container.items" class="item shadow shadow-active"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(item.color!)" cdkDrag>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <app-moving-item class="moving-item" [item]="movingItem"></app-moving-item>
   </div>

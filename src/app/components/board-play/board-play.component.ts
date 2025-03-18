@@ -76,7 +76,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
     this.clicksSubject$ = new Subject<PlayContainer>();
     this.stepsSubjectSubscription = this.clicksSubject$.pipe(
-      concatMap(container => this.makeAction(container)))
+      concatMap(container => this.handleClick(container)))
       .subscribe({
         next: (step: PlayStep | undefined) => {
           if (step) {
@@ -96,7 +96,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  private makeAction(container: PlayContainer): Observable<PlayStep | undefined> {
+  private handleClick(container: PlayContainer): Observable<PlayStep | undefined> {
     return new Observable(observer => {
       this.movingInProgress = true;
       if (this.selectedContainer) {
@@ -131,6 +131,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  // TODO: Move it to utils. It has duplicates.
   protected getContainerId(index: number): string {
     return "container" + index;
   }
