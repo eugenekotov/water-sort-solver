@@ -18,7 +18,7 @@
           <div *ngFor="let container of containersPositions1" class="container"
             [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
-            <div *ngFor="let item of container.items; let itemIndex=index"
+            <div *ngFor="let color of container.colors; let itemIndex=index"
               [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
               [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
             </div>
@@ -31,7 +31,7 @@
           <div *ngFor="let container of containersPositions2" class="container"
             [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
-            <div *ngFor="let item of container.items; let itemIndex=index"
+            <div *ngFor="let color of container.colors; let itemIndex=index"
               [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
               [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
             </div>
@@ -45,8 +45,8 @@
           <div *ngFor="let container of playContainers1"
             class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
-            <div *ngFor="let item of container.items" class="item shadow"
-              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(item.color!)">
+            <div *ngFor="let color of container.colors" class="item shadow"
+              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)">
             </div>
           </div>
 
@@ -57,8 +57,8 @@
           <div *ngFor="let container of playContainers2"
             class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
-            <div *ngFor="let item of container.items" class="item shadow"
-              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(item.color!)">
+            <div *ngFor="let color of container.colors" class="item shadow"
+              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)">
             </div>
           </div>
 

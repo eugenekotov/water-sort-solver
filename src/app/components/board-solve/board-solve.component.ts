@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
+import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex, Utils } from 'src/app/classes/utils.class';
@@ -36,13 +36,13 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected utils = Utils;
   protected readonly view: TView = 'solve';
 
-  playContainers: PlayContainer[] = [];
+  playContainers: GameContainer[] = [];
 
-  playContainers1: PlayContainer[] = [];
-  playContainers2: PlayContainer[] = [];
+  playContainers1: GameContainer[] = [];
+  playContainers2: GameContainer[] = [];
 
-  protected containersPositions1: PlayContainer[] = [];
-  protected containersPositions2: PlayContainer[] = [];
+  protected containersPositions1: GameContainer[] = [];
+  protected containersPositions2: GameContainer[] = [];
 
   private screenResizedSubscription: Subscription | undefined = undefined;
 
@@ -80,7 +80,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements(this.playContainers);
+    this.movingController.getHTMLElements2(this.playContainers);
     this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
@@ -117,7 +117,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     this.itemsElements = [];
     for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
       const container = this.playContainers[containerIndex];
-      for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
+      for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
         this.itemsElements.push(document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex))!);
       }
     }
@@ -142,6 +142,10 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
         observer.error({ message: "Stop" });
         return;
       }
+
+
+      // TODO: Use moving controller
+
       // show moving item
       this.movingItem.color = this.playContainers[step.iFrom].peek();
       const indexFrom = getItemIndex(step.iFrom, this.playContainers[step.iFrom].size() - 1);
@@ -225,14 +229,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private fillPlayContainers() {
-    this.playContainers1 = [];
+    this.playContainers1 = this.gameService.getContainers();
     this.playContainers2 = [];
-    const cont = this.gameService.getContainers();
-    cont.forEach((container, index) => {
-      const playCountainer: PlayContainer = new PlayContainer(index);
-      container.colors.forEach(color => playCountainer.push(color));
-      this.playContainers1.push(playCountainer);
-    });
     this.balancePlayContainers();
   }
 
@@ -260,8 +258,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     this.containersPositions2 = this.playContainers2.map(container => this.createSetupContainerPosition(container));
   }
 
-  private createSetupContainerPosition(container: PlayContainer): PlayContainer {
-    const result = new PlayContainer(container.index);
+  private createSetupContainerPosition(container: GameContainer): GameContainer {
+    const result = new GameContainer(container.index);
     result.push(Color.RED);
     result.push(Color.RED);
     result.push(Color.RED);

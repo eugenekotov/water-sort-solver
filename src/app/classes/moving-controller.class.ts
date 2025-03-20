@@ -7,6 +7,7 @@ import { PlayStep } from "../components/board-play/board-play.component";
 import { CONTAINER_SIZE } from "./model/const.class";
 import { MovingItem, Position } from "./model/item.class";
 import { MainService } from "../services/main.service";
+import { GameContainer } from "./model/game/game-container.class";
 
 
 export class MovingController {
@@ -30,6 +31,18 @@ export class MovingController {
     for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
       const container = playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
+        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+      }
+    }
+    //
+    this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
+  }
+
+  getHTMLElements2(playContainers: GameContainer[]) {
+    this.itemsElements = [];
+    for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
+      const container = playContainers[containerIndex];
+      for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
         this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
       }
     }
