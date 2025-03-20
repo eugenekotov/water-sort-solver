@@ -8,6 +8,14 @@
 
 .relative-container {
   position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.play-containers-parent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .play-containers-small {
@@ -32,10 +40,9 @@
   text-align: center;
 }
 
-.solution-text-container-small {
-  // margin: $margin-small;
-}
-
-.solution-text-container-large {
-  // margin: $margin-large;
+.container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: end;
 }

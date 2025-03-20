@@ -114,6 +114,10 @@
   justify-content: end;
 }
 
+.container-position {
+  flex-direction: column-reverse;
+}
+
 .item {
   cursor: move;
 }
