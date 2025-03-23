@@ -1,3 +1,4 @@
+@use 'src/styles/global-styles' as *;
 @use 'src/styles/variables' as *;
 
 .view-container {
@@ -6,17 +7,11 @@
   justify-content: space-between;
 }
 
-.relative-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
-
-.play-containers-parent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+// .play-containers-parent {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// }
 
 .play-containers-small {
   display: flex;
