@@ -104,13 +104,6 @@
   cursor: move;
 }
 
-.moving-item {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
-}
-
 .source-item-small {
   position: relative;
   margin-top: math.div($item-size-small, 2.5);

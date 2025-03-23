@@ -80,7 +80,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements2(this.playContainers);
+    this.movingController.getHTMLElements2(this.playContainers.length);
     this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
@@ -157,8 +157,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
       setTimeout(async () => {
         const indexTo = getItemIndex(step.iTo, this.playContainers[step.iTo].size());
         const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
-        const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
-        const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
+        const topPosition = new Position(startPosition.x, this.getMovingTopCoordinate(step.iFrom));
+        const leftPosition = new Position(finishPosition.x, this.getMovingTopCoordinate(step.iTo));
         await this.moving(startPosition, topPosition);
         await this.moving(topPosition, leftPosition);
         await this.moving(leftPosition, finishPosition);
@@ -174,7 +174,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private async moving(from: Position, to: Position): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = MovingController.calculateMovingDuration(from, to, this.mainService.speed);
+      const moving_duration1 = MovingController.calculateMovingDuration2(from, to, this.mainService.speed);
       this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
       this.setMovingPosition(to);
       setTimeout(resolve, moving_duration1);
@@ -188,8 +188,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private setMovingPosition(position: Position) {
-    this.movingItem.top = `${position.top}px`;
-    this.movingItem.left = `${position.left}px`;
+    this.movingItem.top = `${position.y}px`;
+    this.movingItem.left = `${position.x}px`;
   }
 
   backClick() {

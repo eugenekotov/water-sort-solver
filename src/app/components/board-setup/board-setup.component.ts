@@ -87,11 +87,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSetupContainerPositions() {
-    this.setupContainerPositions1 = this.setupContainers1.map(container => this.createSetupContainerPosition(container));
-    this.setupContainerPositions2 = this.setupContainers2.map(container => this.createSetupContainerPosition(container));
+    this.setupContainerPositions1 = this.setupContainers1.map(container => this.createContainerPosition(container));
+    this.setupContainerPositions2 = this.setupContainers2.map(container => this.createContainerPosition(container));
   }
 
-  private createSetupContainerPosition(container: GameContainer): GameContainer {
+  private createContainerPosition(container: GameContainer): GameContainer {
     const result = new GameContainer(container.index);
     result.colors = Array<Color>(CONTAINER_SIZE).fill(Color.RED);
     return result;
@@ -421,14 +421,14 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     const itemRect = itemElement.getBoundingClientRect();
     const top = itemRect.top - parentRect.top - 1;
     const left = itemRect.left - parentRect.left - 1;
-    return new Position(top, left);
+    return new Position(left, top);
   }
 
   private getSelectedSourcePosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
     const itemRect = itemElement.getBoundingClientRect();
     const top = itemRect.top - parentRect.top - itemRect.height * 0.5;
     const left = itemRect.left - parentRect.left - 1;
-    return new Position(top, left);
+    return new Position(left, top);
   }
 
   onMovingItemClick(movingItem: MovingItem) {

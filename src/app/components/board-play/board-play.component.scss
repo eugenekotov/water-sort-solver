@@ -1,3 +1,4 @@
+@use 'src/styles/global-styles' as *;
 @use 'src/styles/variables' as *;
 
 .view-container {
@@ -34,10 +35,15 @@
   gap: 3rem;
 }
 
-.moving-item {
-  position: absolute;
-  top: 0px;
-  left: 0px;
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+}
+
+.container-position {
+  flex-direction: column-reverse;
 }
 
 .solution-text-container {

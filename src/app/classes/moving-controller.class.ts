@@ -12,10 +12,11 @@ import { GameContainer } from "./model/game/game-container.class";
 
 export class MovingController {
 
+  private readonly MOVING_HEIGHT = 35;
+
   movingItems: MovingItem[] = []; // Items for moving animation
 
   private itemsElements: HTMLElement[] = [];
-  private parentElementRect: DOMRect;
 
   public movingInProgress: boolean = false;
   public stoppingInProgress: boolean = false;
@@ -32,39 +33,40 @@ export class MovingController {
     for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
       const container = playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+        this.itemsElements.push(document.getElementById(ContainerComponent.getElementId(containerIndex, itemIndex))!);
       }
     }
-    //
-    this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
-  getHTMLElements2(playContainers: GameContainer[]) {
+  getHTMLElements2(containerCount: number) {
     this.itemsElements = [];
-    for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
-      const container = playContainers[containerIndex];
-      for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+    for (let containerIndex = 0; containerIndex < containerCount; containerIndex++) {
+      for (let itemIndex = 0; itemIndex < CONTAINER_SIZE; itemIndex++) {
+        const elementId = ContainerComponent.getElementId(containerIndex, itemIndex);
+        const element = document.getElementById(elementId);
+        if (element !== null) {
+          this.itemsElements.push(element);
+        } else {
+          throw new Error(`Cannot get HTML element with id ${elementId}`);
+        }
       }
     }
-    //
-    this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
-  moveUp(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
+  moveUp(container: GameContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(() => {
+      const parentElementRect = this.getMovingParentRect();
       const movingCount = container.getTopColorCount();
       const movingItems = this.getMovingItems(movingCount);
       this.setColor(movingItems, container.peek());
-      const elements = this.getElements(container, container.size() - 1, movingCount);
-      const startPositions = this.getBottomPositions(elements);
+      const elements = this.getElements(container.index, container.size() - 1, movingCount);
+      const startPositions = this.getElementsPositions(elements, parentElementRect);
       this.setPositions(movingItems, startPositions);
       this.pop(container, movingCount);
       this.setHidden(movingItems, false);
       // moving
       setTimeout(async () => {
-        const topPositions = this.getTopPositions(elements);
-        await this.moving(movingItems, topPositions);
+        await this.moving2(movingItems, 0, -this.MOVING_HEIGHT);
         if (this.stoppingInProgress) {
           this.moveDown(container, observer);
           return;
@@ -75,13 +77,11 @@ export class MovingController {
     }, 0);
   }
 
-  moveDown(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
+  moveDown(container: GameContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(async () => {
       const movingItems = this.getVisibleMovingItems();
       const movingCount = movingItems.length;
-      const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount);
-      const finishPositions = this.getBottomPositions(elements);
-      await this.moving(movingItems, finishPositions);
+      await this.moving2(movingItems, 0, this.MOVING_HEIGHT);
       this.push(container, this.movingItems[0].color!, movingCount);
       this.setHidden(movingItems, true);
       if (this.stoppingInProgress) {
@@ -93,37 +93,34 @@ export class MovingController {
     }, 0);
   }
 
-  moveTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
+  moveTo(containerFrom: GameContainer, containerTo: GameContainer, observer: Subscriber<PlayStep | undefined>) {
     setTimeout(async () => {
+      const parentElementRect = this.getMovingParentRect();
       const visibleCount = this.movingItems.reduce((accumulator, movingItem) => !movingItem.hidden ? accumulator + 1 : accumulator, 0);
       const movingToCount = Math.min(CONTAINER_SIZE - containerTo.size(), visibleCount);
       const movingDownCount = visibleCount - movingToCount;
-      const movingToItems: MovingItem[] = [];
-      const movingDownItems: MovingItem[] = [];
-      for (let i = 0; i < visibleCount; i++) {
-        if (i < movingToCount) {
-          movingToItems.push(this.movingItems[i]);
-        } else {
-          movingDownItems.push(this.movingItems[i]);
+      const movingToItems: MovingItem[] = this.movingItems.slice(0, movingToCount);
+      const movingDownItems: MovingItem[] = this.movingItems.slice(movingToCount, movingToCount + movingDownCount);
+      // down
+      if (movingDownCount > 0) {
+        await this.moving2(movingDownItems, 0, this.MOVING_HEIGHT);
+        this.push(containerFrom, this.movingItems[0].color!, movingDownCount);
+        this.setHidden(movingDownItems, true);
+        if (this.stoppingInProgress) {
+          observer.error({ message: "Stop" });
+          return;
         }
       }
-      // down
-      const elementsDown = this.getElements(containerFrom, containerFrom.size() - 1 + movingDownCount, movingDownCount);
-      const finishPositionsDown = this.getBottomPositions(elementsDown);
-      await this.moving(movingDownItems, finishPositionsDown);
-      this.push(containerFrom, this.movingItems[0].color!, movingDownCount);
-      this.setHidden(movingDownItems, true);
-      if (this.stoppingInProgress) {
-        observer.error({ message: "Stop" });
-        return;
-      }
       // to
-      const elementsTo = this.getElements(containerTo, containerTo.size() - 1 + movingToCount, movingToCount);
-      const finishPositionsTo = this.getBottomPositions(elementsTo);
-      await this.moving(movingToItems, finishPositionsTo);
-      this.push(containerTo, this.movingItems[0].color!, movingToCount);
-      this.setHidden(movingToItems, true);
-
+      if (movingToCount > 0) {
+        const element0To = this.getElement(containerTo.index, containerTo.size() - 1 + movingToCount);
+        const finishPositionTo = this.getElementPosition(element0To, parentElementRect);
+        const x = finishPositionTo.x - movingToItems[0].position.x;
+        const y = finishPositionTo.y - movingToItems[0].position.y;
+        await this.moving2(movingToItems, x, y);
+        this.push(containerTo, this.movingItems[0].color!, movingToCount);
+        this.setHidden(movingToItems, true);
+      }
       observer.next(new PlayStep(containerFrom.index, containerTo.index, movingToCount));
       observer.complete();
     }, 0);
@@ -138,22 +135,23 @@ export class MovingController {
     movingItems.forEach(movingItem => movingItem.color = color);
   }
 
-  private getElements(container: PlayContainer, first: number, count: number): HTMLElement[] {
+  private getElements(containerIndex: number, first: number, count: number): HTMLElement[] {
     const result: HTMLElement[] = [];
     for (let i = 0; i < count; i++) {
-      const index = getItemIndex(container.index, first - i);
+      const index = getItemIndex(containerIndex, first - i);
       result.push(this.itemsElements[index]);
     }
     return result;
   }
 
-  private getBottomPositions(elements: HTMLElement[]): Position[] {
-    const result: Position[] = [];
-    for (let i = 0; i < elements.length; i++) {
-      const position = getMovingPosition(elements[i], this.parentElementRect);
-      result.push(position);
-    }
-    return result;
+  private getElement(containerIndex: number, colorIndex: number): HTMLElement {
+    const index = getItemIndex(containerIndex, colorIndex);
+    return this.itemsElements[index];
+  }
+
+
+  private getElementsPositions(elements: HTMLElement[], parentElementRect: DOMRect): Position[] {
+    return elements.map(element => this.getElementPosition(element, parentElementRect));
   }
 
   private setPositions(movingItems: MovingItem[], position: Position[]): void {
@@ -162,21 +160,27 @@ export class MovingController {
     }
   }
 
-
-  private getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
+  private getElementPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
     const itemRect = itemElement.getBoundingClientRect();
     const top = itemRect.top - parentRect.top - 1;
     const left = itemRect.left - parentRect.left - 1;
-    return new Position(top, left);
+    return new Position(left, top);
   }
 
-  private pop(container: PlayContainer, count: number) {
+  private getMovingTopPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
+    const position = this.getElementPosition(itemElement, parentRect);
+    const itemRect = itemElement!.getBoundingClientRect();
+    position.y = position.y - itemRect.height * 1.3;
+    return position;
+  }
+
+  private pop(container: GameContainer, count: number) {
     for (let i = 0; i < count; i++) {
       container.pop();
     }
   }
 
-  private push(container: PlayContainer, color: Color, count: number): void {
+  private push(container: GameContainer, color: Color, count: number): void {
     for (let i = 0; i < count; i++) {
       container.push(color);
     }
@@ -186,40 +190,31 @@ export class MovingController {
     movingItems.forEach(movingItem => movingItem.hidden = hidden);
   }
 
-  private getTopPositions(elements: HTMLElement[]): Position[] {
-    return elements.map(element => this.getMovingTopPosition(element, this.parentElementRect));
-  }
-
-  private getMovingTopPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
-    const itemRect = itemElement!.getBoundingClientRect();
-    const top = itemRect.top - parentRect.top - itemRect.height * 1.3;
-    const left = itemRect.left - parentRect.left - 1;
-    return new Position(top, left);
-  }
-
-  // private getFinishPositions(parentRect: DOMRect): Position[] {
-  //   const result: Position[] = [];
-  //   let i = 0;
-  //   while (this.movingItems[i].hidden === false) {
-  //     const position = getMovingPosition(this.movingItems[i].element, parentRect);
-  //     result.push(position);
-  //     i++;
-  //   }
-  //   return result;
-  // }
-
-
   private async moving(movingItems: MovingItem[], positions: Position[]): Promise<void> {
     return new Promise<void>(resolve => {
-      let max_moving_duration = 0;
-      for (let i = 0; i < movingItems.length; i++) {
-        const moving_duration = MovingController.calculateMovingDuration(movingItems[i].position, positions[i], this.mainService.speed);
-        max_moving_duration = Math.max(max_moving_duration, moving_duration);
-        movingItems[i].transitionDuration = (moving_duration / 1000) + "s";
-        movingItems[i].position = positions[i];
-      }
-      setTimeout(resolve, max_moving_duration);
+      const moving_duration = MovingController.calculateMovingDuration2(movingItems[0].position, positions[0], this.mainService.speed);
+      movingItems.forEach(movingItem => movingItem.transitionDuration = (moving_duration / 1000) + "s");
+      setTimeout(() => movingItems.forEach((movingItem, index) => movingItem.position = positions[index], 0));
+      setTimeout(resolve, moving_duration);
     });
+  }
+
+  private async moving2(movingItems: MovingItem[], x: number, y: number): Promise<void> {
+    return new Promise<void>(resolve => {
+      const moving_duration = MovingController.calculateMovingDuration(x, y, this.mainService.speed);
+      movingItems.forEach(movingItem => movingItem.transitionDuration = (moving_duration / 1000) + "s");
+      setTimeout(() => movingItems.forEach(movingItem => movingItem.position =
+        new Position(movingItem.position.x + x, movingItem.position.y + y), 0));
+      setTimeout(resolve, moving_duration);
+    });
+  }
+
+  private getMovingParentRect(): DOMRect {
+    const element = document.getElementById("moving-parent");
+    if (element !== null) {
+      return element.getBoundingClientRect();
+    }
+    throw new Error("Cannot find moving-parent element.");
   }
 
   private getVisibleMovingItems(): MovingItem[] {
@@ -233,25 +228,27 @@ export class MovingController {
   }
 
   private getMovingItems(count: number): MovingItem[] {
-    const result: MovingItem[] = [];
-    for (let i = 0; i < count; i++) {
-      result.push(this.movingItems[i]);
-    }
-    return result;
+    return this.movingItems.slice(0, count);
   }
 
   static async moving(movingItem: MovingItem, from: Position, to: Position, speed: number): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = MovingController.calculateMovingDuration(from, to, speed);
+      const moving_duration1 = MovingController.calculateMovingDuration2(from, to, speed);
       movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
       movingItem.position = to;
       setTimeout(resolve, moving_duration1);
     });
   }
 
-  static calculateMovingDuration(from: Position, to: Position, speed: number): number {
-    const way = Math.sqrt(Math.pow(to.top - from.top, 2) + Math.pow(to.left - from.left, 2));
+  static calculateMovingDuration2(from: Position, to: Position, speed: number): number {
+    const way = Math.sqrt(Math.pow(to.y - from.y, 2) + Math.pow(to.x - from.x, 2));
     return (200 + way * 0.5) * 15 / speed;
   }
+
+  static calculateMovingDuration(x: number, y: number, speed: number): number {
+    const way = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    return (200 + way * 0.5) * 15 / speed;
+  }
+
 
 }

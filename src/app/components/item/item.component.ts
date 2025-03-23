@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Color } from 'src/app/classes/model/colors.class';
 import { Item } from 'src/app/classes/model/item.class';
 import { MainService } from 'src/app/services/main.service';
 
@@ -9,7 +10,7 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class ItemComponent implements OnInit {
 
-  @Input() item!: Item;
+  @Input() color!: Color;
 
   constructor(public mainService: MainService) { }
 

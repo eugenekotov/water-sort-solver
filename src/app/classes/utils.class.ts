@@ -19,7 +19,7 @@ export function getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect)
   const itemRect = itemElement.getBoundingClientRect();
   const top = itemRect.top - parentRect.top - 1;
   const left = itemRect.left - parentRect.left - 1;
-  return new Position(top, left);
+  return new Position(left, top);
 }
 
 export function getMovingTopCoordinate(itemElement: HTMLElement, parentRect: DOMRect): number {

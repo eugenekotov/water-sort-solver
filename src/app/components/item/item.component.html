@@ -1,5 +1,4 @@
 <div
   class="item shadow" [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-  [style]="{'background-color': item.color}"
-  [ngStyle]="{'opacity': (item.hidden || item.color === undefined) ? 0 : 1}  ">
+  [style]="{'background-color': color}">
 </div>

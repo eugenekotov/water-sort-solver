@@ -76,6 +76,7 @@
     <!-- Duplicate for position -->
     <div class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'"
       style="position: absolute; opacity: 0; z-index: 0;">
+
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
         <div *ngFor="let container of setupContainerPositions1" class="container container-position"
@@ -88,6 +89,9 @@
         </div>
 
       </div>
+
+
+
       <div *ngIf="setupContainers2.length > 0" class="containers"
         [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
@@ -103,7 +107,7 @@
     </div>
     <!--  -->
     <div id="containers" class="containers-2"
-      [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'" style="z-index: 6;">
+      [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'" style="z-index: 5;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
         <div *ngFor="let container of setupContainers1" [id]="utils.getContainerId(container.index)" class="container"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList
@@ -133,6 +137,6 @@
     </div>
   </div>
 
-  <app-moving-item class="moving-item" [item]="movingItem" (click)="onMovingItemClick(movingItem)"></app-moving-item>
+  <app-moving-item [item]="movingItem" (click)="onMovingItemClick(movingItem)"></app-moving-item>
 
 </div>

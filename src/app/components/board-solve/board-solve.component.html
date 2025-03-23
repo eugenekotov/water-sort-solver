@@ -38,7 +38,7 @@
         </div>
       </div>
       <!--  -->
-      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 6;">
+      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 5;">
         <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
           <div *ngFor="let container of playContainers1"
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-    <app-moving-item class="moving-item" [item]="movingItem"></app-moving-item>
+    <app-moving-item [item]="movingItem"></app-moving-item>
   </div>
 
   <ng-container *ngIf="mainService.isMobile">

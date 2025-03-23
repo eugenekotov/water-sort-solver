@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
+import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { MainService } from 'src/app/services/main.service';
 
 @Component({
@@ -9,16 +9,16 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class ContainerComponent {
 
-  @Input() container!: PlayContainer;
+  @Input() container!: GameContainer;
   @Input() showActive: boolean = false;
 
   constructor(public mainService: MainService) { }
 
   getItemId(containerIndex: number, itemIndex: number): string {
-    return ContainerComponent.getItemId(containerIndex, itemIndex);
+    return ContainerComponent.getElementId(containerIndex, itemIndex);
   }
 
-  public static getItemId(containerIndex: number, itemIndex: number): string {
+  public static getElementId(containerIndex: number, itemIndex: number): string {
     return "container" + containerIndex + "item" + itemIndex;
   }
 

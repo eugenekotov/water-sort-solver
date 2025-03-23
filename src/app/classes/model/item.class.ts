@@ -18,12 +18,12 @@ export class PlayItem extends Item {
 }
 
 export class Position {
-  top!: number;
-  left!: number;
+  x: number;
+  y: number;
 
-  constructor(top: number, left: number) {
-    this.top = top;
-    this.left = left;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 }
 
@@ -35,8 +35,8 @@ export class MovingItem extends Item {
 
   set position(position: Position) {
     this._position = position;
-    this.top = `${position.top}px`;
-    this.left = `${position.left}px`;
+    this.top = `${position.y}px`;
+    this.left = `${position.x}px`;
   }
 
   get position(): Position {
