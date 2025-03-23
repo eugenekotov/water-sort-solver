@@ -8,7 +8,6 @@
 
 
   <div class="relative-container">
-    <div class="play-containers-parent">
       <!-- Duplicate for position -->
       <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'"
         style="position: absolute; opacity: 0; z-index: 0;">
@@ -63,7 +62,6 @@
           </div>
 
         </div>
-      </div>
     </div>
 
     <app-moving-item class="moving-item" [item]="movingItem"></app-moving-item>

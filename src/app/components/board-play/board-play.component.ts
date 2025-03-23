@@ -30,6 +30,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected playContainers2: PlayContainer[] = [];
   private selectedContainer: PlayContainer | undefined;
 
+  protected containersPositions1: GameContainer[] = [];
+  protected containersPositions2: GameContainer[] = [];
+
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: any[] = [];
 

@@ -1,3 +1,4 @@
+@use 'src/styles/global-styles' as *;
 @use 'src/styles/variables' as *;
 
 .view-container {
@@ -22,10 +23,6 @@
   margin: $margin-large;
 }
 
-.relative-container {
-  position: relative;
-}
-
 .play-containers-small {
   display: flex;
   flex-direction: column;
@@ -46,12 +43,4 @@
 
 .solution-text-container {
   text-align: center;
-}
-
-.solution-text-container-small {
-  // margin: $margin-small;
-}
-
-.solution-text-container-large {
-  // margin: $margin-large;
 }

@@ -209,3 +209,10 @@
 .mr-1 {
   margin-right: $margin-1 !important;
 }
+
+.relative-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

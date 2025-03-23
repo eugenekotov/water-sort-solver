@@ -39,23 +39,28 @@
   </div>
 
   <div class="relative-container" (click)="onClick($event)">
-    <div class="play-containers-parent">
 
-      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
+    <!-- Duplicate for position -->
 
-        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
-            [attr.id]="utils.getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
+    <!--  -->
+    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
 
-        <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-          <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
-            [attr.id]="utils.getContainerId(container.index)" (click)="onContainerClick($event, container)">
-          </app-container>
-        </div>
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+
+        <app-container *ngFor="let container of playContainers1" [container]="container" [showActive]="true"
+          [attr.id]="utils.getContainerId(container.index)" (click)="onContainerClick($event, container)">
+        </app-container>
+
 
       </div>
+
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <app-container *ngFor="let container of playContainers2" [container]="container" [showActive]="true"
+          [attr.id]="utils.getContainerId(container.index)" (click)="onContainerClick($event, container)">
+        </app-container>
+      </div>
+
     </div>
 
     <app-moving-item *ngFor="let movingItem of movingController.movingItems" class="moving-item" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
