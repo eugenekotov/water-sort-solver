@@ -3,7 +3,6 @@ import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';

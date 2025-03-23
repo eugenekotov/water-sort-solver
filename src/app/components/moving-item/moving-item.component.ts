@@ -9,7 +9,7 @@ import { MainService } from 'src/app/services/main.service';
 })
 export class MovingItemComponent implements OnInit {
 
-  @Input() item!: MovingItem;
+  @Input() item: MovingItem;
   @Output() click: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(public mainService: MainService) { }
@@ -18,9 +18,9 @@ export class MovingItemComponent implements OnInit {
   }
 
   getStyle() {
+    // console.log('transition-duration: ' + this.item.transitionDuration);
     return {
       'background-color': this.item.color,
-      'position': 'absolute',
       'top': this.item.top,
       'left': this.item.left,
       'transition-duration': this.item.transitionDuration

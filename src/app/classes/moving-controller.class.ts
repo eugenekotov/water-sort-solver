@@ -1,13 +1,13 @@
-import { Subscriber } from "rxjs";
-import { ContainerComponent } from "../components/container/container.component";
-import { Color } from "./model/colors.class";
-import { PlayContainer } from "./model/play-container.class";
-import { getItemIndex, getMovingPosition } from "./utils.class";
+import { Observable, Subscriber } from "rxjs";
 import { PlayStep } from "../components/board-play/board-play.component";
-import { CONTAINER_SIZE } from "./model/const.class";
-import { MovingItem, Position } from "./model/item.class";
+import { ContainerComponent } from "../components/container/container.component";
 import { MainService } from "../services/main.service";
+import { Color } from "./model/colors.class";
+import { CONTAINER_SIZE } from "./model/const.class";
 import { GameContainer } from "./model/game/game-container.class";
+import { MovingItem, Position } from "./model/item.class";
+import { PlayContainer } from "./model/play-container.class";
+import { getItemIndex } from "./utils.class";
 
 
 export class MovingController {
@@ -23,7 +23,7 @@ export class MovingController {
 
 
   constructor(private mainService: MainService) {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < CONTAINER_SIZE; i++) {
       this.movingItems.push(new MovingItem());
     }
   }
@@ -66,7 +66,7 @@ export class MovingController {
       this.setHidden(movingItems, false);
       // moving
       setTimeout(async () => {
-        await this.moving2(movingItems, 0, -this.MOVING_HEIGHT);
+        await this.moving(movingItems, 0, -this.MOVING_HEIGHT);
         if (this.stoppingInProgress) {
           this.moveDown(container, observer);
           return;
@@ -81,7 +81,7 @@ export class MovingController {
     setTimeout(async () => {
       const movingItems = this.getVisibleMovingItems();
       const movingCount = movingItems.length;
-      await this.moving2(movingItems, 0, this.MOVING_HEIGHT);
+      await this.moving(movingItems, 0, this.MOVING_HEIGHT);
       this.push(container, this.movingItems[0].color!, movingCount);
       this.setHidden(movingItems, true);
       if (this.stoppingInProgress) {
@@ -103,7 +103,7 @@ export class MovingController {
       const movingDownItems: MovingItem[] = this.movingItems.slice(movingToCount, movingToCount + movingDownCount);
       // down
       if (movingDownCount > 0) {
-        await this.moving2(movingDownItems, 0, this.MOVING_HEIGHT);
+        await this.moving(movingDownItems, 0, this.MOVING_HEIGHT);
         this.push(containerFrom, this.movingItems[0].color!, movingDownCount);
         this.setHidden(movingDownItems, true);
         if (this.stoppingInProgress) {
@@ -117,7 +117,7 @@ export class MovingController {
         const finishPositionTo = this.getElementPosition(element0To, parentElementRect);
         const x = finishPositionTo.x - movingToItems[0].position.x;
         const y = finishPositionTo.y - movingToItems[0].position.y;
-        await this.moving2(movingToItems, x, y);
+        await this.moving(movingToItems, x, y);
         this.push(containerTo, this.movingItems[0].color!, movingToCount);
         this.setHidden(movingToItems, true);
       }
@@ -126,6 +126,22 @@ export class MovingController {
     }, 0);
   }
 
+  moveFromTo(containerFrom: GameContainer, containerTo: GameContainer): Observable<void> {
+    return new Observable<void>(observer => {
+      const upObservable = new Observable<PlayStep | undefined>(upObserver => {
+        this.moveUp(containerFrom, upObserver);
+      });
+      upObservable.subscribe(_ => {
+        const moveToObservable = new Observable<PlayStep | undefined>(moveToObserver => {
+          this.moveTo(containerFrom, containerTo, moveToObserver);
+        });
+        moveToObservable.subscribe(_ => {
+          observer.next();
+          observer.complete();
+        });
+      });
+    });
+  }
 
   getColor(): Color | undefined {
     return this.movingItems[0].color;
@@ -155,9 +171,7 @@ export class MovingController {
   }
 
   private setPositions(movingItems: MovingItem[], position: Position[]): void {
-    for (let i = 0; i < movingItems.length; i++) {
-      movingItems[i].position = position[i];
-    }
+    movingItems.forEach((movingItem, index) => movingItem.position = position[index]);
   }
 
   private getElementPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
@@ -165,13 +179,6 @@ export class MovingController {
     const top = itemRect.top - parentRect.top - 1;
     const left = itemRect.left - parentRect.left - 1;
     return new Position(left, top);
-  }
-
-  private getMovingTopPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
-    const position = this.getElementPosition(itemElement, parentRect);
-    const itemRect = itemElement!.getBoundingClientRect();
-    position.y = position.y - itemRect.height * 1.3;
-    return position;
   }
 
   private pop(container: GameContainer, count: number) {
@@ -190,21 +197,13 @@ export class MovingController {
     movingItems.forEach(movingItem => movingItem.hidden = hidden);
   }
 
-  private async moving(movingItems: MovingItem[], positions: Position[]): Promise<void> {
-    return new Promise<void>(resolve => {
-      const moving_duration = MovingController.calculateMovingDuration2(movingItems[0].position, positions[0], this.mainService.speed);
-      movingItems.forEach(movingItem => movingItem.transitionDuration = (moving_duration / 1000) + "s");
-      setTimeout(() => movingItems.forEach((movingItem, index) => movingItem.position = positions[index], 0));
-      setTimeout(resolve, moving_duration);
-    });
-  }
-
-  private async moving2(movingItems: MovingItem[], x: number, y: number): Promise<void> {
+  private async moving(movingItems: MovingItem[], x: number, y: number): Promise<void> {
     return new Promise<void>(resolve => {
       const moving_duration = MovingController.calculateMovingDuration(x, y, this.mainService.speed);
-      movingItems.forEach(movingItem => movingItem.transitionDuration = (moving_duration / 1000) + "s");
-      setTimeout(() => movingItems.forEach(movingItem => movingItem.position =
-        new Position(movingItem.position.x + x, movingItem.position.y + y), 0));
+      movingItems.forEach(movingItem => {
+        movingItem.transitionDuration = (moving_duration / 1000) + "s";
+        movingItem.position = new Position(movingItem.position.x + x, movingItem.position.y + y);
+      });
       setTimeout(resolve, moving_duration);
     });
   }
@@ -233,10 +232,10 @@ export class MovingController {
 
   static async moving(movingItem: MovingItem, from: Position, to: Position, speed: number): Promise<void> {
     return new Promise<void>(resolve => {
-      const moving_duration1 = MovingController.calculateMovingDuration2(from, to, speed);
-      movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+      const moving_duration = MovingController.calculateMovingDuration2(from, to, speed);
+      movingItem.transitionDuration = (moving_duration / 1000) + "s";
       movingItem.position = to;
-      setTimeout(resolve, moving_duration1);
+      setTimeout(resolve, moving_duration);
     });
   }
 
