@@ -17,7 +17,8 @@ export class MovingController {
   private itemsElements: HTMLElement[] = [];
   private parentElementRect: DOMRect;
 
-  stoppingInProgress: boolean = false;
+  public movingInProgress: boolean = false;
+  public stoppingInProgress: boolean = false;
 
 
   constructor(private mainService: MainService) {

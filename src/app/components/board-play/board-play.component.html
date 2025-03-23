@@ -22,7 +22,7 @@
           <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
           <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
           <!-- <mat-divider></mat-divider> -->
-          <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingInProgress">{{"MENU.SETTINGS" |
+          <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingController.movingInProgress">{{"MENU.SETTINGS" |
             translate}}</button>
         </mat-menu>
 

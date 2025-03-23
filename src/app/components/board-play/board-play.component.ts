@@ -34,7 +34,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected containersPositions2: GameContainer[] = [];
 
   private screenResizedSubscription: Subscription | undefined = undefined;
-  private containerHTMLElements: any[] = [];
+  private containerHTMLElements: any[] = []; // To get container by coordinates
 
   protected steps: PlayStep[] = [];
 
@@ -45,7 +45,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private stepsSubjectSubscription: Subscription;
 
   protected movingController = new MovingController(this.mainService);
-  protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService, public gameService: GameService) {
     if (!this.gameService.hasGame()) {
@@ -87,13 +86,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
           if (step) {
             this.steps.push(step);
           }
-          this.movingInProgress = false;
+          this.movingController.movingInProgress = false;
           // TODO: Here we need check is container or board resolved
         },
         error: () => {
           // Interrupted by button start from scratch or step back
           this.movingController.stoppingInProgress = false;
-          this.movingInProgress = false;
+          this.movingController.movingInProgress = false;
           this.stepsSubjectSubscription.unsubscribe();
           this.createStepsSubject();
           this.stopSubject$.next();
@@ -103,7 +102,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private handleClick(container: PlayContainer): Observable<PlayStep | undefined> {
     return new Observable(observer => {
-      this.movingInProgress = true;
+      this.movingController.movingInProgress = true;
       if (this.selectedContainer) {
         if (container.index === this.selectedContainer.index) {
           // Move colors back down
@@ -142,7 +141,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected backClick() {
-    if (this.movingInProgress) {
+    if (this.movingController.movingInProgress) {
       this.movingController.stoppingInProgress = true;
       const stopSubscriber = this.stopSubject$.subscribe(() => {
         stopSubscriber.unsubscribe();
@@ -168,7 +167,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   protected restartClick() {
     // TODO: Ask confirmation
-    if (this.movingInProgress) {
+    if (this.movingController.movingInProgress) {
       this.movingController.stoppingInProgress = true;
       setTimeout(() => {
         const stopSubscriber = this.stopSubject$.subscribe(() => {
@@ -201,7 +200,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
     this.steps = [];
     this.createStepsSubject();
-    this.movingInProgress = false;
+    this.movingController.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
     this.movingController.setHidden(this.movingController.movingItems, true);
     setTimeout(() => this.onScreenResized(), 0);
@@ -210,13 +209,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected onClick(event: any) {
     const x = event.clientX;
     const y = event.clientY;
-    const container = this.getContainer(x, y);
+    const container = this.getContainerByCoordinates(x, y);
     if (container) {
       this.clicksSubject$.next(container);
     }
   }
 
-  private getContainer(x: number, y: number): PlayContainer | undefined {
+  private getContainerByCoordinates(x: number, y: number): PlayContainer | undefined {
     for (let i = 0; i < this.containerHTMLElements.length; i++) {
       const rect = this.containerHTMLElements[i].getBoundingClientRect();
       if (this.isInRect(x, y, rect)) {
@@ -238,7 +237,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected onMovingItemClick() {
-    if (this.movingInProgress) {
+    if (this.movingController.movingInProgress) {
       return;
     }
     if (this.selectedContainer) {
