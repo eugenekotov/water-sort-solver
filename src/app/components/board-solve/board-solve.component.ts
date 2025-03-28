@@ -46,7 +46,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private screenResizedSubscription: Subscription | undefined = undefined;
 
-  private itemsElements: HTMLElement[] = [];
+  // private itemsElements: HTMLElement[] = [];
   private parentMovingElementRect: DOMRect;
   stepIndex: number = 0;
   completeStepIndex: number = 0;
@@ -81,7 +81,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private onScreenResized() {
     this.movingController.getHTMLElements2(this.playContainers);
-    this.getItemsElements();
+    // this.getItemsElements();
     this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
@@ -113,15 +113,15 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  private getItemsElements() {
-    this.itemsElements = [];
-    for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
-      const container = this.playContainers[containerIndex];
-      for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex))!);
-      }
-    }
-  }
+  // private getItemsElements() {
+  //   this.itemsElements = [];
+  //   for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
+  //     const container = this.playContainers[containerIndex];
+  //     for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
+  //       this.itemsElements.push(document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex))!);
+  //     }
+  //   }
+  // }
 
   private makeStepForward() {
     const step: Step = this.mainService.solution!.steps[this.stepIndex];
@@ -143,54 +143,60 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
         return;
       }
 
+      console.log(step);
+
+      // this.movingController.moveFromTo()
+
+
+
 
       // TODO: Use moving controller
 
       // show moving item
-      this.movingItem.color = this.playContainers[step.iFrom].peek();
-      const indexFrom = getItemIndex(step.iFrom, this.playContainers[step.iFrom].size() - 1);
-      const startPosition = getMovingPosition(this.itemsElements[indexFrom], this.parentMovingElementRect);
-      this.setMovingPosition(startPosition);
-      this.playContainers[step.iFrom].pop();
-      this.movingItem.hidden = false;
-      // moving
-      setTimeout(async () => {
-        const indexTo = getItemIndex(step.iTo, this.playContainers[step.iTo].size());
-        const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
-        const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
-        const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
-        await this.moving(startPosition, topPosition);
-        await this.moving(topPosition, leftPosition);
-        await this.moving(leftPosition, finishPosition);
-        this.playContainers[step.iTo].push(this.movingItem.color!);
-        this.movingItem.hidden = true;
-        this.completeStepIndex = step.index;
-        await new Promise<void>(resolve => setTimeout(resolve, 0));
-        observer.next(step.index);
-        observer.complete();
-      }, 0);
+      // this.movingItem.color = this.playContainers[step.iFrom].peek();
+      // const indexFrom = getItemIndex(step.iFrom, this.playContainers[step.iFrom].size() - 1);
+      // const startPosition = getMovingPosition(this.itemsElements[indexFrom], this.parentMovingElementRect);
+      // this.setMovingPosition(startPosition);
+      // this.playContainers[step.iFrom].pop();
+      // this.movingItem.hidden = false;
+      // // moving
+      // setTimeout(async () => {
+      //   const indexTo = getItemIndex(step.iTo, this.playContainers[step.iTo].size());
+      //   const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
+      //   const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
+      //   const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
+      //   await this.moving(startPosition, topPosition);
+      //   await this.moving(topPosition, leftPosition);
+      //   await this.moving(leftPosition, finishPosition);
+      //   this.playContainers[step.iTo].push(this.movingItem.color!);
+      //   this.movingItem.hidden = true;
+      //   this.completeStepIndex = step.index;
+      //   await new Promise<void>(resolve => setTimeout(resolve, 0));
+      //   observer.next(step.index);
+      //   observer.complete();
+      // }, 0);
     });
   }
 
-  private async moving(from: Position, to: Position): Promise<void> {
-    return new Promise<void>(resolve => {
-      const moving_duration1 = MovingController.calculateMovingDuration(from, to, this.mainService.speed);
-      this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
-      this.setMovingPosition(to);
-      setTimeout(resolve, moving_duration1);
-    });
-  }
+  // private async moving(from: Position, to: Position): Promise<void> {
+  //   return new Promise<void>(resolve => {
+  //     const moving_duration1 = MovingController.calculateMovingDuration(from, to, this.mainService.speed);
+  //     this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
+  //     this.setMovingPosition(to);
+  //     setTimeout(resolve, moving_duration1);
+  //   });
+  // }
 
-  private getMovingTopCoordinate(containerIndex: number): number {
-    const index = getTopItemIndex(containerIndex);
-    const itemElement = this.itemsElements[index];
-    return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
-  }
+  // private getMovingTopCoordinate(containerIndex: number): number {
+  //   const index = getTopItemIndex(containerIndex);
+  //   const itemElement = this.itemsElements[index];
+  //   return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
+  // }
 
-  private setMovingPosition(position: Position) {
-    this.movingItem.top = `${position.top}px`;
-    this.movingItem.left = `${position.left}px`;
-  }
+  // private setMovingPosition(position: Position) {
+  //   this.movingItem.top = `${position.top}px`;
+  //   this.movingItem.left = `${position.left}px`;
+  // }
 
   backClick() {
     this.makeStepBackward();

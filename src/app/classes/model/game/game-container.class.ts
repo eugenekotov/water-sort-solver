@@ -14,7 +14,7 @@ export class GameContainer {
 
   public peek(): Color {
     if (this.isEmpty()) {
-      throw Error("Container is empty.");
+      console.error("Container is empty.");
     }
     return this.colors[this.colors.length - 1];
   }
@@ -25,7 +25,7 @@ export class GameContainer {
 
   public pop(): Color {
     if (this.isEmpty()) {
-      throw Error("Container is empty.");
+      console.error("Container is empty.");
     }
     return this.colors.pop()!;
   }

@@ -1,4 +1,4 @@
-import { Subscriber } from "rxjs";
+import { Observable, Observer, Subscriber } from "rxjs";
 import { ContainerComponent } from "../components/container/container.component";
 import { Color } from "./model/colors.class";
 import { PlayContainer } from "./model/play-container.class";
@@ -50,84 +50,71 @@ export class MovingController {
     this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
-  moveUp(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
-    setTimeout(() => {
-      const movingCount = container.getTopColorCount();
-      const movingItems = this.getMovingItems(movingCount);
-      this.setColor(movingItems, container.peek());
-      const elements = this.getElements(container, container.size() - 1, movingCount);
-      const startPositions = this.getBottomPositions(elements);
-      this.setPositions(movingItems, startPositions);
-      this.pop(container, movingCount);
-      this.setHidden(movingItems, false);
-      // moving
+  moveUp(container: PlayContainer, movingCount: number): Observable<void> {
+    return new Observable<void>(observer => {
+      setTimeout(() => {
+        const movingItems = this.getMovingItems(0, movingCount);
+        this.setColor(movingItems, container.peek());
+        const elements = this.getElements(container, container.size() - 1, movingCount);
+        const startPositions = this.getBottomPositions(elements);
+        this.setPositions(movingItems, startPositions);
+        this.pop(container, movingCount);
+        this.setHidden(movingItems, false);
+        // moving
+        setTimeout(async () => {
+          const topPositions = this.getTopPositions(elements);
+          await this.moving(movingItems, topPositions);
+          if (this.stoppingInProgress) {
+            this.moveDown(container, 0, movingCount).subscribe(() => {
+              observer.next();
+              observer.complete();
+              return;
+            });
+          }
+          observer.next();
+          observer.complete();
+        });
+      });
+    });
+  }
+
+  moveDown(container: PlayContainer, movingItemsIndex: number, movingCount: number): Observable<void> {
+    return new Observable<void>(observer => {
       setTimeout(async () => {
-        const topPositions = this.getTopPositions(elements);
-        await this.moving(movingItems, topPositions);
+        const movingItems = this.getMovingItems(movingItemsIndex, movingCount);
+        const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount);
+        const finishPositions = this.getBottomPositions(elements);
+        await this.moving(movingItems, finishPositions);
+        this.push(container, this.movingItems[0].color!, movingCount);
+        this.setHidden(movingItems, true);
         if (this.stoppingInProgress) {
-          this.moveDown(container, observer);
+          observer.error({ message: "Stop" });
           return;
         }
         observer.next();
         observer.complete();
-      }, 0);
-    }, 0);
+      });
+    });
   }
 
-  moveDown(container: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
-    setTimeout(async () => {
-      const movingItems = this.getVisibleMovingItems();
-      const movingCount = movingItems.length;
-      const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount);
-      const finishPositions = this.getBottomPositions(elements);
-      await this.moving(movingItems, finishPositions);
-      this.push(container, this.movingItems[0].color!, movingCount);
-      this.setHidden(movingItems, true);
-      if (this.stoppingInProgress) {
-        observer.error({ message: "Stop" });
-        return;
-      }
-      observer.next();
-      observer.complete();
-    }, 0);
+  moveTo(container: PlayContainer, movingToCount: number): Observable<void> {
+    return new Observable<void>(observer => {
+      setTimeout(async () => {
+        const movingToItems: MovingItem[] = this.getMovingItems(0, movingToCount);
+        const elements = this.getElements(container, container.size() - 1 + movingToCount, movingToCount);
+        const finishPositions = this.getBottomPositions(elements);
+        await this.moving(movingToItems, finishPositions);
+        this.push(container, this.movingItems[0].color!, movingToCount);
+        this.setHidden(movingToItems, true);
+        observer.next();
+        observer.complete();
+      });
+    });
   }
 
-  moveTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
-    setTimeout(async () => {
-      const visibleCount = this.movingItems.reduce((accumulator, movingItem) => !movingItem.hidden ? accumulator + 1 : accumulator, 0);
-      const movingToCount = Math.min(CONTAINER_SIZE - containerTo.size(), visibleCount);
-      const movingDownCount = visibleCount - movingToCount;
-      const movingToItems: MovingItem[] = [];
-      const movingDownItems: MovingItem[] = [];
-      for (let i = 0; i < visibleCount; i++) {
-        if (i < movingToCount) {
-          movingToItems.push(this.movingItems[i]);
-        } else {
-          movingDownItems.push(this.movingItems[i]);
-        }
-      }
-      // down
-      const elementsDown = this.getElements(containerFrom, containerFrom.size() - 1 + movingDownCount, movingDownCount);
-      const finishPositionsDown = this.getBottomPositions(elementsDown);
-      await this.moving(movingDownItems, finishPositionsDown);
-      this.push(containerFrom, this.movingItems[0].color!, movingDownCount);
-      this.setHidden(movingDownItems, true);
-      if (this.stoppingInProgress) {
-        observer.error({ message: "Stop" });
-        return;
-      }
-      // to
-      const elementsTo = this.getElements(containerTo, containerTo.size() - 1 + movingToCount, movingToCount);
-      const finishPositionsTo = this.getBottomPositions(elementsTo);
-      await this.moving(movingToItems, finishPositionsTo);
-      this.push(containerTo, this.movingItems[0].color!, movingToCount);
-      this.setHidden(movingToItems, true);
+  // moveFromTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
 
-      observer.next(new PlayStep(containerFrom.index, containerTo.index, movingToCount));
-      observer.complete();
-    }, 0);
-  }
-
+  // }
 
   getColor(): Color | undefined {
     return this.movingItems[0].color;
@@ -221,22 +208,12 @@ export class MovingController {
     });
   }
 
-  private getVisibleMovingItems(): MovingItem[] {
-    const result: MovingItem[] = [];
-    let i = 0;
-    while (i < this.movingItems.length && this.movingItems[i].hidden === false) {
-      result.push(this.movingItems[i]);
-      i++;
-    }
-    return result;
+  public getVisibleMovingItems(): MovingItem[] {
+    return this.movingItems.filter(item => item.hidden === false);
   }
 
-  private getMovingItems(count: number): MovingItem[] {
-    const result: MovingItem[] = [];
-    for (let i = 0; i < count; i++) {
-      result.push(this.movingItems[i]);
-    }
-    return result;
+  private getMovingItems(firstIndex: number, count: number): MovingItem[] {
+    return this.movingItems.slice(firstIndex, count);
   }
 
   static async moving(movingItem: MovingItem, from: Position, to: Position, speed: number): Promise<void> {

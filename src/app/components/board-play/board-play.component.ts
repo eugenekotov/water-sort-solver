@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
+import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
@@ -104,16 +104,34 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       if (this.selectedContainer) {
         if (container.index === this.selectedContainer.index) {
           // Move colors back down
-          this.movingController.moveDown(container, observer);
-          this.selectedContainer = undefined;
+          const movingCount = this.movingController.getVisibleMovingItems().length;
+          this.movingController.moveDown(container, 0, movingCount).subscribe(()=>{
+            this.selectedContainer = undefined;
+            observer.next();
+            observer.complete();
+          });
         } else {
-          if (container.isEmpty() || (!container.isFull() && container.peek() === this.movingController.getColor())) {
+          if (container.isEmpty() || ((!container.isFull()) && container.peek() === this.movingController.getColor())) {
             // Move colors if it is possible
-            this.movingController.moveTo(this.selectedContainer, container, observer);
+            const visibleCount = this.movingController.getVisibleMovingItems().length;
+            const movingToCount = Math.min(CONTAINER_SIZE - container.size(), visibleCount);
+            const movingDownCount = visibleCount - movingToCount;
+            const fromIndex = this.selectedContainer!.index;
+            this.movingController.moveTo(container, movingToCount).subscribe(() => {
+              this.movingController.moveDown(container, movingToCount, movingDownCount).subscribe(() => {
+                this.selectedContainer = undefined;
+                observer.next(new PlayStep(fromIndex, container.index, movingToCount));
+                observer.complete();
+              });
+            });
           } else {
-            this.movingController.moveDown(this.selectedContainer, observer);
+            const movingCount = this.movingController.getVisibleMovingItems().length;
+            this.movingController.moveDown(this.selectedContainer, 0, movingCount).subscribe(()=>{
+              this.selectedContainer = undefined;
+              observer.next();
+              observer.complete();
+            });
           }
-          this.selectedContainer = undefined;
         }
       } else {
         if (this.movingController.stoppingInProgress) {
@@ -123,8 +141,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         // No selected container
         if (!container.isEmpty()) {
           // We selected container, move colors up
-          this.movingController.moveUp(container, observer);
-          this.selectedContainer = container;
+          const movingCount = container.getTopColorCount();
+          this.movingController.moveUp(container, movingCount).subscribe(()=> {
+            this.selectedContainer = container;
+            observer.next();
+            observer.complete();
+          });
         } else {
           observer.next();
           observer.complete();
@@ -147,9 +169,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       });
     } else {
       if (this.selectedContainer) {
-        new Observable(observer => {
-          this.movingController.moveDown(this.selectedContainer!, observer);
-        }).subscribe(() => this.stepBack());
+        const movingCount = this.movingController.getVisibleMovingItems().length;
+        this.movingController.moveDown(this.selectedContainer!, 0, movingCount).subscribe(() => this.stepBack());
       } else {
         this.stepBack();
       }

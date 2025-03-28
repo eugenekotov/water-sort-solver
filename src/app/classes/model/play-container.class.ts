@@ -49,7 +49,7 @@ export class PlayContainer {
   peek(): Color {
     const size = this.size();
     if (size == 0) {
-      throw Error("Container is empty.");
+      console.error("Container is empty.");
     }
     return this.items[size - 1].color!;
   }
@@ -61,7 +61,7 @@ export class PlayContainer {
   pop(): Color {
     const size = this.size();
     if (size == 0) {
-      throw Error("Container is empty.");
+      console.error("Container is empty.");
     }
     const color = this.items[size - 1].color!;
     this.items[size - 1].color = undefined;
