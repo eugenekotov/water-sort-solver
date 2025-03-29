@@ -73,7 +73,7 @@
     </div>
   </div>
 
-  <div class="relative-container">
+  <div class="relative-container" [ngClass]="mainService.isMobile ? 'relative-container-small' : 'relative-container-large'">
 
     <!-- Duplicate for position -->
     <div class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'"

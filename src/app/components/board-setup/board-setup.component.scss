@@ -207,3 +207,18 @@
   width: 24px;
   height: 24px;
 }
+
+.relative-container {
+  justify-content: center;
+}
+
+// It needs beacuse of change container lines.
+.relative-container-small {
+  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
+  margin-bottom: 30px;
+}
+
+.relative-container-large {
+  height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
+  margin-bottom: 30px;
+}
