@@ -176,11 +176,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return result;
   }
 
-  protected getItemStyle(color: Color) {
-    return { 'background-color': color };
-  }
-
-
   protected canDrop(container: GameContainer): () => boolean {
     return () => {
       return container.colors.length < CONTAINER_SIZE;

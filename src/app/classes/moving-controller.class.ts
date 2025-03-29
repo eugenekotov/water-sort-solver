@@ -1,4 +1,4 @@
-import { concat, Observable } from "rxjs";
+import { concat, last, Observable } from "rxjs";
 import { ContainerComponent } from "../components/container/container.component";
 import { MainService } from "../services/main.service";
 import { Color } from "./model/colors.class";
@@ -50,6 +50,8 @@ export class MovingController {
         }
       }
     }
+    //
+    this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
   moveUp(container: PlayContainer, movingCount: number): Observable<void> {
@@ -179,7 +181,7 @@ export class MovingController {
   }
 
   moveFromTo(containerFrom: GameContainer, containerTo: GameContainer, movingCount: number): Observable<void> {
-    return concat(this.moveUp2(containerFrom, movingCount), this.moveTo2(containerTo, movingCount))
+    return concat(this.moveUp2(containerFrom, movingCount), this.moveTo2(containerTo, movingCount)).pipe(last());
   }
 
   getColor(): Color | undefined {

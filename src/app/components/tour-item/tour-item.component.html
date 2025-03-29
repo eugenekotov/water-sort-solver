@@ -1,4 +1,4 @@
-<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="tourService.getItemStyle()">
+<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="tourService.getTourItemStyle()">
   <div class="content-container">
     <ng-content></ng-content>
   </div>

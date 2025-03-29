@@ -3,10 +3,9 @@ import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { Color } from 'src/app/classes/model/colors.class';
 import { MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { MovingItem, Position } from 'src/app/classes/model/item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Step } from 'src/app/classes/solution-controller.class';
-import { getItemIndex, getMovingPosition, getMovingTopCoordinate, getTopItemIndex, Utils } from 'src/app/classes/utils.class';
+import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
@@ -39,7 +38,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected readonly view: TView = 'solve';
 
   playContainers: GameContainer[] = [];
-
   playContainers1: GameContainer[] = [];
   playContainers2: GameContainer[] = [];
 
@@ -48,8 +46,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private screenResizedSubscription: Subscription | undefined = undefined;
 
-  // private itemsElements: HTMLElement[] = [];
-  // private parentMovingElementRect: DOMRect;
   stepIndex: number = 0;
   completeStepIndex: number = 0;
   playing: boolean = false;
@@ -82,8 +78,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private onScreenResized() {
     this.movingController.getHTMLElements2(this.playContainers.length);
-    // this.getItemsElements();
-    // this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
   ngOnDestroy(): void {
@@ -114,16 +108,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  // private getItemsElements() {
-  //   this.itemsElements = [];
-  //   for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
-  //     const container = this.playContainers[containerIndex];
-  //     for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
-  //       this.itemsElements.push(document.getElementById(Utils.getContainerItemId(containerIndex, itemIndex))!);
-  //     }
-  //   }
-  // }
-
   private makeStepForward() {
     const step: Step = this.mainService.solution!.steps[this.stepIndex];
     this.stepIndex++;
@@ -143,71 +127,20 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
         observer.error({ message: "Stop" });
         return;
       }
-      this.movingController.moveFromTo(this.playContainers[step.iFrom], this.playContainers[step.iTo], step.count).subscribe(() => {
+      this.movingController.moveFromTo(this.playContainers[step.iFrom], this.playContainers[step.iTo], step.count).subscribe(async () => {
+        this.completeStepIndex = step.index;
+        await new Promise<void>(resolve => setTimeout(resolve, 500));
         observer.next(step.index);
         observer.complete();
       });
-
-
-      // TODO: Use moving controller
-
-      // show moving item
-      // this.movingItem.color = this.playContainers[step.iFrom].peek();
-      // const indexFrom = getItemIndex(step.iFrom, this.playContainers[step.iFrom].size() - 1);
-      // const startPosition = getMovingPosition(this.itemsElements[indexFrom], this.parentMovingElementRect);
-      // this.setMovingPosition(startPosition);
-      // this.playContainers[step.iFrom].pop();
-      // this.movingItem.hidden = false;
-      // // moving
-      // setTimeout(async () => {
-      //   const indexTo = getItemIndex(step.iTo, this.playContainers[step.iTo].size());
-      //   const finishPosition = getMovingPosition(this.itemsElements[indexTo], this.parentMovingElementRect);
-      //   const topPosition = new Position(this.getMovingTopCoordinate(step.iFrom), startPosition.left);
-      //   const leftPosition = new Position(this.getMovingTopCoordinate(step.iTo), finishPosition.left);
-      //   await this.moving(startPosition, topPosition);
-      //   await this.moving(topPosition, leftPosition);
-      //   await this.moving(leftPosition, finishPosition);
-      //   this.playContainers[step.iTo].push(this.movingItem.color!);
-      //   this.movingItem.hidden = true;
-      //   this.completeStepIndex = step.index;
-      //   await new Promise<void>(resolve => setTimeout(resolve, 0));
-      //   observer.next(step.index);
-      //   observer.complete();
-      // }, 0);
     });
   }
-
-  // private async moving(from: Position, to: Position): Promise<void> {
-  //   return new Promise<void>(resolve => {
-  //     const moving_duration1 = MovingController.calculateMovingDuration(from, to, this.mainService.speed);
-  //     this.movingItem.transitionDuration = (moving_duration1 / 1000) + "s";
-  //     this.setMovingPosition(to);
-  //     setTimeout(resolve, moving_duration1);
-  //   });
-  // }
-
-  // private getMovingTopCoordinate(containerIndex: number): number {
-  //   const index = getTopItemIndex(containerIndex);
-  //   const itemElement = this.itemsElements[index];
-  //   return getMovingTopCoordinate(itemElement, this.parentMovingElementRect);
-  // }
-
-  // private setMovingPosition(position: Position) {
-  //   this.movingItem.top = `${position.top}px`;
-  //   this.movingItem.left = `${position.left}px`;
-  // }
 
   backClick() {
     this.makeStepBackward();
   }
 
   nextClick() {
-    // TODO: temporary
-    // const containersString = JSON.stringify(this.gameService.getContainers());
-    // localStorage.setItem("temp-sorter-containersString", containersString);
-    // const solution = JSON.stringify(this.mainService.solution);
-    // localStorage.setItem("temp-sorter-solution", solution);
-    //
     this.makeStepForward();
   }
 
@@ -270,11 +203,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     result.push(Color.RED);
     result.push(Color.RED);
     return result;
-  }
-
-  // TODO: It has duplicates
-  protected getItemStyle(color: Color) {
-    return { 'background-color': color };
   }
 
 }

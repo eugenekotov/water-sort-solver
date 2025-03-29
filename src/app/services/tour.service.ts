@@ -450,7 +450,7 @@ export class TourService {
     };
   }
 
-  getItemStyle() {
+  getTourItemStyle() {
     const result: any = {};
     const item = this.getCurrentItem();
     result['top'] = item.top + 'px';

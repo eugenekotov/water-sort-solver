@@ -38,14 +38,14 @@
         </div>
       </div>
       <!--  -->
-      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 6;">
+      <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 5;">
         <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
           <div *ngFor="let container of playContainers1"
             class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
             <div *ngFor="let color of container.colors" class="item shadow"
-              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)">
+              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)">
             </div>
           </div>
 
@@ -57,7 +57,7 @@
             class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
             <div *ngFor="let color of container.colors" class="item shadow"
-              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="getItemStyle(color)">
+              [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)">
             </div>
           </div>
 

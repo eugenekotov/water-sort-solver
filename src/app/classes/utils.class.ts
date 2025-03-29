@@ -1,3 +1,4 @@
+import { Color } from "./model/colors.class";
 import { CONTAINER_SIZE } from "./model/const.class";
 import { Position } from "./model/item.class";
 
@@ -36,6 +37,10 @@ export class Utils {
 
   public static getContainerId(index: number): string {
     return "container" + index;
+  }
+
+  public static getItemStyle(color: Color) {
+    return { 'background-color': color };
   }
 
 }
