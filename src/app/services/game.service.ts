@@ -44,7 +44,7 @@ export class GameService {
     this.setupContainers.forEach(container => container.colors = []);
   }
 
-  public fromSetupContainersToContainers() {
+  public fromSetupContainersToContainers(): void {
     this.containers = this.setupContainers.map(container => {
       const newContainer = GameContainer.clone(container);
       newContainer.colors = newContainer.colors.reverse();
@@ -52,7 +52,7 @@ export class GameService {
     });
   }
 
-  public fromContainersToSetupContainers() {
+  public fromContainersToSetupContainers(): void {
     this.setupContainers = this.containers.map(container => {
       const newContainer = GameContainer.clone(container);
       newContainer.colors = newContainer.colors.reverse();

@@ -198,10 +198,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkHasGame();
   }
 
-  async pause(delay: number): Promise<void> {
-    return new Promise<void>(resolve => setTimeout(resolve, delay));
-  }
-
   saveClick() {
     // TODO: Here should be saving setup game
     this.mainService.setView("save");
