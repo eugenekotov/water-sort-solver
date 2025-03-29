@@ -6,6 +6,7 @@ import { GameContainer } from "./model/game/game-container.class";
 import { MovingItem, Position } from "./model/item.class";
 import { PlayContainer } from "./model/play-container.class";
 import { getItemIndex, getMovingPosition } from "./utils.class";
+import { CONTAINER_SIZE } from "./model/const.class";
 
 
 export class MovingController {
@@ -29,23 +30,26 @@ export class MovingController {
     for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
       const container = playContainers[containerIndex];
       for (let itemIndex = 0; itemIndex < container.items.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+        this.itemsElements.push(document.getElementById(ContainerComponent.getElementId(containerIndex, itemIndex))!);
       }
     }
     //
     this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
-  getHTMLElements2(playContainers: GameContainer[]) {
+  getHTMLElements2(containerCount: number) {
     this.itemsElements = [];
-    for (let containerIndex = 0; containerIndex < playContainers.length; containerIndex++) {
-      const container = playContainers[containerIndex];
-      for (let itemIndex = 0; itemIndex < container.colors.length; itemIndex++) {
-        this.itemsElements.push(document.getElementById(ContainerComponent.getItemId(containerIndex, itemIndex))!);
+    for (let containerIndex = 0; containerIndex < containerCount; containerIndex++) {
+      for (let itemIndex = 0; itemIndex < CONTAINER_SIZE; itemIndex++) {
+        const elementId = ContainerComponent.getElementId(containerIndex, itemIndex);
+        const element = document.getElementById(elementId);
+        if (element !== null) {
+          this.itemsElements.push(element);
+        } else {
+          throw new Error(`Cannot get HTML element with id ${elementId}`);
+        }
       }
     }
-    //
-    this.parentElementRect = document.getElementById("moving")!.parentElement!.getBoundingClientRect();
   }
 
   moveUp(container: PlayContainer, movingCount: number): Observable<void> {

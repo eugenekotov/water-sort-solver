@@ -59,7 +59,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   protected movingController = new MovingController(this.mainService);
   protected movingInProgress: boolean = false;
-  movingItem: MovingItem = new MovingItem(); // Item for moving animation
 
   constructor(public mainService: MainService, private gameService: GameService) {
     // TODO: temporary
@@ -82,7 +81,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements2(this.playContainers);
+    this.movingController.getHTMLElements2(this.playContainers.length);
     // this.getItemsElements();
     // this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }

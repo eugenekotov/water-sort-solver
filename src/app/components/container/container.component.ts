@@ -14,11 +14,11 @@ export class ContainerComponent {
 
   constructor(public mainService: MainService) { }
 
-  getItemId(containerIndex: number, itemIndex: number): string {
-    return ContainerComponent.getItemId(containerIndex, itemIndex);
+  getElementId(containerIndex: number, itemIndex: number): string {
+    return ContainerComponent.getElementId(containerIndex, itemIndex);
   }
 
-  public static getItemId(containerIndex: number, itemIndex: number): string {
+  public static getElementId(containerIndex: number, itemIndex: number): string {
     return "container" + containerIndex + "item" + itemIndex;
   }
 

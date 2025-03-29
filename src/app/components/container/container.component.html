@@ -4,6 +4,6 @@
   'container-active': showActive }">
 
   <app-item *ngFor="let item of container.items; let itemIndex = index"
-    [attr.id]="getItemId(container.index, itemIndex)" [item]="item">
+    [attr.id]="getElementId(container.index, itemIndex)" [item]="item">
   </app-item>
 </div>
