@@ -310,6 +310,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.clickSubject$.next({ clickType: "on-source", object: item });
   }
 
+  // TODO: change container background when click like on play board
   private handleClick(click: ClickEvent): Observable<void> {
     return new Observable(observer => {
       if (click.clickType === "on-source") { // click.object instanceof SourceItem
