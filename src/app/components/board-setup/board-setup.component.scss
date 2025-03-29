@@ -1,3 +1,4 @@
+@use 'src/styles/global-styles' as *;
 @use 'src/styles/variables' as *;
 @use 'sass:math';
 
@@ -84,25 +85,7 @@
   position: relative;
 }
 
-.source-container-small {
-}
-
-.source-container-large {
-}
-
-.setup-containers {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.setup-containers-small {
-  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
-  margin-bottom: 30px;
-}
-
-.setup-containers-large {
-  height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
+.relative-container {
   margin-bottom: 30px;
 }
 
