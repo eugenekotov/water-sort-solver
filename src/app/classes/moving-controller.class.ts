@@ -1,13 +1,11 @@
-import { Observable, Observer, Subscriber } from "rxjs";
+import { Observable } from "rxjs";
 import { ContainerComponent } from "../components/container/container.component";
+import { MainService } from "../services/main.service";
 import { Color } from "./model/colors.class";
+import { GameContainer } from "./model/game/game-container.class";
+import { MovingItem, Position } from "./model/item.class";
 import { PlayContainer } from "./model/play-container.class";
 import { getItemIndex, getMovingPosition } from "./utils.class";
-import { PlayStep } from "../components/board-play/board-play.component";
-import { CONTAINER_SIZE } from "./model/const.class";
-import { MovingItem, Position } from "./model/item.class";
-import { MainService } from "../services/main.service";
-import { GameContainer } from "./model/game/game-container.class";
 
 
 export class MovingController {
@@ -112,9 +110,16 @@ export class MovingController {
     });
   }
 
-  // moveFromTo(containerFrom: PlayContainer, containerTo: PlayContainer, observer: Subscriber<PlayStep | undefined>) {
-
-  // }
+  moveFromTo(containerFrom: GameContainer, containerTo: GameContainer, movingCount: number): Observable<void> {
+    return new Observable<void>(observer => {
+      console.log(containerFrom);
+      console.log(containerTo);
+      console.log(movingCount);
+      observer.next();
+      observer.complete
+    });
+    // return concat(this.moveUp(containerFrom, movingCount), )
+  }
 
   getColor(): Color | undefined {
     return this.movingItems[0].color;

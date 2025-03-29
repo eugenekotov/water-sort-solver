@@ -14,15 +14,17 @@ class PlayStep {
   index: number;
   iFrom: number;
   iTo: number;
+  count: number;
 
-  constructor(index: number, iFrom: number, iTo: number) {
+  constructor(index: number, iFrom: number, iTo: number, count: number) {
     this.index = index;
     this.iFrom = iFrom;
     this.iTo = iTo;
+    this.count = count;
   }
 
   static createPlayStep(index: number, step: Step) {
-    return new PlayStep(index, step.iFrom, step.iTo);
+    return new PlayStep(index, step.iFrom, step.iTo, 1);
   }
 }
 
@@ -47,7 +49,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   private screenResizedSubscription: Subscription | undefined = undefined;
 
   // private itemsElements: HTMLElement[] = [];
-  private parentMovingElementRect: DOMRect;
+  // private parentMovingElementRect: DOMRect;
   stepIndex: number = 0;
   completeStepIndex: number = 0;
   playing: boolean = false;
@@ -82,7 +84,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   private onScreenResized() {
     this.movingController.getHTMLElements2(this.playContainers);
     // this.getItemsElements();
-    this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
+    // this.parentMovingElementRect = document.getElementById("moving")!.parentElement!.parentElement!.getBoundingClientRect();
   }
 
   ngOnDestroy(): void {
@@ -131,7 +133,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private makeStepBackward() {
     this.stepIndex--;
-    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solution!.steps[this.stepIndex].iTo, this.mainService.solution!.steps[this.stepIndex].iFrom);
+    const step: PlayStep = new PlayStep(this.stepIndex, this.mainService.solution!.steps[this.stepIndex].iTo, this.mainService.solution!.steps[this.stepIndex].iFrom, 1);
     this.stepsSubject$.next(step);
   }
 
@@ -142,12 +144,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
         observer.error({ message: "Stop" });
         return;
       }
-
-      console.log(step);
-
-      // this.movingController.moveFromTo()
-
-
+      this.movingController.moveFromTo(this.playContainers[step.iFrom], this.playContainers[step.iTo], step.count).subscribe();
 
 
       // TODO: Use moving controller
