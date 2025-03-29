@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { concat, Observable } from "rxjs";
 import { ContainerComponent } from "../components/container/container.component";
 import { MainService } from "../services/main.service";
 import { Color } from "./model/colors.class";
@@ -53,7 +53,7 @@ export class MovingController {
       setTimeout(() => {
         const movingItems = this.getMovingItems(0, movingCount);
         this.setColor(movingItems, container.peek());
-        const elements = this.getElements(container, container.size() - 1, movingCount);
+        const elements = this.getElements(container.index, container.size() - 1, movingCount);
         const startPositions = this.getBottomPositions(elements);
         this.setPositions(movingItems, startPositions);
         this.pop(container, movingCount);
@@ -76,11 +76,40 @@ export class MovingController {
     });
   }
 
+  moveUp2(container: GameContainer, movingCount: number): Observable<void> {
+    return new Observable<void>(observer => {
+      setTimeout(() => {
+        const movingItems = this.getMovingItems(0, movingCount);
+        this.setColor(movingItems, container.peek());
+        const elements = this.getElements(container.index, container.size() - 1, movingCount);
+        const startPositions = this.getBottomPositions(elements);
+        this.setPositions(movingItems, startPositions);
+        this.pop2(container, movingCount);
+        this.setHidden(movingItems, false);
+        // moving
+        setTimeout(async () => {
+          const topPositions = this.getTopPositions(elements);
+          await this.moving(movingItems, topPositions);
+          if (this.stoppingInProgress) {
+            this.moveDown2(container, 0, movingCount).subscribe(() => {
+              observer.next();
+              observer.complete();
+              return;
+            });
+          }
+          observer.next();
+          observer.complete();
+        });
+      });
+    });
+  }
+
+
   moveDown(container: PlayContainer, movingItemsIndex: number, movingCount: number): Observable<void> {
     return new Observable<void>(observer => {
       setTimeout(async () => {
         const movingItems = this.getMovingItems(movingItemsIndex, movingCount);
-        const elements = this.getElements(container, container.size() - 1 + movingCount, movingCount);
+        const elements = this.getElements(container.index, container.size() - 1 + movingCount, movingCount);
         const finishPositions = this.getBottomPositions(elements);
         await this.moving(movingItems, finishPositions);
         this.push(container, this.movingItems[0].color!, movingCount);
@@ -95,11 +124,31 @@ export class MovingController {
     });
   }
 
+  moveDown2(container: GameContainer, movingItemsIndex: number, movingCount: number): Observable<void> {
+    return new Observable<void>(observer => {
+      setTimeout(async () => {
+        const movingItems = this.getMovingItems(movingItemsIndex, movingCount);
+        const elements = this.getElements(container.index, container.size() - 1 + movingCount, movingCount);
+        const finishPositions = this.getBottomPositions(elements);
+        await this.moving(movingItems, finishPositions);
+        this.push2(container, this.movingItems[0].color!, movingCount);
+        this.setHidden(movingItems, true);
+        if (this.stoppingInProgress) {
+          observer.error({ message: "Stop" });
+          return;
+        }
+        observer.next();
+        observer.complete();
+      });
+    });
+  }
+
+
   moveTo(container: PlayContainer, movingToCount: number): Observable<void> {
     return new Observable<void>(observer => {
       setTimeout(async () => {
         const movingToItems: MovingItem[] = this.getMovingItems(0, movingToCount);
-        const elements = this.getElements(container, container.size() - 1 + movingToCount, movingToCount);
+        const elements = this.getElements(container.index, container.size() - 1 + movingToCount, movingToCount);
         const finishPositions = this.getBottomPositions(elements);
         await this.moving(movingToItems, finishPositions);
         this.push(container, this.movingItems[0].color!, movingToCount);
@@ -110,15 +159,23 @@ export class MovingController {
     });
   }
 
-  moveFromTo(containerFrom: GameContainer, containerTo: GameContainer, movingCount: number): Observable<void> {
+  moveTo2(container: GameContainer, movingToCount: number): Observable<void> {
     return new Observable<void>(observer => {
-      console.log(containerFrom);
-      console.log(containerTo);
-      console.log(movingCount);
-      observer.next();
-      observer.complete
+      setTimeout(async () => {
+        const movingToItems: MovingItem[] = this.getMovingItems(0, movingToCount);
+        const elements = this.getElements(container.index, container.size() - 1 + movingToCount, movingToCount);
+        const finishPositions = this.getBottomPositions(elements);
+        await this.moving(movingToItems, finishPositions);
+        this.push2(container, this.movingItems[0].color!, movingToCount);
+        this.setHidden(movingToItems, true);
+        observer.next();
+        observer.complete();
+      });
     });
-    // return concat(this.moveUp(containerFrom, movingCount), )
+  }
+
+  moveFromTo(containerFrom: GameContainer, containerTo: GameContainer, movingCount: number): Observable<void> {
+    return concat(this.moveUp2(containerFrom, movingCount), this.moveTo2(containerTo, movingCount))
   }
 
   getColor(): Color | undefined {
@@ -129,10 +186,10 @@ export class MovingController {
     movingItems.forEach(movingItem => movingItem.color = color);
   }
 
-  private getElements(container: PlayContainer, first: number, count: number): HTMLElement[] {
+  private getElements(containerIndex: number, first: number, count: number): HTMLElement[] {
     const result: HTMLElement[] = [];
     for (let i = 0; i < count; i++) {
-      const index = getItemIndex(container.index, first - i);
+      const index = getItemIndex(containerIndex, first - i);
       result.push(this.itemsElements[index]);
     }
     return result;
@@ -167,11 +224,25 @@ export class MovingController {
     }
   }
 
+  private pop2(container: GameContainer, count: number) {
+    for (let i = 0; i < count; i++) {
+      container.pop();
+    }
+  }
+
+
   private push(container: PlayContainer, color: Color, count: number): void {
     for (let i = 0; i < count; i++) {
       container.push(color);
     }
   }
+
+  private push2(container: GameContainer, color: Color, count: number): void {
+    for (let i = 0; i < count; i++) {
+      container.push(color);
+    }
+  }
+
 
   setHidden(movingItems: MovingItem[], hidden: boolean) {
     movingItems.forEach(movingItem => movingItem.hidden = hidden);

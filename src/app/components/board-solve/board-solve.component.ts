@@ -144,7 +144,10 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
         observer.error({ message: "Stop" });
         return;
       }
-      this.movingController.moveFromTo(this.playContainers[step.iFrom], this.playContainers[step.iTo], step.count).subscribe();
+      this.movingController.moveFromTo(this.playContainers[step.iFrom], this.playContainers[step.iTo], step.count).subscribe(() => {
+        observer.next(step.index);
+        observer.complete();
+      });
 
 
       // TODO: Use moving controller

@@ -34,7 +34,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected containersPositions2: GameContainer[] = [];
 
   private screenResizedSubscription: Subscription | undefined = undefined;
-  private containerHTMLElements: any[] = [];
+  private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates
 
   protected steps: PlayStep[] = [];
 
@@ -231,13 +231,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected onClick(event: any) {
     const x = event.clientX;
     const y = event.clientY;
-    const container = this.getContainer(x, y);
+    const container = this.getContainerByCoordinates(x, y);
     if (container) {
       this.clicksSubject$.next(container);
     }
   }
 
-  private getContainer(x: number, y: number): PlayContainer | undefined {
+  private getContainerByCoordinates(x: number, y: number): PlayContainer | undefined {
     for (let i = 0; i < this.containerHTMLElements.length; i++) {
       const rect = this.containerHTMLElements[i].getBoundingClientRect();
       if (this.isInRect(x, y, rect)) {
@@ -254,7 +254,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private getContainerHTMLElemets() {
     this.containerHTMLElements = [];
     for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
-      this.containerHTMLElements.push(document.getElementById(Utils.getContainerId(containerIndex)));
+      const element = document.getElementById(Utils.getContainerId(containerIndex));
+      if (element !== null) {
+        this.containerHTMLElements.push(element);
+      } else {
+        console.error("Cannot find container HTMLelement.");
+      }
     }
   }
 
