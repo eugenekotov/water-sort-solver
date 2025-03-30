@@ -2,6 +2,7 @@ import { TGameView } from "src/app/services/main.service";
 import { GameContainer } from "./game/game-container.class";
 import { SourceItem } from "./source-item.class";
 import { PlayStep } from "src/app/components/board-play/board-play.component";
+import { Solution } from "./solution-set.class";
 
 export class State {
 
@@ -10,9 +11,9 @@ export class State {
     // setup
     setupSourceItems: SourceItem[];
     // solve
-    // solveContainers: GameContainer[]; // current state
-    // solution: Solution;
-    // completeStep: number;
+    solveContainers: GameContainer[]; // current state
+    solution: Solution;
+    completeStep: number;
     // play
     playContainers: GameContainer[]; // current state
     steps: PlayStep[];

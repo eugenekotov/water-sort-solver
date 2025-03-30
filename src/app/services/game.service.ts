@@ -5,6 +5,7 @@ import { GameSourceItems } from '../classes/model/game/game-source-items.class';
 import { getRandomInt } from '../classes/utils.class';
 import { TGameView } from './main.service';
 import { PlayStep } from '../components/board-play/board-play.component';
+import { State } from '../classes/model/state.class';
 
 @Injectable({
   providedIn: 'root'
@@ -12,17 +13,17 @@ import { PlayStep } from '../components/board-play/board-play.component';
 export class GameService {
 
   gameView: TGameView | undefined;
-  // setup state
+  // setup
   gameSourceItems: GameSourceItems = new GameSourceItems();
   setupContainers: GameContainer[] = []; // containers while user is setuping board
-  //
+  // play
   playContainers: GameContainer[];
   steps: PlayStep[] = [];
   //
   private containers: GameContainer[] = [];
 
   constructor() {
-    this.createEmptyGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+    this.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
   }
 
   public hasGame(): boolean {
@@ -68,12 +69,13 @@ export class GameService {
 
   public createEmptyGame(colorCount: number, containerCount: number) {
     // create sourceItems
-    this.gameSourceItems.createItems(colorCount);
+    this.gameSourceItems.createSourceItems(colorCount);
     // create containers
     this.containers = [];
     for (let i = 0; i < containerCount; i++) {
       this.containers.push(new GameContainer(i));
     }
+    this.steps = [];
     // create setupContainers
     this.setupContainers = this.getContainers();
   }
@@ -82,6 +84,7 @@ export class GameService {
     this.createEmptyGame(colorCount, containerCount);
     this.fillRandomSetup();
     this.fromSetupContainersToContainers();
+    this.playContainers = this.getContainers();
   }
 
   public getContainers(): GameContainer[] {
@@ -90,6 +93,14 @@ export class GameService {
 
   public setContainers(containers: GameContainer[]): void {
     this.containers = GameContainer.cloneContainers(containers);
+  }
+
+  public getState(): State {
+    const state = new State(this.gameView!, this.getContainers());
+    state.setupSourceItems = this.gameSourceItems.sourceItems;
+    state.playContainers = this.playContainers;
+    state.steps = this.steps;
+    return state;
   }
 
 

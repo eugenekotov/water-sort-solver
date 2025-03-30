@@ -23,9 +23,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected utils = Utils;
   protected readonly view: TGameView = 'play';
 
-  private containers: GameContainer[];
-
-  private playContainers: GameContainer[] = [];
   protected playContainers1: GameContainer[] = [];
   protected playContainers2: GameContainer[] = [];
 
@@ -48,10 +45,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   constructor(public mainService: MainService, public gameService: GameService) {
     this.gameService.gameView = this.view;
-    if (!this.gameService.hasGame()) {
-      this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
-    }
-    this.containers = this.gameService.getContainers();
     this.prepareBoard();
     this.createPositionContainers();
   }
@@ -72,7 +65,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements(this.playContainers.length);
+    this.movingController.getHTMLElements(this.gameService.playContainers.length);
     this.getContainerHTMLElemets();
   }
 
@@ -184,7 +177,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private stepBack() {
     const step = this.gameService.steps.pop();
     for (let i = 0; i < step!.count; i++) {
-      this.playContainers[step!.iFrom].push(this.playContainers[step!.iTo].pop());
+      this.gameService.playContainers[step!.iFrom].push(this.gameService.playContainers[step!.iTo].pop());
     }
   }
 
@@ -195,35 +188,32 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       setTimeout(() => {
         const stopSubscriber = this.stopSubject$.subscribe(() => {
           stopSubscriber.unsubscribe();
-          this.prepareBoard();
+          this.restart();
         });
       }, 0);
     } else {
-      this.prepareBoard();
+      this.restart();
     }
   }
 
+  private restart() {
+    this.gameService.playContainers = this.gameService.getContainers();
+    this.gameService.steps = [];
+    this.prepareBoard();
+  }
+
   private prepareBoard() {
-    this.playContainers1 = [];
-    this.playContainers2 = [];
-    const containerCount = this.containers.length;
+    const containerCount = this.gameService.playContainers.length;
     let container1Count = containerCount;
     if (containerCount > MAX_CONTAINER_COUNT_IN_LINE) {
       container1Count = Math.ceil(containerCount / 2);
     }
-    this.containers.forEach((container, index) => {
-      if (index < container1Count) {
-        this.playContainers1.push(container);
-      } else {
-        this.playContainers2.push(container);
-      }
-    });
-    this.playContainers = [...this.playContainers1, ...this.playContainers2];
-    this.gameService.steps = [];
+    this.playContainers1 = this.gameService.playContainers.slice(0, container1Count);
+    this.playContainers2 = this.gameService.playContainers.slice(container1Count, containerCount);
     this.createStepsSubject();
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
-    this.movingController.setHidden(this.movingController.movingItems, true);
+    // this.movingController.setHidden(this.movingController.movingItems, true);
     this.createPositionContainers();
     setTimeout(() => this.onScreenResized());
   }
@@ -234,6 +224,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     const container = this.getContainerByCoordinates(x, y);
     if (container) {
       this.clicksSubject$.next(container);
+    } else {
+      console.error("Cannot get container by coordinates.");
     }
   }
 
@@ -241,7 +233,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     for (let i = 0; i < this.containerHTMLElements.length; i++) {
       const rect = this.containerHTMLElements[i].getBoundingClientRect();
       if (this.isInRect(x, y, rect)) {
-        return this.playContainers[i];
+        return this.gameService.playContainers[i];
       }
     }
     return undefined;
@@ -253,7 +245,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private getContainerHTMLElemets() {
     this.containerHTMLElements = [];
-    for (let containerIndex = 0; containerIndex < this.playContainers.length; containerIndex++) {
+    for (let containerIndex = 0; containerIndex < this.gameService.playContainers.length; containerIndex++) {
       const element = document.getElementById(Utils.getContainerId(containerIndex));
       if (element !== null) {
         this.containerHTMLElements.push(element);
@@ -274,32 +266,27 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   protected playClick() {
     this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
-    this.containers = this.gameService.getContainers();
     this.prepareBoard();
   }
 
   protected createClick() {
-    this.containers = this.playContainers;
-    this.gameService.setContainers(this.containers);
+    this.gameService.setContainers(this.gameService.playContainers);
     this.gameService.fromContainersToSetupContainers();
     this.mainService.setView("setup");
   }
 
   protected saveClick() {
-    const state = new State(this.view, this.gameService.getContainers());
-    state.playContainers = this.containers;
-    state.steps = this.gameService.steps;
-    this.mainService.saveState(state);
+    this.mainService.saveState();
   }
 
   protected loadClick() {
-    // TODO: Cofirm about lost current game
+    // TODO: Confirm about lost current game
     this.mainService.setView('load');
   }
 
-    private createPositionContainers() {
-      this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
-      this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
-    }
+  private createPositionContainers() {
+    this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
+    this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
+  }
 
 }

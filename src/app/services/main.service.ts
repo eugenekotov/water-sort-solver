@@ -234,8 +234,8 @@ export class MainService {
     this.setView(previousView !== undefined ? previousView : "menu");
   }
 
-  saveState(state: State) {
-    this.state = state;
+  saveState() {
+    this.state = this.gameService.getState();
     this.setView("save");
   }
 

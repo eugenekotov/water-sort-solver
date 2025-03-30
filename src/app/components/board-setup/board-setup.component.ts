@@ -194,9 +194,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saveClick() {
     this.gameService.fromSetupContainersToContainers();
-    const state = new State(this.view, this.gameService.getContainers());
-    state.setupSourceItems = this.gameService.gameSourceItems.sourceItems;
-    this.mainService.saveState(state);
+    this.mainService.saveState();
   }
 
   loadClick() {
@@ -208,6 +206,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   playClick() {
     // TODO: Show error if board is not filled
     this.gameService.fromSetupContainersToContainers();
+    this.gameService.playContainers = this.gameService.getContainers();
     this.mainService.play();
   }
 

@@ -27,7 +27,7 @@ export class GameSourceItems {
     this.sourceItems[index].count++;
   }
 
-  public createItems(count: number) {
+  public createSourceItems(count: number) {
     const colorValues = Object.values(Color);
     this.sourceItems = [];
     for (let i = 0; i < count; i++) {
