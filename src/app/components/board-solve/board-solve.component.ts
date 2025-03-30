@@ -57,12 +57,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService, private gameService: GameService) {
-    // TODO: temporary
-    const containersString = localStorage.getItem("temp-sorter-containersString");
-    this.gameService.setContainers(JSON.parse(containersString!));
-    const solution = localStorage.getItem("temp-sorter-solution");
-    this.mainService.solution = JSON.parse(solution!);
-    //
     this.createStepsSubject();
     this.fillPlayContainers();
     this.createSetupContainerPositions();

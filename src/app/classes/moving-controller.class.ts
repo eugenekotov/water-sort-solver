@@ -57,6 +57,7 @@ export class MovingController {
   moveUp(container: PlayContainer, movingCount: number): Observable<void> {
     return new Observable<void>(observer => {
       setTimeout(() => {
+        this.parentElementRect = document.getElementById("moving-parent")!.getBoundingClientRect();
         const movingItems = this.getMovingItems(0, movingCount);
         this.setColor(movingItems, container.peek());
         const elements = this.getElements(container.index, container.size() - 1, movingCount);
@@ -85,6 +86,7 @@ export class MovingController {
   moveUp2(container: GameContainer, movingCount: number): Observable<void> {
     return new Observable<void>(observer => {
       setTimeout(() => {
+        this.parentElementRect = document.getElementById("moving-parent")!.getBoundingClientRect();
         const movingItems = this.getMovingItems(0, movingCount);
         this.setColor(movingItems, container.peek());
         const elements = this.getElements(container.index, container.size() - 1, movingCount);
