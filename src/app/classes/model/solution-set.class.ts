@@ -4,6 +4,12 @@ export class Solution {
 
   steps: Step[] = [];
 
+  static clone(solution: Solution): Solution {
+    const result = new Solution();
+    result.steps = solution.steps.map(step => Step.clone(step));
+    return result;
+  }
+
 }
 
 export class SolutionSet {

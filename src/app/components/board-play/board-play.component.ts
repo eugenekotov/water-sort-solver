@@ -34,8 +34,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates // TODO: Check it
 
-  protected completeStepIndex: number = 0;
-
   private clicksSubject$ = new Subject<GameContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
@@ -203,6 +201,16 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   private prepareBoard() {
+    this.createPlayContainers();
+    this.createStepsSubject();
+    this.movingInProgress = false;
+    this.movingController.stoppingInProgress = false;
+    // this.movingController.setHidden(this.movingController.movingItems, true);
+    this.createPositionContainers();
+    setTimeout(() => this.onScreenResized());
+  }
+
+  private createPlayContainers() {
     const containerCount = this.gameService.playContainers.length;
     let container1Count = containerCount;
     if (containerCount > MAX_CONTAINER_COUNT_IN_LINE) {
@@ -210,12 +218,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
     this.playContainers1 = this.gameService.playContainers.slice(0, container1Count);
     this.playContainers2 = this.gameService.playContainers.slice(container1Count, containerCount);
-    this.createStepsSubject();
-    this.movingInProgress = false;
-    this.movingController.stoppingInProgress = false;
-    // this.movingController.setHidden(this.movingController.movingItems, true);
-    this.createPositionContainers();
-    setTimeout(() => this.onScreenResized());
   }
 
   protected onClick(event: any) {

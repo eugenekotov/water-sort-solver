@@ -10,13 +10,13 @@ export class State {
     containers: GameContainer[]; // original containers without any steps
     // setup
     setupSourceItems: SourceItem[];
-    // solve
-    solveContainers: GameContainer[]; // current state
-    solution: Solution;
-    completeStep: number;
     // play
     playContainers: GameContainer[]; // current state
     steps: PlayStep[];
+    // solve
+    solveContainers: GameContainer[]; // current state
+    solution: Solution | undefined;
+    completeStepIndex: number;
 
     constructor(gameView: TGameView, containers: GameContainer[]) {
         this.view = gameView;

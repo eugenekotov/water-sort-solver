@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
-import { Solution } from '../classes/model/solution-set.class';
+import { State } from '../classes/model/state.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { GameService } from './game.service';
-import { State } from '../classes/model/state.class';
 
 export type TGameView = "setup" | "solve" | "play";
 export type TView = TGameView | "menu" | "in-progress" | "no-solution" | "settings" | "save" | "load";
@@ -38,7 +37,6 @@ export class MainService {
   visible: Map<TView, boolean> = new Map<TView, boolean>();
 
   solutionController: SolutionController = new SolutionController();
-  solution: Solution;
   private state: State;
 
   constructor(private translate: TranslateService, private gameService: GameService) {
@@ -102,13 +100,14 @@ export class MainService {
   }
 
   solve() {
+    this.gameService.solveContainers = this.gameService.getContainers();
     this.setView("in-progress").then(_ => {
-      this.solutionController.solve(this.gameService.getContainers()).subscribe((result: WorkerResult) => {
+      this.solutionController.solve(this.gameService.solveContainers).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
-          this.solution = result.solution!;
+          this.gameService.solution = result.solution!;
           this.setView("solve");
         } else if (result.result === EWorkerResult.BEST_SOLUTION) {
-          this.solution = result.solution!;
+          this.gameService.solution = result.solution!;
           this.setView("solve");
         } else if (result.result === EWorkerResult.NO_SOLUTION) {
           this.setView("no-solution");

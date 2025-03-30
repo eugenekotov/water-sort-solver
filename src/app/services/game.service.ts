@@ -6,6 +6,7 @@ import { getRandomInt } from '../classes/utils.class';
 import { TGameView } from './main.service';
 import { PlayStep } from '../components/board-play/board-play.component';
 import { State } from '../classes/model/state.class';
+import { Solution } from '../classes/model/solution-set.class';
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +18,12 @@ export class GameService {
   gameSourceItems: GameSourceItems = new GameSourceItems();
   setupContainers: GameContainer[] = []; // containers while user is setuping board
   // play
-  playContainers: GameContainer[];
+  playContainers: GameContainer[] = [];
   steps: PlayStep[] = [];
+  // solve
+  solveContainers: GameContainer[] = [];
+  solution: Solution | undefined;
+  completeStepIndex: number = 0;
   //
   private containers: GameContainer[] = [];
 
@@ -97,9 +102,16 @@ export class GameService {
 
   public getState(): State {
     const state = new State(this.gameView!, this.getContainers());
+    // setup
     state.setupSourceItems = this.gameSourceItems.sourceItems;
+    // play
     state.playContainers = this.playContainers;
     state.steps = this.steps;
+    // solve
+    state.solveContainers = this.solveContainers;
+    state.solution = this.solution;
+    state.completeStepIndex = this.completeStepIndex;
+    //
     return state;
   }
 

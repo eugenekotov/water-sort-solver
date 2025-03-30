@@ -18,14 +18,18 @@ export class Step {
   }
 
   public clone(): Step {
-    const step = new Step(this.iFrom, this.iTo, this.color);
-    step.notes = this.notes;
-    step.count = this.count;
-    return step;
+    return Step.clone(this);
   }
 
   public equals(step: Step) {
     return this.iFrom === step.iFrom && this.iTo === step.iTo && this.color === step.color;
+  }
+
+  public static clone(step: Step): Step {
+    const result = new Step(step.iFrom, step.iTo, step.color);
+    result.notes = step.notes;
+    result.count = step.count;
+    return result;
   }
 }
 
