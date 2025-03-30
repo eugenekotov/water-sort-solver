@@ -7,6 +7,22 @@
   justify-content: space-between;
 }
 
+.title-buttons {
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.title-buttons-small {
+  gap: 3px;
+  margin: $margin-small;
+}
+
+.title-buttons-large {
+  gap: 0.5rem;
+  margin: $margin-large;
+}
+
 .solution-text-container {
   text-align: center;
 }

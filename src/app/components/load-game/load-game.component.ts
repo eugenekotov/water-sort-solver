@@ -30,8 +30,9 @@ export class LoadGameComponent implements OnInit {
     }
     const state: State = JSON.parse(stateString);
     // recover classes
-    state.containers = state.containers.map(container => GameContainer.clone(container));
-    state.playContainers = state.playContainers.map(container => GameContainer.clone(container));
+    state.containers =  GameContainer.cloneContainers(state.containers);
+    state.playContainers = GameContainer.cloneContainers(state.playContainers);
+    state.solveContainers = GameContainer.cloneContainers(state.solveContainers);
     if (state.solution) {
       state.solution = Solution.clone(state.solution);
     }

@@ -27,6 +27,8 @@ class PlayStep {
   }
 }
 
+// TODO: solve save load BUG!
+
 @Component({
   selector: 'app-board-solve',
   templateUrl: './board-solve.component.html',
@@ -58,6 +60,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     this.createStepsSubject();
     this.createSolveContainers();
     this.createPositionContainers();
+    this.stepIndex = this.gameService.completeStepIndex;
   }
 
   ngAfterViewInit(): void {
@@ -170,6 +173,14 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   private createPositionContainers() {
     this.positionContainers1 = this.solveContainers1.map(container => Utils.createPositionContainer(container.index));
     this.positionContainers2 = this.solveContainers2.map(container => Utils.createPositionContainer(container.index));
+  }
+
+  protected saveClick() {
+    this.mainService.saveState();
+  }
+
+  protected loadClick() {
+    this.mainService.setView('load');
   }
 
 }

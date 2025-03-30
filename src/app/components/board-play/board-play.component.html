@@ -1,39 +1,36 @@
 <div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
 
+  <div class="title-container">
+    <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
+        </div>
+      </button>
 
-    <div class="title-container">
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
+        <mat-divider></mat-divider>
 
-      <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
+        <button mat-menu-item (click)="createClick()">{{"MENU.CREATE" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
+        <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
 
-        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
-          <div style="display: flex; justify-content: center; align-items: center;">
-            <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
-          </div>
-        </button>
+        <!-- <mat-divider></mat-divider> -->
+        <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
+        <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
+        <!-- <mat-divider></mat-divider> -->
+        <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingInProgress">{{"MENU.SETTINGS" |
+          translate}}</button>
+      </mat-menu>
 
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
-          <mat-divider></mat-divider>
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.setFullScreen(true)">?</button>
 
-          <button mat-menu-item (click)="createClick()">{{"MENU.CREATE" | translate}}</button>
-          <mat-divider></mat-divider>
-          <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
-          <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
-
-          <!-- <mat-divider></mat-divider> -->
-          <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
-          <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
-          <!-- <mat-divider></mat-divider> -->
-          <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingInProgress">{{"MENU.SETTINGS" |
-            translate}}</button>
-        </mat-menu>
-
-        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.setFullScreen(true)">?</button>
-
-      </div>
     </div>
+  </div>
 
 
 

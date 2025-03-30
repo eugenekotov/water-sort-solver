@@ -105,9 +105,11 @@ export class MainService {
       this.solutionController.solve(this.gameService.solveContainers).subscribe((result: WorkerResult) => {
         if (result.result === EWorkerResult.SOLUTION) {
           this.gameService.solution = result.solution!;
+          this.gameService.completeStepIndex = 0;
           this.setView("solve");
         } else if (result.result === EWorkerResult.BEST_SOLUTION) {
           this.gameService.solution = result.solution!;
+          this.gameService.completeStepIndex = 0;
           this.setView("solve");
         } else if (result.result === EWorkerResult.NO_SOLUTION) {
           this.setView("no-solution");
