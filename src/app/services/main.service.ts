@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
-import { MAX_CONTAINER_COUNT_IN_LINE, OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
-import { PlayContainer } from '../classes/model/play-container.class';
+import { OPACITY_DELAY, STORAGE_KEY } from '../classes/model/const.class';
 import { Solution } from '../classes/model/solution-set.class';
 import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solution-controller.class';
 import { GameService } from './game.service';
+import { State } from '../classes/model/state.class';
 
-export type TView = "menu" | "setup" | "in-progress" | "no-solution" | "solve" | "play" | "settings" | "save" | "load";
+export type TGameView = "setup" | "solve" | "play";
+export type TView = TGameView | "menu" | "in-progress" | "no-solution" | "settings" | "save" | "load";
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";
@@ -35,10 +36,10 @@ export class MainService {
 
   private _view: TView | undefined = undefined;
   visible: Map<TView, boolean> = new Map<TView, boolean>();
-  previousView: TView | undefined = undefined; // remember it to have oportunity to go back
 
   solutionController: SolutionController = new SolutionController();
   solution: Solution;
+  private state: State;
 
   constructor(private translate: TranslateService, private gameService: GameService) {
     // this.loadContainerCount();
@@ -52,7 +53,6 @@ export class MainService {
 
   setView(view: TView): Promise<void> {
     return new Promise<void>(resolve => {
-      this.previousView = this._view;
       this.hideView().then(() => {
         this._view = view;
         setTimeout(() => {
@@ -230,9 +230,17 @@ export class MainService {
   }
 
   goBack() {
-    const previousView = this.previousView;
-    this.previousView = undefined;
+    const previousView = this.gameService.gameView;
     this.setView(previousView !== undefined ? previousView : "menu");
+  }
+
+  saveState(state: State) {
+    this.state = state;
+    this.setView("save");
+  }
+
+  getState(): State {
+    return this.state;
   }
 
 }

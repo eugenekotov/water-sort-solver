@@ -1,21 +1,21 @@
 import { Color } from "../colors.class";
 import { CONTAINER_SIZE } from "../const.class";
-import { GameSourceItem } from "./game-source-item.class";
+import { SourceItem } from "../source-item.class";
 
 export class GameSourceItems {
 
-  items: GameSourceItem[] = [];
+  sourceItems: SourceItem[] = [];
 
-  public getAvailableSourceItems(): GameSourceItem[] {
-    return this.items.filter(item => item.count > 0);
+  public getAvailableSourceItems(): SourceItem[] {
+    return this.sourceItems.filter(item => item.count > 0);
   }
 
   public clear() {
-    this.items.forEach(item => item.count = CONTAINER_SIZE);
+    this.sourceItems.forEach(item => item.count = CONTAINER_SIZE);
   }
 
-  public getSourceItem(color: Color): GameSourceItem {
-    const items = this.items.filter(item => item.color === color);
+  public getSourceItem(color: Color): SourceItem {
+    const items = this.sourceItems.filter(item => item.color === color);
     if (items.length !== 1) {
       throw new Error("Cannot find source item by color");
     }
@@ -24,30 +24,30 @@ export class GameSourceItems {
 
   public increment(color: Color): void {
     const index = Object.values(Color).indexOf(color);
-    this.items[index].count++;
+    this.sourceItems[index].count++;
   }
 
   public createItems(count: number) {
     const colorValues = Object.values(Color);
-    this.items = [];
+    this.sourceItems = [];
     for (let i = 0; i < count; i++) {
-      this.items.push(new GameSourceItem(colorValues[i]));
+      this.sourceItems.push(new SourceItem(colorValues[i]));
     }
   }
 
   public addItems(count: number) {
     const colorValues = Object.values(Color);
-    const indexFrom = this.items.length
+    const indexFrom = this.sourceItems.length
     for (let i = indexFrom; i < indexFrom + count; i++) {
-      this.items.push(new GameSourceItem(colorValues[i]));
+      this.sourceItems.push(new SourceItem(colorValues[i]));
     }
   }
 
-  public popItem(): GameSourceItem {
-    if (this.items.length === 0) {
+  public popItem(): SourceItem {
+    if (this.sourceItems.length === 0) {
       throw new Error("Source item doesn't have color");
     }
-    return this.items.pop()!;
+    return this.sourceItems.pop()!;
   }
 
 }

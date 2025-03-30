@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { GameSourceItems } from '../classes/model/game/game-source-items.class';
-import { GameContainer } from '../classes/model/game/game-container.class';
-import { getRandomInt } from '../classes/utils.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT } from '../classes/model/const.class';
+import { GameContainer } from '../classes/model/game/game-container.class';
+import { GameSourceItems } from '../classes/model/game/game-source-items.class';
+import { getRandomInt } from '../classes/utils.class';
+import { TGameView } from './main.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
+  gameView: TGameView | undefined;
   // setup state
-  sourceItems: GameSourceItems = new GameSourceItems();
+  gameSourceItems: GameSourceItems = new GameSourceItems();
   setupContainers: GameContainer[] = []; // containers while user is setuping board
   //
   private containers: GameContainer[] = [];
@@ -24,10 +26,10 @@ export class GameService {
   }
 
   public fillRandomSetup() {
-    let availableSourceItems = this.sourceItems.getAvailableSourceItems();
+    let availableSourceItems = this.gameSourceItems.getAvailableSourceItems();
     if (availableSourceItems.length === 0) {
       this.clearSetup();
-      availableSourceItems = this.sourceItems.getAvailableSourceItems();
+      availableSourceItems = this.gameSourceItems.getAvailableSourceItems();
     }
     while (availableSourceItems.length > 0) {
       const sourceIndex = getRandomInt(0, availableSourceItems.length - 1);
@@ -35,12 +37,12 @@ export class GameService {
       const availableContainers = this.setupContainers.filter(container => container.colors.length < CONTAINER_SIZE);
       const containerIndex = getRandomInt(0, availableContainers.length - 3);
       availableContainers[containerIndex].colors.push(availableSourceItems[sourceIndex].color);
-      availableSourceItems = this.sourceItems.getAvailableSourceItems();
+      availableSourceItems = this.gameSourceItems.getAvailableSourceItems();
     }
   }
 
   public clearSetup() {
-    this.sourceItems.clear();
+    this.gameSourceItems.clear();
     this.setupContainers.forEach(container => container.colors = []);
   }
 
@@ -62,7 +64,7 @@ export class GameService {
 
   public createEmptyGame(colorCount: number, containerCount: number) {
     // create sourceItems
-    this.sourceItems.createItems(colorCount);
+    this.gameSourceItems.createItems(colorCount);
     // create containers
     this.containers = [];
     for (let i = 0; i < containerCount; i++) {

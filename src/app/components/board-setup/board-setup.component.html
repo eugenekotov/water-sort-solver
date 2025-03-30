@@ -41,7 +41,7 @@
     <div id="source-containers" class="source-containers shadow-inset"
       [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
 
-      <div *ngFor="let item of gameService.sourceItems.items" class="source-container"
+      <div *ngFor="let item of gameService.gameSourceItems.sourceItems" class="source-container"
         [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'"
         (click)="onSourceItemClick($event, item)">
 

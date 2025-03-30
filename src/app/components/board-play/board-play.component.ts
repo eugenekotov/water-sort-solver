@@ -6,7 +6,7 @@ import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
-import { MainService, TView } from 'src/app/services/main.service';
+import { MainService, TGameView, TView } from 'src/app/services/main.service';
 
 
 export class PlayStep {
@@ -21,7 +21,7 @@ export class PlayStep {
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   protected utils = Utils;
-  protected readonly view: TView = 'play';
+  protected readonly view: TGameView = 'play';
 
   private containers: GameContainer[];
 
@@ -48,6 +48,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService, public gameService: GameService) {
+    this.gameService.gameView = this.view;
     if (!this.gameService.hasGame()) {
       this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     }

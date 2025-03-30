@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GameController } from 'src/app/classes/controller/game-controller.class';
+import { STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
@@ -24,6 +25,9 @@ export class SaveGameComponent implements OnInit {
    * Використати список або картки для відображення існуючих збережень.
    * Автоматично пропонувати ім'я за шаблоном (наприклад, "Збереження 1", "Збереження 2").
    * Реалізувати валідацію введених назв (уникати спецсимволів, обмеження довжини).
+   *
+   * Зберігати повний стан гри. Стан включає: view, containers, sourceContainers, steps, solution steps.
+   *
    */
 
   protected readonly view: TView = 'save';
@@ -34,8 +38,10 @@ export class SaveGameComponent implements OnInit {
   }
 
   onSaveClick() {
-    const gameCode: String = GameController.getGameHash(this.gameService.getContainers());
-    console.log("game hex", gameCode);
+    const stateString = JSON.stringify(this.mainService.getState());
+    localStorage.setItem(STORAGE_KEY + "-state", stateString);
+    // TODO: Show popup that state saved
+    this.mainService.goBack();
   }
 
 }

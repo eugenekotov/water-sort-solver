@@ -7,7 +7,7 @@ import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Step } from 'src/app/classes/solution-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
-import { MainService, TView } from 'src/app/services/main.service';
+import { MainService, TGameView, TView } from 'src/app/services/main.service';
 
 class PlayStep {
   index: number;
@@ -35,7 +35,7 @@ class PlayStep {
 export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   protected utils = Utils;
-  protected readonly view: TView = 'solve';
+  protected readonly view: TGameView = 'solve';
 
   playContainers: GameContainer[] = [];
   playContainers1: GameContainer[] = [];
@@ -57,6 +57,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService, private gameService: GameService) {
+    this.gameService.gameView = this.view;
     this.createStepsSubject();
     this.fillPlayContainers();
     this.createSetupContainerPositions();

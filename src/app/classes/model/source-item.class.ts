@@ -1,7 +1,7 @@
-import { Color } from "../colors.class";
-import { CONTAINER_SIZE } from "../const.class";
+import { Color } from "./colors.class";
+import { CONTAINER_SIZE } from "./const.class";
 
-export class GameSourceItem {
+export class SourceItem {
   color: Color;
   count: number;
 

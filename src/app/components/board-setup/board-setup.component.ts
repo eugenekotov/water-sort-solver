@@ -4,19 +4,20 @@ import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription,
 import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { GameSourceItem } from 'src/app/classes/model/game/game-source-item.class';
+import { SourceItem } from 'src/app/classes/model/source-item.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
+import { State } from 'src/app/classes/model/state.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
-import { MainService, TView } from 'src/app/services/main.service';
+import { MainService, TGameView, TView } from 'src/app/services/main.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
 type TClick = "on-source" | "on-container";
 
 class ClickEvent {
   clickType: TClick;
-  object: GameSourceItem | GameContainer;
+  object: SourceItem | GameContainer;
 }
 
 @Component({
@@ -27,7 +28,7 @@ class ClickEvent {
 export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   protected utils = Utils;
-  protected readonly view: TView = 'setup';
+  protected readonly view: TGameView = 'setup';
 
   private clickSubject$ = new Subject<ClickEvent>();
   private clickSubjectSubscription: Subscription | undefined = undefined;
@@ -39,7 +40,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   hasGame: boolean = false;
   loadEnabled: boolean = false;
 
-  private selectedSourceItem: GameSourceItem | undefined;
+  private selectedSourceItem: SourceItem | undefined;
 
   setupContainers1: GameContainer[] = [];
   setupContainers2: GameContainer[] = [];
@@ -52,6 +53,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private parentElementRect: DOMRect;
 
   constructor(public mainService: MainService, public gameService: GameService, public tourService: TourService) {
+    this.gameService.gameView = this.view;
     this.createSetupContainers();
     this.createSetupContainerPositions();
     this.checkHasGame();
@@ -104,7 +106,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private getSourceItemElements() {
     setTimeout(() => {
       this.sourceItemElements.clear();
-      this.gameService.sourceItems.items.forEach(value => {
+      this.gameService.gameSourceItems.sourceItems.forEach(value => {
         const element = document.getElementById(value.color);
         if (element) {
           this.sourceItemElements.set(value.color, element);
@@ -165,7 +167,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return Array<number>(this.gameService.setupContainers.length).fill(0).map((_, index) => Utils.getContainerId(index)).filter(id => id !== currentId);
   }
 
-  protected getSourceItemStyle(item: GameSourceItem) {
+  protected getSourceItemStyle(item: SourceItem) {
     let result: any = { 'background-color': item.color };
 
     if (item.count > 0) {
@@ -200,7 +202,10 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   saveClick() {
     // TODO: Here should be saving setup game
-    this.mainService.setView("save");
+    this.gameService.fromSetupContainersToContainers();
+    const state = new State(this.view, this.gameService.getContainers());
+    state.setupSourceItems = this.gameService.gameSourceItems.sourceItems;
+    this.mainService.saveState(state);
     // const sourceContainersString = JSON.stringify(this.gameService.sourceItems);
     // const containersString1 = JSON.stringify(this.setupContainers1);
     // const containersString2 = JSON.stringify(this.setupContainers2);
@@ -250,7 +255,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   addContainer() {
     if (this.gameService.setupContainers.length < MAX_CONTAINER_COUNT) {
       this.stopMovingProcess();
-      this.gameService.sourceItems.addItems(1); // add sourceitem
+      this.gameService.gameSourceItems.addItems(1); // add sourceitem
       this.gameService.setupContainers.push(new GameContainer(this.gameService.setupContainers.length)); // add container
       // TODO: Save as setup container count
       // this.mainService.saveContainerCount();
@@ -271,7 +276,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private removeSourceContainer() {
-    const color = this.gameService.sourceItems.popItem().color;
+    const color = this.gameService.gameSourceItems.popItem().color;
     // remove color from setup containers
     this.gameService.setupContainers.forEach(container => {
       let i = 0;
@@ -291,7 +296,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       throw new Error("Empty container found in game");
     }
     // move colors back to source
-    container.colors.forEach(color => this.gameService.sourceItems.increment(color));
+    container.colors.forEach(color => this.gameService.gameSourceItems.increment(color));
   }
 
   private containersCountChanged() {
@@ -301,11 +306,11 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkHasGame();
   }
 
-  getSourceItemId(item: GameSourceItem): string {
+  getSourceItemId(item: SourceItem): string {
     return item.color as string;
   }
 
-  onSourceItemClick(event: any, item: GameSourceItem) {
+  onSourceItemClick(event: any, item: SourceItem) {
     event.stopPropagation();
     this.clickSubject$.next({ clickType: "on-source", object: item });
   }
@@ -314,7 +319,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private handleClick(click: ClickEvent): Observable<void> {
     return new Observable(observer => {
       if (click.clickType === "on-source") { // click.object instanceof SourceItem
-        const item: GameSourceItem = click.object as GameSourceItem;
+        const item: SourceItem = click.object as SourceItem;
         if (this.selectedSourceItem !== undefined && this.selectedSourceItem.color === item.color) {
           this.unselectSourceItem(item).then(() => this.notify(observer));
         } else {
@@ -350,7 +355,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     observer.complete();
   }
 
-  private selectSourceItem(item: GameSourceItem): Promise<void> {
+  private selectSourceItem(item: SourceItem): Promise<void> {
     return new Promise<void>(resolve => {
       setTimeout(() => {
         const element = this.sourceItemElements.get(item.color!);
@@ -373,7 +378,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  private unselectSourceItem(item: GameSourceItem): Promise<void> {
+  private unselectSourceItem(item: SourceItem): Promise<void> {
     return new Promise<void>(resolve => {
       const element = this.sourceItemElements.get(item.color!);
       if (!element) {
@@ -390,7 +395,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  private moveSourceItem(item: GameSourceItem, container: GameContainer): Promise<void> {
+  private moveSourceItem(item: SourceItem, container: GameContainer): Promise<void> {
     return new Promise<void>(resolve => {
       const positionItemHTMLElement = this.getSetupContainersItemElement(container.index, container.colors.length);
       if (!positionItemHTMLElement) {
@@ -424,7 +429,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onMovingItemClick(movingItem: MovingItem) {
-    this.clickSubject$.next({ clickType: "on-source", object: this.gameService.sourceItems.getSourceItem(movingItem.color!) });
+    this.clickSubject$.next({ clickType: "on-source", object: this.gameService.gameSourceItems.getSourceItem(movingItem.color!) });
   }
 
   private stopMovingProcess() {
