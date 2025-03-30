@@ -90,10 +90,7 @@
 }
 
 .container {
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: end;
 }
 
 .container-position {
@@ -102,13 +99,6 @@
 
 .item {
   cursor: move;
-}
-
-.moving-item {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
 }
 
 .source-item-small {

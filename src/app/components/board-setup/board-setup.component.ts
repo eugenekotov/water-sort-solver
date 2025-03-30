@@ -54,7 +54,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(public mainService: MainService, public gameService: GameService, public tourService: TourService) {
     this.gameService.gameView = this.view;
     this.createSetupContainers();
-    this.createSetupContainerPositions();
+    this.createPositionContainers();
     this.checkHasGame();
     this.createClickSubject();
   }
@@ -86,7 +86,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe();
   }
 
-  private createSetupContainerPositions() {
+  private createPositionContainers() {
     this.positionContainers1 = this.setupContainers1.map(container => Utils.createPositionContainer(container.index));
     this.positionContainers2 = this.setupContainers2.map(container => Utils.createPositionContainer(container.index));
   }
@@ -267,7 +267,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   private containersCountChanged() {
     this.getSourceItemElements();
     this.createSetupContainers();
-    this.createSetupContainerPositions();
+    this.createPositionContainers();
     this.checkHasGame();
   }
 

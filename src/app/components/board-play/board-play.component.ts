@@ -30,10 +30,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private playContainers: PlayContainer[] = [];
   protected playContainers1: PlayContainer[] = [];
   protected playContainers2: PlayContainer[] = [];
-  private selectedContainer: PlayContainer | undefined;
 
   protected positionContainers1: GameContainer[] = [];
   protected positionContainers2: GameContainer[] = [];
+
+  private selectedContainer: PlayContainer | undefined;
 
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates
@@ -54,6 +55,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
     this.containers = this.gameService.getContainers();
     this.prepareBoard();
+    this.createPositionContainers();
   }
 
   ngAfterViewInit(): void {
@@ -226,7 +228,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
     this.movingController.setHidden(this.movingController.movingItems, true);
-    setTimeout(() => this.onScreenResized(), 0);
+    this.createPositionContainers();
+    setTimeout(() => this.onScreenResized());
   }
 
   protected onClick(event: any) {
@@ -302,7 +305,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.mainService.setView('load');
   }
 
-    private createSetupContainerPositions() {
+    private createPositionContainers() {
       this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
       this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
     }

@@ -37,9 +37,9 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   protected utils = Utils;
   protected readonly view: TGameView = 'solve';
 
-  playContainers: GameContainer[] = [];
-  playContainers1: GameContainer[] = [];
-  playContainers2: GameContainer[] = [];
+  private playContainers: GameContainer[] = [];
+  protected playContainers1: GameContainer[] = [];
+  protected playContainers2: GameContainer[] = [];
 
   protected positionContainers1: GameContainer[] = [];
   protected positionContainers2: GameContainer[] = [];
@@ -60,7 +60,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     this.gameService.gameView = this.view;
     this.createStepsSubject();
     this.fillPlayContainers();
-    this.createSetupContainerPositions();
+    this.createPositionContainers();
   }
 
   ngAfterViewInit(): void {
@@ -186,7 +186,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private createSetupContainerPositions() {
+  private createPositionContainers() {
     this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
     this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
   }

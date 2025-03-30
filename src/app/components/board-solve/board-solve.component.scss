@@ -19,20 +19,6 @@
   gap: 3rem;
 }
 
-.moving-item {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 10;
-}
-
 .solution-text-container {
   text-align: center;
-}
-
-.container {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: end;
 }
