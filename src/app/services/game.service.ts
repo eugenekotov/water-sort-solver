@@ -60,7 +60,6 @@ export class GameService {
     });
   }
 
-
   public createEmptyGame(colorCount: number, containerCount: number) {
     // create sourceItems
     this.sourceItems.createItems(colorCount);
@@ -80,7 +79,7 @@ export class GameService {
   }
 
   public getContainers(): GameContainer[] {
-    return this.containers.map(container => GameContainer.clone(container));
+    return GameContainer.cloneContainers(this.containers);
   }
 
   public setContainers(containers: GameContainer[]): void {

@@ -12,7 +12,7 @@ export class GameController {
    */
   public static getGameHash(containers: GameContainer[]): string {
     let result: string = "";
-    containers = containers.map(container => GameContainer.clone(container));
+    containers = GameContainer.cloneContainers(containers);
     containers.sort(GameContainer.compare);
     containers.forEach(container => result = result + GameContainer.containerToHex(container));
     return result;
