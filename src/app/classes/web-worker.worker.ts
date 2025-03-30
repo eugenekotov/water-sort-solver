@@ -120,12 +120,9 @@ function tryToMove(solutionData: SolutionData, containers: GameContainer[], iFro
 
   // We can try to move
   containers = move(containers, iFrom, iTo);
-  // console.log("Moved one from " + iFrom + " to " + iTo);
-
 
   if (solutionData.hashes.has(GameController.getGameHash(containers))) {
     // We already tried it
-    // console.log("We already tried it!");
     return;
   }
   solutionData.steps.push(new Step(
@@ -242,7 +239,7 @@ function optimizeSolution(solution: Solution): Solution {
       }
     }
 
-    // Optimize case 1 -> 1
+    // Optimize case 1 -> 1, it is possible after previous optimizations
     i = 0;
     while (i < steps.length - 1) {
       if (steps[i].iFrom === steps[i].iTo) {
@@ -257,6 +254,21 @@ function optimizeSolution(solution: Solution): Solution {
   // console.log("Optimization 1 - " + count1);
   // console.log("Optimization 2 - " + count2);
   // console.log("Optimization 3 - " + count3);
+
+  // Group steps 1 -> 2, 1 -> 2 to 1 -> 2 (2)
+  let count4 = 0;
+  i = 0;
+  while (i < steps.length - 1) {
+    if (steps[i].iFrom === steps[i + 1].iFrom && steps[i].iTo === steps[i + 1].iTo) {
+      steps[i + 1].count = steps[i + 1].count + steps[i].count;
+      steps.splice(i, 1);
+      count4++;
+    } else {
+      i++;
+    }
+  }
+  // console.log("Grouping - " + count4);
+
   return solution;
 }
 

@@ -23,7 +23,7 @@ class PlayStep {
   }
 
   static createPlayStep(index: number, step: Step) {
-    return new PlayStep(index, step.iFrom, step.iTo, 1);
+    return new PlayStep(index, step.iFrom, step.iTo, step.count);
   }
 }
 

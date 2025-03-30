@@ -8,16 +8,19 @@ export class Step {
   iTo: number;
   color: Color;
   notes: string = "";
+  count: number;
 
   constructor(iFrom: number, iTo: number, color: Color) {
     this.iFrom = iFrom;
     this.iTo = iTo;
     this.color = color;
+    this.count = 1;
   }
 
   public clone(): Step {
     const step = new Step(this.iFrom, this.iTo, this.color);
     step.notes = this.notes;
+    step.count = this.count;
     return step;
   }
 
