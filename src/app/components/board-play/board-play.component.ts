@@ -3,6 +3,7 @@ import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
+import { State } from 'src/app/classes/model/state.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
@@ -35,8 +36,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates
-
-  protected steps: PlayStep[] = [];
 
   protected completeStepIndex: number = 0;
 
@@ -86,7 +85,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       .subscribe({
         next: (step: PlayStep | undefined) => {
           if (step) {
-            this.steps.push(step);
+            this.gameService.steps.push(step);
           }
           this.movingInProgress = false;
           // TODO: Here we need check is container or board resolved
@@ -109,7 +108,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         if (container.index === this.selectedContainer.index) {
           // Move colors back down
           const movingCount = this.movingController.getVisibleMovingItems().length;
-          this.movingController.moveDown(container, 0, movingCount).subscribe(()=>{
+          this.movingController.moveDown(container, 0, movingCount).subscribe(() => {
             this.selectedContainer = undefined;
             observer.next();
             observer.complete();
@@ -130,7 +129,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             });
           } else {
             const movingCount = this.movingController.getVisibleMovingItems().length;
-            this.movingController.moveDown(this.selectedContainer, 0, movingCount).subscribe(()=>{
+            this.movingController.moveDown(this.selectedContainer, 0, movingCount).subscribe(() => {
               this.selectedContainer = undefined;
               observer.next();
               observer.complete();
@@ -146,7 +145,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         if (!container.isEmpty()) {
           // We selected container, move colors up
           const movingCount = container.getTopColorCount();
-          this.movingController.moveUp(container, movingCount).subscribe(()=> {
+          this.movingController.moveUp(container, movingCount).subscribe(() => {
             this.selectedContainer = container;
             observer.next();
             observer.complete();
@@ -182,7 +181,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   private stepBack() {
-    const step = this.steps.pop();
+    const step = this.gameService.steps.pop();
     for (let i = 0; i < step!.count; i++) {
       this.playContainers[step!.iFrom].push(this.playContainers[step!.iTo].pop());
     }
@@ -221,7 +220,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       }
     });
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
-    this.steps = [];
+    this.gameService.steps = [];
     this.createStepsSubject();
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
@@ -288,6 +287,18 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.gameService.setContainers(this.containers);
     this.gameService.fromContainersToSetupContainers();
     this.mainService.setView("setup");
+  }
+
+  protected saveClick() {
+    const state = new State(this.view, this.gameService.getContainers());
+    state.playContainers = this.containers;
+    state.steps = this.gameService.steps;
+    this.mainService.saveState(state);
+  }
+
+  protected loadClick() {
+    // TODO: Cofirm about lost current game
+    this.mainService.setView('load');
   }
 
 }

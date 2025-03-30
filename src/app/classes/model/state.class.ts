@@ -1,6 +1,7 @@
 import { TGameView } from "src/app/services/main.service";
 import { GameContainer } from "./game/game-container.class";
 import { SourceItem } from "./source-item.class";
+import { PlayStep } from "src/app/components/board-play/board-play.component";
 
 export class State {
 
@@ -13,8 +14,8 @@ export class State {
     // solution: Solution;
     // completeStep: number;
     // play
-    // playContainers: GameContainer[]; // current state
-    // steps: PlayStep[];
+    playContainers: GameContainer[]; // current state
+    steps: PlayStep[];
 
     constructor(gameView: TGameView, containers: GameContainer[]) {
         this.view = gameView;

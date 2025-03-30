@@ -4,6 +4,7 @@ import { GameContainer } from '../classes/model/game/game-container.class';
 import { GameSourceItems } from '../classes/model/game/game-source-items.class';
 import { getRandomInt } from '../classes/utils.class';
 import { TGameView } from './main.service';
+import { PlayStep } from '../components/board-play/board-play.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,9 @@ export class GameService {
   // setup state
   gameSourceItems: GameSourceItems = new GameSourceItems();
   setupContainers: GameContainer[] = []; // containers while user is setuping board
+  //
+  playContainers: GameContainer[];
+  steps: PlayStep[] = [];
   //
   private containers: GameContainer[] = [];
 

@@ -38,7 +38,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   tour: Tour | undefined;
   hasGame: boolean = false;
-  loadEnabled: boolean = false;
 
   private selectedSourceItem: SourceItem | undefined;
 
@@ -57,7 +56,6 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.createSetupContainers();
     this.createSetupContainerPositions();
     this.checkHasGame();
-    this.checkLoadEnabled();
     this.createClickSubject();
   }
 
@@ -201,42 +199,15 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   saveClick() {
-    // TODO: Here should be saving setup game
     this.gameService.fromSetupContainersToContainers();
     const state = new State(this.view, this.gameService.getContainers());
     state.setupSourceItems = this.gameService.gameSourceItems.sourceItems;
     this.mainService.saveState(state);
-    // const sourceContainersString = JSON.stringify(this.gameService.sourceItems);
-    // const containersString1 = JSON.stringify(this.setupContainers1);
-    // const containersString2 = JSON.stringify(this.setupContainers2);
-    // localStorage.setItem(STORAGE_KEY + "-source", sourceContainersString);
-    // localStorage.setItem(STORAGE_KEY + "-containers-1", containersString1);
-    // localStorage.setItem(STORAGE_KEY + "-containers-2", containersString2);
-    // this.saveEnabled = false;
-    // this.checkLoadEnabled();
-  }
-
-  private checkLoadEnabled() {
-    const sourceContainersString = localStorage.getItem(STORAGE_KEY + "-source");
-    const containersString1 = localStorage.getItem(STORAGE_KEY + "-containers-1");
-    const containersString2 = localStorage.getItem(STORAGE_KEY + "-containers-2");
-    this.loadEnabled = (sourceContainersString !== null && containersString1 !== null && containersString2 !== null);
   }
 
   loadClick() {
-    // TODO: confirm lost current data
-    const sourceContainersString = localStorage.getItem(STORAGE_KEY + "-source");
-    const containersString1 = localStorage.getItem(STORAGE_KEY + "-containers-1");
-    const containersString2 = localStorage.getItem(STORAGE_KEY + "-containers-2");
-    if (sourceContainersString !== null && containersString1 !== null && containersString2 !== null) {
-      const sourceContainers = JSON.parse(sourceContainersString);
-      const setupContainers1 = JSON.parse(containersString1);
-      const setupContainers2 = JSON.parse(containersString2);
-      // this.mainService.containerCount = setupContainers1.length + setupContainers2.length;
-      // this.mainService.sourceItems = sourceContainers;
-      // this.mainService.setupContainers1 = setupContainers1;
-      // this.mainService.setupContainers2 = setupContainers2;
-    }
+    // TODO: Cofirm about lost current game
+    this.mainService.setView('load');
   }
 
 
