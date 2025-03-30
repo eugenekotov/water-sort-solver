@@ -16,8 +16,6 @@ import { BoardNoSolutionComponent } from './components/board-no-solution/board-n
 import { BoardPlayComponent } from './components/board-play/board-play.component';
 import { BoardSetupComponent } from './components/board-setup/board-setup.component';
 import { BoardSolveComponent } from './components/board-solve/board-solve.component';
-import { ContainerComponent } from './components/container/container.component';
-import { ItemComponent } from './components/item/item.component';
 import { MovingItemComponent } from './components/moving-item/moving-item.component';
 import { TourItemComponent } from './components/tour-item/tour-item.component';
 import { TourComponent } from './components/tour/tour.component';
@@ -38,8 +36,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     BoardSetupComponent,
     BoardSolveComponent,
-    ContainerComponent,
-    ItemComponent,
     MovingItemComponent,
     BoardInProgressComponent,
     BoardNoSolutionComponent,

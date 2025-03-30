@@ -54,7 +54,6 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   private stepsSubject$ = new Subject<PlayStep>();
 
   protected movingController = new MovingController(this.mainService);
-  protected movingInProgress: boolean = false;
 
   constructor(public mainService: MainService, private gameService: GameService) {
     this.gameService.gameView = this.view;
@@ -72,7 +71,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements2(this.playContainers.length);
+    this.movingController.getHTMLElements(this.playContainers.length);
   }
 
   ngOnDestroy(): void {

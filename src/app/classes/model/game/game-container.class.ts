@@ -168,4 +168,8 @@ export class GameContainer {
     return container.colors.every(color => color === container.colors[0]);
   }
 
+  public static getElementId(containerIndex: number, itemIndex: number): string {
+    return "container" + containerIndex + "item" + itemIndex;
+  }
+
 }

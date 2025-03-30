@@ -1,14 +1,12 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
-import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { PlayContainer } from 'src/app/classes/model/play-container.class';
 import { State } from 'src/app/classes/model/state.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
-import { MainService, TGameView, TView } from 'src/app/services/main.service';
+import { MainService, TGameView } from 'src/app/services/main.service';
 
 
 export class PlayStep {
@@ -27,21 +25,21 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private containers: GameContainer[];
 
-  private playContainers: PlayContainer[] = [];
-  protected playContainers1: PlayContainer[] = [];
-  protected playContainers2: PlayContainer[] = [];
+  private playContainers: GameContainer[] = [];
+  protected playContainers1: GameContainer[] = [];
+  protected playContainers2: GameContainer[] = [];
 
   protected positionContainers1: GameContainer[] = [];
   protected positionContainers2: GameContainer[] = [];
 
-  private selectedContainer: PlayContainer | undefined;
+  private selectedContainer: GameContainer | undefined;
 
   private screenResizedSubscription: Subscription | undefined = undefined;
-  private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates
+  private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates // TODO: Check it
 
   protected completeStepIndex: number = 0;
 
-  private clicksSubject$ = new Subject<PlayContainer>();
+  private clicksSubject$ = new Subject<GameContainer>();
   private stopSubject$ = new Subject<void>();
   private stepsSubjectSubscription: Subscription;
 
@@ -74,7 +72,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   private onScreenResized() {
-    this.movingController.getHTMLElements(this.playContainers);
+    this.movingController.getHTMLElements(this.playContainers.length);
     this.getContainerHTMLElemets();
   }
 
@@ -82,7 +80,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     if (this.stepsSubjectSubscription) {
       this.stepsSubjectSubscription.unsubscribe();
     }
-    this.clicksSubject$ = new Subject<PlayContainer>();
+    this.clicksSubject$ = new Subject<GameContainer>();
     this.stepsSubjectSubscription = this.clicksSubject$.pipe(
       concatMap(container => this.handleClick(container)))
       .subscribe({
@@ -104,7 +102,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       });
   }
 
-  private handleClick(container: PlayContainer): Observable<PlayStep | undefined> {
+  private handleClick(container: GameContainer): Observable<PlayStep | undefined> {
     return new Observable(observer => {
       this.movingInProgress = true;
       if (this.selectedContainer) {
@@ -161,7 +159,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  protected onContainerClick(event: any, container: PlayContainer) {
+  protected onContainerClick(event: any, container: GameContainer) {
     this.clicksSubject$.next(container);
     event.stopPropagation();
   }
@@ -214,12 +212,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       container1Count = Math.ceil(containerCount / 2);
     }
     this.containers.forEach((container, index) => {
-      const playCountainer: PlayContainer = new PlayContainer(index);
-      container.colors.forEach(color => playCountainer.push(color));
       if (index < container1Count) {
-        this.playContainers1.push(playCountainer);
+        this.playContainers1.push(container);
       } else {
-        this.playContainers2.push(playCountainer);
+        this.playContainers2.push(container);
       }
     });
     this.playContainers = [...this.playContainers1, ...this.playContainers2];
@@ -241,7 +237,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private getContainerByCoordinates(x: number, y: number): PlayContainer | undefined {
+  private getContainerByCoordinates(x: number, y: number): GameContainer | undefined {
     for (let i = 0; i < this.containerHTMLElements.length; i++) {
       const rect = this.containerHTMLElements[i].getBoundingClientRect();
       if (this.isInRect(x, y, rect)) {
@@ -283,11 +279,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected createClick() {
-    this.containers = this.playContainers.map(playContainer => {
-      const gameContainer = new GameContainer(playContainer.index);
-      gameContainer.colors = playContainer.items.filter(item => item.color !== undefined).map(item => item.color!);
-      return gameContainer;
-    });
+    this.containers = this.playContainers;
     this.gameService.setContainers(this.containers);
     this.gameService.fromContainersToSetupContainers();
     this.mainService.setView("setup");
