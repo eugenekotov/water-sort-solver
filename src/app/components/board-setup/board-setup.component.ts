@@ -44,8 +44,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   setupContainers1: GameContainer[] = [];
   setupContainers2: GameContainer[] = [];
 
-  setupContainerPositions1: GameContainer[] = [];
-  setupContainerPositions2: GameContainer[] = [];
+  protected positionContainers1: GameContainer[] = [];
+  protected positionContainers2: GameContainer[] = [];
 
   movingItem: MovingItem = new MovingItem();
   private sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
@@ -87,14 +87,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private createSetupContainerPositions() {
-    this.setupContainerPositions1 = this.setupContainers1.map(container => this.createSetupContainerPosition(container));
-    this.setupContainerPositions2 = this.setupContainers2.map(container => this.createSetupContainerPosition(container));
-  }
-
-  private createSetupContainerPosition(container: GameContainer): GameContainer {
-    const result = new GameContainer(container.index);
-    result.colors = Array<Color>(CONTAINER_SIZE).fill(Color.RED);
-    return result;
+    this.positionContainers1 = this.setupContainers1.map(container => Utils.createPositionContainer(container.index));
+    this.positionContainers2 = this.setupContainers2.map(container => Utils.createPositionContainer(container.index));
   }
 
   private onScreenResized() {

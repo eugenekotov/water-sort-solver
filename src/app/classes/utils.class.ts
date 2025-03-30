@@ -1,5 +1,6 @@
 import { Color } from "./model/colors.class";
 import { CONTAINER_SIZE } from "./model/const.class";
+import { GameContainer } from "./model/game/game-container.class";
 import { Position } from "./model/item.class";
 
 export function getRandomInt(min: number, max: number): number {
@@ -41,6 +42,12 @@ export class Utils {
 
   public static getItemStyle(color: Color) {
     return { 'background-color': color };
+  }
+
+  public static createPositionContainer(containerIndex: number): GameContainer {
+    const result = new GameContainer(containerIndex);
+    result.colors = Array<Color>(CONTAINER_SIZE).fill(Color.RED);
+    return result;
   }
 
 }

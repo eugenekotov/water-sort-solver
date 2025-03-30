@@ -41,8 +41,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   playContainers1: GameContainer[] = [];
   playContainers2: GameContainer[] = [];
 
-  protected containersPositions1: GameContainer[] = [];
-  protected containersPositions2: GameContainer[] = [];
+  protected positionContainers1: GameContainer[] = [];
+  protected positionContainers2: GameContainer[] = [];
 
   private screenResizedSubscription: Subscription | undefined = undefined;
 
@@ -187,17 +187,8 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
   }
 
   private createSetupContainerPositions() {
-    this.containersPositions1 = this.playContainers1.map(container => this.createSetupContainerPosition(container));
-    this.containersPositions2 = this.playContainers2.map(container => this.createSetupContainerPosition(container));
-  }
-
-  private createSetupContainerPosition(container: GameContainer): GameContainer {
-    const result = new GameContainer(container.index);
-    result.push(Color.RED);
-    result.push(Color.RED);
-    result.push(Color.RED);
-    result.push(Color.RED);
-    return result;
+    this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
+    this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
   }
 
 }

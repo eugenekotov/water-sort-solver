@@ -14,7 +14,7 @@
 
         <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
-          <div *ngFor="let container of containersPositions1" class="container"
+          <div *ngFor="let container of positionContainers1" class="container"
             [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
             <div *ngFor="let color of container.colors; let itemIndex=index"
@@ -27,7 +27,7 @@
 
         <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
-          <div *ngFor="let container of containersPositions2" class="container"
+          <div *ngFor="let container of positionContainers2" class="container"
             [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
             <div *ngFor="let color of container.colors; let itemIndex=index"

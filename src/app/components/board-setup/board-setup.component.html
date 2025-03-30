@@ -80,7 +80,7 @@
       style="position: absolute; opacity: 0; z-index: 0;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
-        <div *ngFor="let container of setupContainerPositions1" class="container container-position"
+        <div *ngFor="let container of positionContainers1" class="container container-position"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
           <div *ngFor="let color of container.colors; let itemIndex=index"
@@ -93,7 +93,7 @@
       <div *ngIf="setupContainers2.length > 0" class="containers"
         [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
-        <div *ngFor="let container of setupContainerPositions2" class="container container-position"
+        <div *ngFor="let container of positionContainers2" class="container container-position"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
           <div *ngFor="let color of container.colors; let itemIndex=index"

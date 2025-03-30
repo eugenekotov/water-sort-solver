@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
+import { Color } from 'src/app/classes/model/colors.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { PlayContainer } from 'src/app/classes/model/play-container.class';
@@ -31,8 +32,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected playContainers2: PlayContainer[] = [];
   private selectedContainer: PlayContainer | undefined;
 
-  protected containersPositions1: GameContainer[] = [];
-  protected containersPositions2: GameContainer[] = [];
+  protected positionContainers1: GameContainer[] = [];
+  protected positionContainers2: GameContainer[] = [];
 
   private screenResizedSubscription: Subscription | undefined = undefined;
   private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates
@@ -300,5 +301,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     // TODO: Cofirm about lost current game
     this.mainService.setView('load');
   }
+
+    private createSetupContainerPositions() {
+      this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
+      this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
+    }
 
 }
