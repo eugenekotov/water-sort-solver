@@ -76,8 +76,9 @@
   <div class="relative-container" [ngClass]="mainService.isMobile ? 'relative-container-small' : 'relative-container-large'">
 
     <!-- Duplicate for position -->
-    <div class="containers-2" [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'"
+    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
       style="position: absolute; opacity: 0; z-index: 0;">
+
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
         <div *ngFor="let container of positionContainers1" class="container container-position"
@@ -104,8 +105,8 @@
       </div>
     </div>
     <!--  -->
-    <div id="containers" class="containers-2"
-      [ngClass]="mainService.isMobile ? 'containers-2-small' : 'containers-2-large'" style="z-index: 6;">
+    <div id="containers" class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'" style="z-index: 6;">
+
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
         <div *ngFor="let container of setupContainers1" [id]="utils.getContainerId(container.index)" class="container"
           [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList

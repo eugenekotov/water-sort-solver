@@ -41,8 +41,8 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private selectedSourceItem: SourceItem | undefined;
 
-  setupContainers1: GameContainer[] = [];
-  setupContainers2: GameContainer[] = [];
+  protected setupContainers1: GameContainer[] = [];
+  protected setupContainers2: GameContainer[] = [];
 
   protected positionContainers1: GameContainer[] = [];
   protected positionContainers2: GameContainer[] = [];

@@ -212,3 +212,11 @@
   height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
   margin-bottom: 30px;
 }
+
+.containers-parent-small {
+  gap: 0.5rem;
+}
+
+.containers-parent-large {
+  gap: 1rem;
+}

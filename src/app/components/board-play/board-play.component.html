@@ -45,7 +45,7 @@
   <div id="moving-parent" class="relative-container" (click)="onClick($event)">
 
     <!-- Duplicate for position -->
-    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'"
+    <div  class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
       style="position: absolute; opacity: 0; z-index: 0;">
 
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
@@ -75,7 +75,7 @@
     </div>
 
     <!--  -->
-    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'">
+    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'">
 
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 

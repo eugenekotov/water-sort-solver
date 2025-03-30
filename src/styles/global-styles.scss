@@ -24,23 +24,21 @@
   gap: 10px;
 }
 
-.containers-2 {
+.containers-parent {
   display: flex;
   flex-direction: column;
 }
 
-.containers-2-small {
-  gap: 1rem 0.5rem;
-}
-
-.containers-2-large {
-  gap: 1rem 0.5rem;
-}
-
-.play-containers-parent {
+.containers-parent-small {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 2rem;
+}
+
+.containers-parent-large {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
 .container {

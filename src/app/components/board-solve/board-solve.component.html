@@ -9,7 +9,8 @@
 
   <div id="moving-parent" class="relative-container">
     <!-- Duplicate for position -->
-    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'"
+
+    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
       style="position: absolute; opacity: 0; z-index: 0;">
 
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
@@ -38,7 +39,7 @@
       </div>
     </div>
     <!--  -->
-    <div [ngClass]="mainService.isMobile ? 'play-containers-small' : 'play-containers-large'" style="z-index: 5;">
+    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'" style="z-index: 5;">
       <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
         <div *ngFor="let container of playContainers1"
