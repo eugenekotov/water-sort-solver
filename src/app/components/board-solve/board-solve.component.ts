@@ -27,8 +27,6 @@ class PlayStep {
   }
 }
 
-// TODO: solve save load BUG!
-
 @Component({
   selector: 'app-board-solve',
   templateUrl: './board-solve.component.html',
@@ -110,7 +108,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
 
   private makeStepBackward() {
     this.stepIndex--;
-    const step: PlayStep = new PlayStep(this.stepIndex, this.gameService.solution!.steps[this.stepIndex].iTo, this.gameService.solution!.steps[this.stepIndex].iFrom, 1);
+    const step: PlayStep = new PlayStep(this.stepIndex, this.gameService.solution!.steps[this.stepIndex].iTo, this.gameService.solution!.steps[this.stepIndex].iFrom, this.gameService.solution!.steps[this.stepIndex].count);
     this.stepsSubject$.next(step);
   }
 
@@ -123,7 +121,7 @@ export class BoardSolveComponent implements AfterViewInit, OnDestroy {
       }
       this.movingController.moveFromTo(this.gameService.solveContainers[step.iFrom], this.gameService.solveContainers[step.iTo], step.count).subscribe(async () => {
         this.gameService.completeStepIndex = step.index;
-        await new Promise<void>(resolve => setTimeout(resolve, 500));
+        await new Promise<void>(resolve => setTimeout(resolve, this.movingController.DELAY_BETWEEN_STEPS));
         observer.next(step.index);
         observer.complete();
       });

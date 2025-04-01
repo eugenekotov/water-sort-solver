@@ -9,6 +9,7 @@ import { CONTAINER_SIZE } from "./model/const.class";
 
 export class MovingController {
 
+  public readonly DELAY_BETWEEN_STEPS = 100;
   movingItems: MovingItem[] = []; // Items for moving animation
 
   private itemsElements: HTMLElement[] = [];
@@ -151,8 +152,7 @@ export class MovingController {
     }
   }
 
-  // TODO: Why it is public
-  setHidden(movingItems: MovingItem[], hidden: boolean) {
+  private setHidden(movingItems: MovingItem[], hidden: boolean) {
     movingItems.forEach(movingItem => movingItem.hidden = hidden);
   }
 
