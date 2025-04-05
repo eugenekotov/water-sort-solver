@@ -24,9 +24,12 @@
 
   <div style="display: flex; justify-content: center; flex-grow: 1;">
     <div class="menu-container">
-      <button *ngFor="let item of menu" class="button button-large" (click)="onClick(item)" [disabled]="itemDisabled(item)">
+      <button *ngFor="let item of menu" class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onClick(item)" [disabled]="itemDisabled(item)">
+
         {{item.title_param | translate}}
       </button>
+      <button class="button button-large" (click)="openDialog()">Show dialog</button>
     </div>
   </div>
 </div>

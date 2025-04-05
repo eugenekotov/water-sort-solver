@@ -156,7 +156,7 @@
 }
 
 .button-small {
-  border-radius: 3px;
+  border-radius: 12px;
   min-width: $button-min-width-small;
   height: $button-height-small;
   line-height: $button-height-small;
@@ -167,7 +167,7 @@
 }
 
 .button-large {
-  border-radius: 4px;
+  border-radius: 16px;
   min-width: $button-min-width-large;
   height: $button-height-large;
   line-height: $button-height-large;

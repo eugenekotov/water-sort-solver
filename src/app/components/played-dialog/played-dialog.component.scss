@@ -1,0 +1,10 @@
+@use 'src/styles/global-styles' as *;
+@use 'src/styles/variables' as *;
+
+.buttons-container {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+  }

@@ -1,0 +1,17 @@
+<div style="display: flex; flex-direction: column; justify-content: center;">
+  <div>
+    <p>played-dialog works!</p>
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: center; align-items:center; flex-wrap: nowrap;">
+    <div class="buttons-container">
+      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onPlayClick()">Play next game</button>
+      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onShareClick()">Share the game</button>
+      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onCustomizeClick()">Customize the game</button>
+      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onMainMenuClick()">Main menu</button>
+    </div>
+  </div>
+</div>

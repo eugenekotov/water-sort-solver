@@ -5,6 +5,15 @@
   flex-direction: column;
 }
 
+
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 50px;
+}
+
 .title-buttons {
   display: flex;
   justify-content: end;
@@ -16,12 +25,4 @@
 
 .title-buttons-large {
   margin: $margin-large;
-}
-
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 50px;
 }

@@ -1,10 +1,10 @@
 import { concat, last, Observable } from "rxjs";
 import { MainService } from "../services/main.service";
 import { Color } from "./model/colors.class";
+import { CONTAINER_SIZE } from "./model/const.class";
 import { GameContainer } from "./model/game/game-container.class";
 import { MovingItem, Position } from "./model/item.class";
-import { getItemIndex, getMovingPosition } from "./utils.class";
-import { CONTAINER_SIZE } from "./model/const.class";
+import { getItemIndex } from "./utils.class";
 
 
 export class MovingController {
@@ -128,10 +128,17 @@ export class MovingController {
   private getBottomPositions(elements: HTMLElement[]): Position[] {
     const result: Position[] = [];
     for (let i = 0; i < elements.length; i++) {
-      const position = getMovingPosition(elements[i], this.parentElementRect);
+      const position = this.getMovingPosition(elements[i], this.parentElementRect);
       result.push(position);
     }
     return result;
+  }
+
+  private getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
+    const itemRect = itemElement.getBoundingClientRect();
+    const top = itemRect.top - parentRect.top - 1;
+    const left = itemRect.left - parentRect.left - 1;
+    return new Position(top, left);
   }
 
   private setPositions(movingItems: MovingItem[], position: Position[]): void {
@@ -185,7 +192,7 @@ export class MovingController {
   }
 
   private getMovingItems(firstIndex: number, count: number): MovingItem[] {
-    return this.movingItems.slice(firstIndex, count);
+    return this.movingItems.slice(firstIndex, firstIndex + count);
   }
 
   static async moving(movingItem: MovingItem, from: Position, to: Position, speed: number): Promise<void> {

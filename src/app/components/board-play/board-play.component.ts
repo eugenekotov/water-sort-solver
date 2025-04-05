@@ -13,6 +13,9 @@ export class PlayStep {
   constructor(public iFrom: number, public iTo: number, public count: number) { }
 }
 
+
+// TODO: BUG!. When move 3 colors but only 1 or 2 is possible.
+
 @Component({
   selector: 'app-board-play',
   templateUrl: './board-play.component.html',
@@ -113,7 +116,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             const movingDownCount = visibleCount - movingToCount;
             const fromIndex = this.selectedContainer!.index;
             this.movingController.moveTo(container, movingToCount).subscribe(() => {
-              this.movingController.moveDown(container, movingToCount, movingDownCount).subscribe(() => {
+              this.movingController.moveDown(this.selectedContainer!, movingToCount, movingDownCount).subscribe(() => {
                 this.selectedContainer = undefined;
                 observer.next(new PlayStep(fromIndex, container.index, movingToCount));
                 observer.complete();
@@ -289,6 +292,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   private createPositionContainers() {
     this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
     this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
+  }
+
+  protected solveClick() {
+    this.mainService.solve();
   }
 
 }

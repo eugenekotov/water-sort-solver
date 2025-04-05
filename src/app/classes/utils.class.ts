@@ -17,19 +17,6 @@ export function getTopItemIndex(containerIndex: number): number {
   return containerIndex * CONTAINER_SIZE + CONTAINER_SIZE - 1;
 }
 
-export function getMovingPosition(itemElement: HTMLElement, parentRect: DOMRect): Position {
-  const itemRect = itemElement.getBoundingClientRect();
-  const top = itemRect.top - parentRect.top - 1;
-  const left = itemRect.left - parentRect.left - 1;
-  return new Position(top, left);
-}
-
-export function getMovingTopCoordinate(itemElement: HTMLElement, parentRect: DOMRect): number {
-  const itemRect = itemElement!.getBoundingClientRect();
-  const top = itemRect.top - parentRect.top - itemRect.height * 2;
-  return top;
-}
-
 export class Utils {
 
   public static getContainerItemId(containerIndex: number, itemIndex: number): string {

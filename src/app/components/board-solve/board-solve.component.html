@@ -11,12 +11,12 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
         <mat-divider></mat-divider>
+        <!-- <button mat-menu-item (click)="playClick()">{{"SETUP.PLAY" | translate}}</button> -->
+        <button mat-menu-item (click)="setupClick()">{{"SETUP_BOARD" | translate}}</button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
         <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
-        <!-- <mat-divider></mat-divider> -->
-        <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
-        <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
-        <!-- <mat-divider></mat-divider> -->
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="playing">{{"MENU.SETTINGS" |
           translate}}</button>
       </mat-menu>
@@ -107,9 +107,6 @@
         <button class="button button-small mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=gameService.solution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
         <button class="button button-small" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
       </div>
-      <div class="buttons-container buttons-container-small">
-        <button class="button button-small" (click)="setupClick()" [disabled]="playing">{{ "SETUP_BOARD" | translate }}</button>
-      </div>
     </div>
   </ng-container>
 
@@ -120,7 +117,6 @@
       <button class="button button-large" (click)="playBackClick()"  [disabled]="playing || stepIndex === 0">{{ "SOLVE.PLAY_BACK" | translate }}</button>
       <button class="button button-large mr-1" (click)="playClick()" [disabled]="playing || stepIndex>=gameService.solution!.steps.length">{{ "SOLVE.PLAY_FORWARD" | translate }}</button>
       <button class="button button-large mr-1" (click)="stopClick()" [disabled]="!playing || stopping">{{ "SOLVE.STOP" | translate }}</button>
-      <button class="button button-large" (click)="setupClick()" [disabled]="playing">{{ "SETUP_BOARD" | translate }}</button>
     </div>
   </ng-container>
 
