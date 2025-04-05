@@ -11,8 +11,6 @@ To get unique code of game:
 4. Use container index.
 
 -----------------------------------------------------------------
-
-
 check ports:
 
 netstat -a -n -o
@@ -20,7 +18,11 @@ netstat -a -n -o
   execute 
 taskkill -f /pid 19016
 
+-----------------------------------------------------------------
+Deploy
 
+ng build --configuration production --base-href /water-sort-solver/
+ngh --dir=dist/water-sort-solver 
 -----------------------------------------------------------------
 1. In Main menu add item load game
 2. In Play view add menu item save game
