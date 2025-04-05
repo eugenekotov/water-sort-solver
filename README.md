@@ -13,16 +13,21 @@ To get unique code of game:
 -----------------------------------------------------------------
 check ports:
 
-netstat -a -n -o
-  find 4200, copy PID
-  execute 
-taskkill -f /pid 19016
+netstat -a -n -o | findstr ":4200"
+taskkill -f /pid 35360
 
 -----------------------------------------------------------------
 Deploy
 
-ng build --configuration production --base-href /water-sort-solver/
-ngh --dir=dist/water-sort-solver 
+Execute commands:
+  ng build --configuration production --base-href /water-sort-solver/
+  ngh --dir=dist/water-sort-solver
+
+if ngh is not installed:
+  npx angular-cli-ghpages --dir=dist/water-sort-solver
+
+or install it:
+  npm install -g angular-cli-ghpages
 -----------------------------------------------------------------
 1. In Main menu add item load game
 2. In Play view add menu item save game

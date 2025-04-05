@@ -37,4 +37,16 @@ export class Utils {
     return result;
   }
 
+  /**
+   * @param date
+   * @returns yyyy-mm-dd
+   */
+  public static dateToStr(date: Date): string {
+    return date.toISOString().split('T')[0];
+  }
+
+  public strToDate(stringDate: string): Date {
+    return new Date(stringDate);
+  }
+
 }

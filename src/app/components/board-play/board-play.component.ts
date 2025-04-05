@@ -1,12 +1,14 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
+import { GameController } from 'src/app/classes/controller/game-controller.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TGameView } from 'src/app/services/main.service';
+import { StatisticsService } from 'src/app/services/statistics.service';
 import { PlayedDialogComponent, PlayedDialogResult } from '../played-dialog/played-dialog.component';
 
 
@@ -42,7 +44,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingController = new MovingController(this.mainService);
   protected movingInProgress: boolean = false;
 
-  constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog) {
+  constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog, private statisticsService: StatisticsService) {
     this.gameService.gameView = this.view;
     this.prepareBoard();
     this.createPositionContainers();
@@ -295,22 +297,32 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private checkGameFinished() {
     if (GameContainer.isResolvedContainers(this.gameService.playContainers)) {
-      const config: MatDialogConfig = {
-        data: { text: "This is text." },
-        width: '300px',
-        // height: '400px',
-        disableClose: true,
-      };
-
-      const dialogRef = this.dialog.open(PlayedDialogComponent, config);
-
-      dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
-        if (result?.view === 'play') {
-          this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
-          this.prepareBoard();
-        }
-      });
+      this.updateStatistics();
+      this.showPlayedDialog();
     }
+  }
+
+  private updateStatistics() {
+    const hash = GameController.getGameHash(this.gameService.getContainers());
+    this.statisticsService.add(hash, this.gameService.steps.length);
+    this.statisticsService.save();
+  }
+
+  private showPlayedDialog() {
+    const config: MatDialogConfig = {
+      data: { text: "This is text." },
+      width: '300px',
+      disableClose: true,
+    };
+
+    const dialogRef = this.dialog.open(PlayedDialogComponent, config);
+
+    dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
+      if (result?.view === 'play') {
+        this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+        this.prepareBoard();
+      }
+    });
   }
 
 
