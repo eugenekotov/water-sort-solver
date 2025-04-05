@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAX_CONTAINER_COUNT } from 'src/app/classes/model/const.class';
+import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 
 export interface PlayedDialogData {
@@ -20,7 +22,10 @@ export class PlayedDialogComponent implements OnInit {
 
   protected text: string;
 
-  constructor(public mainService: MainService, public dialogRef: MatDialogRef<PlayedDialogComponent, PlayedDialogResult>, @Inject(MAT_DIALOG_DATA) public data: PlayedDialogData) {
+  constructor(public mainService: MainService, public gameService: GameService,
+    public dialogRef: MatDialogRef<PlayedDialogComponent, PlayedDialogResult>,
+    @Inject(MAT_DIALOG_DATA) public data: PlayedDialogData)
+  {
     this.text = data.text;
   }
 
@@ -36,12 +41,15 @@ export class PlayedDialogComponent implements OnInit {
   }
 
   protected onCustomizeClick() {
-    this.dialogRef.close({ view: 'setup' });
+    this.mainService.setView('setup');
+    this.dialogRef.close();
+
   }
 
 
   protected onMainMenuClick() {
-    this.dialogRef.close({ view: 'menu' });
+    this.mainService.setView('menu');
+    this.dialogRef.close();
   }
 
 }

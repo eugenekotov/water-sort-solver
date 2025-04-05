@@ -27,11 +27,13 @@ export class GameContainer {
     if (this.isEmpty()) {
       console.error("Container is empty.");
     }
+    this.resolved = false;
     return this.colors.pop()!;
   }
 
   public push(color: Color): void {
     this.colors.push(color);
+    this.checkResolved();
   }
 
   public isEmpty(): boolean {
@@ -55,6 +57,16 @@ export class GameContainer {
     }
     return result
   }
+
+  public checkResolved(): boolean {
+    return GameContainer.checkResolved(this);
+  }
+
+  public clear(): void {
+    this.colors = [];
+    this.resolved = false;
+  }
+
 
   public static equal(container1: GameContainer, container2: GameContainer): boolean {
     if (container1.colors.length !== container2.colors.length) {
@@ -96,6 +108,11 @@ export class GameContainer {
     return containers.map(container => GameContainer.clone(container));
   }
 
+  public static checkResolvedContainers(containers: GameContainer[]): void {
+    return containers.forEach(container => container.checkResolved());
+  }
+
+
   public static isResolvedContainers(containers: GameContainer[]): boolean {
     return containers.every(container => container.colors.length === 0 || container.resolved);
   }
@@ -113,8 +130,9 @@ export class GameContainer {
     return result;
   }
 
-  static checkRsolved(container: GameContainer) {
+  static checkResolved(container: GameContainer): boolean {
     container.resolved = GameContainer.isFull(container) && GameContainer.hasOnlyOneColor(container);
+    return container.resolved;
   }
 
   static size(container: GameContainer): number {
@@ -135,7 +153,7 @@ export class GameContainer {
 
   static push(container: GameContainer, color: Color): void {
     container.colors.push(color);
-    GameContainer.checkRsolved(container);
+    GameContainer.checkResolved(container);
   }
 
   static pop(container: GameContainer): Color {

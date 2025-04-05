@@ -46,14 +46,14 @@ export class GameService {
       availableSourceItems[sourceIndex].count--;
       const availableContainers = this.setupContainers.filter(container => container.colors.length < CONTAINER_SIZE);
       const containerIndex = getRandomInt(0, availableContainers.length - 3);
-      availableContainers[containerIndex].colors.push(availableSourceItems[sourceIndex].color);
+      availableContainers[containerIndex].push(availableSourceItems[sourceIndex].color);
       availableSourceItems = this.gameSourceItems.getAvailableSourceItems();
     }
   }
 
   public clearSetup() {
     this.gameSourceItems.clear();
-    this.setupContainers.forEach(container => container.colors = []);
+    this.setupContainers.forEach(container => container.clear());
   }
 
   public fromSetupContainersToContainers(): void {

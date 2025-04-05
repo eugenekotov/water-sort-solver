@@ -1,11 +1,15 @@
-<div style="display: flex; flex-direction: column; justify-content: center;">
-  <div>
-    <p>played-dialog works!</p>
+<div style="display: flex; flex-direction: column; gap: 30px; user-select: none;">
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <div style="font-size: 24px; font-weight: 700; margin-bottom: 30px;">Congradulations!</div>
+    <div style="display: flex; flex-direction: column; justify-content: center;">
+      <div>Statistic</div>
+    </div>
   </div>
   <div style="display: flex; flex-direction: column; justify-content: center; align-items:center; flex-wrap: nowrap;">
     <div class="buttons-container">
-      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+      <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" style="margin-bottom: 30px;"
         (click)="onPlayClick()">Play next game</button>
+
       <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
         (click)="onShareClick()">Share the game</button>
       <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"

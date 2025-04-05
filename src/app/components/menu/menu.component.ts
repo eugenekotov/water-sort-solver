@@ -29,7 +29,9 @@ export class MenuComponent {
     { title_param: "MENU.SETTINGS", view: "settings", disabled: false }
   ];
 
-  constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog) { }
+  constructor(public mainService: MainService, public gameService: GameService) {
+    this.gameService.gameView = undefined;
+  }
 
   protected onClick(item: MenuItem) {
     this.mainService.setView(item.view);
@@ -37,26 +39,6 @@ export class MenuComponent {
 
   protected itemDisabled(item: MenuItem) {
     return typeof item.disabled === 'function' ? item.disabled() : item.disabled;
-  }
-
-  protected openDialog(): void {
-
-    const config: MatDialogConfig = {
-      data: {text: "This is text." },
-      width: '400px',
-      height: '300px',
-      disableClose: true,
-    };
-
-    const dialogRef = this.dialog.open(PlayedDialogComponent, config);
-
-    dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
-      console.log('The dialog was closed', result);
-      if (result.view === 'play') {
-        this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
-      }
-      this.mainService.setView(result.view);
-    });
   }
 
 }

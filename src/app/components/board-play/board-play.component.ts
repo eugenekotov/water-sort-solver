@@ -1,20 +1,18 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { concatMap, Observable, Subject, Subscription } from 'rxjs';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { State } from 'src/app/classes/model/state.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TGameView } from 'src/app/services/main.service';
+import { PlayedDialogComponent, PlayedDialogResult } from '../played-dialog/played-dialog.component';
 
 
 export class PlayStep {
   constructor(public iFrom: number, public iTo: number, public count: number) { }
 }
-
-
-// TODO: BUG!. When move 3 colors but only 1 or 2 is possible.
 
 @Component({
   selector: 'app-board-play',
@@ -44,7 +42,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingController = new MovingController(this.mainService);
   protected movingInProgress: boolean = false;
 
-  constructor(public mainService: MainService, public gameService: GameService) {
+  constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog) {
     this.gameService.gameView = this.view;
     this.prepareBoard();
     this.createPositionContainers();
@@ -83,7 +81,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             this.gameService.steps.push(step);
           }
           this.movingInProgress = false;
-          // TODO: Here we need check is container or board resolved
+          this.checkGameFinished();
         },
         error: () => {
           // Interrupted by button start from scratch or step back
@@ -208,7 +206,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     this.createStepsSubject();
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;
-    // this.movingController.setHidden(this.movingController.movingItems, true);
     this.createPositionContainers();
     setTimeout(() => this.onScreenResized());
   }
@@ -229,8 +226,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     const container = this.getContainerByCoordinates(x, y);
     if (container) {
       this.clicksSubject$.next(container);
-    } else {
-      console.error("Cannot get container by coordinates.");
     }
   }
 
@@ -297,5 +292,26 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected solveClick() {
     this.mainService.solve();
   }
+
+  private checkGameFinished() {
+    if (GameContainer.isResolvedContainers(this.gameService.playContainers)) {
+      const config: MatDialogConfig = {
+        data: { text: "This is text." },
+        width: '300px',
+        // height: '400px',
+        disableClose: true,
+      };
+
+      const dialogRef = this.dialog.open(PlayedDialogComponent, config);
+
+      dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
+        if (result?.view === 'play') {
+          this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+          this.prepareBoard();
+        }
+      });
+    }
+  }
+
 
 }

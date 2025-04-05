@@ -131,6 +131,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       this.checkHasGame();
     }
+    GameContainer.checkResolvedContainers(this.gameService.setupContainers);
   }
 
   private checkHasGame() {
@@ -363,6 +364,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     return new Promise<void>(resolve => {
       const positionItemHTMLElement = this.getSetupContainersItemElement(container.index, container.colors.length);
       if (!positionItemHTMLElement) {
+        console.error("Cannot get container element.");
         resolve();
         return;
       }
@@ -372,6 +374,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
         this.selectedSourceItem = undefined;
         item.count--;
         container.colors.unshift(this.movingItem.color!);
+        container.checkResolved();
         this.checkHasGame();
         resolve();
       });
