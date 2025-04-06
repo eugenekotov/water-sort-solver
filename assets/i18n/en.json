@@ -2,14 +2,19 @@
   "MENU": {
     "MAIN": "Main menu",
     "PLAY": "Play",
-    "CREATE": "Create custom game",
+    "PLAY_NEXT": "Solve next puzzle",
+    "PLAY_AGAIN": "Try again this puzzle",
+    "CREATE": "Create custom puzzle",
     "SOLVE": "Solve",
     "SETTINGS": "Settings",
     "SAVE": "Save game",
-    "LOAD": "Load game"
+    "LOAD": "Load game",
+    "STAT": "Achievements",
+    "SHARE": "Share the puzzle"
   },
   "SETUP": {
-    "TITLE_1": "Create your custom game board",
+    "TITLE_1": "Custom puzzle",
+    "SOLVED": "You solved it in {{stepCount}} steps",
     "CLEAR": "Clear",
     "FILL_RANDOM": "Fill randomly",
     "SOLVE": "Solve",
@@ -41,7 +46,8 @@
   },
   "PLAY": {
     "PLAY": "Play new game",
-    "RESTART": "Restart"
+    "RESTART": "Restart",
+    "BEST_STEPS": "Your best for this puzzle: {{ bestSteps }} steps"
   },
   "SAVE": {
     "TITLE": "Save game",
@@ -50,6 +56,12 @@
   "LOAD": {
     "TITLE": "Load game",
     "LOAD": "Load"
+  },
+  "PLAYED": {
+    "CONGRATS": "Congratulations!",
+    "STEP_COUNT": "You solved the puzzle in {{ stepCount }} steps",
+    "STEPS_BETTER": "it is beter then previous result in {{ previousStepCount }} steps",
+    "SOLVED": "You already solved {{ gameCount }} puzzles!"
   }
 
 }
