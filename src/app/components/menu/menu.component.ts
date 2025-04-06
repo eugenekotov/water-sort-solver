@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
-import { MainService, TView } from 'src/app/services/main.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { PlayedDialogComponent, PlayedDialogResult } from '../played-dialog/played-dialog.component';
-import { MAX_CONTAINER_COUNT } from 'src/app/classes/model/const.class';
 import { GameService } from 'src/app/services/game.service';
+import { MainService, TView } from 'src/app/services/main.service';
 
 class MenuItem {
-  title_param: string;
+  title: string;
   view: TView;
   disabled: boolean | (() => boolean);
 }
@@ -21,12 +18,11 @@ export class MenuComponent {
   protected readonly view: TView = 'menu';
 
   menu: MenuItem[] = [
-    { title_param: "MENU.PLAY", view: "play", disabled: false },
-    { title_param: "MENU.CREATE", view: "setup", disabled: false },
-    // { title_param: "MENU.SOLVE", view: "solve", disabled: false },
-    // { title_param: "MENU.SAVE", view: "save", disabled: false },
-    { title_param: "MENU.LOAD", view: "load", disabled: false },
-    { title_param: "MENU.SETTINGS", view: "settings", disabled: false }
+    { title: "MENU.PLAY", view: "play", disabled: false },
+    { title: "MENU.CREATE", view: "setup", disabled: false },
+    { title: "MENU.STAT", view: "stat", disabled: false },
+    { title: "MENU.LOAD", view: "load", disabled: false },
+    { title: "MENU.SETTINGS", view: "settings", disabled: false }
   ];
 
   constructor(public mainService: MainService, public gameService: GameService) {

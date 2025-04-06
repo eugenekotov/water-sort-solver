@@ -9,7 +9,7 @@ import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TGameView } from 'src/app/services/main.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
-import { PlayedDialogComponent, PlayedDialogResult } from '../played-dialog/played-dialog.component';
+import { PlayedDialogComponent, PlayedDialogData, PlayedDialogResult } from '../played-dialog/played-dialog.component';
 
 
 export class PlayStep {
@@ -44,8 +44,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   protected movingController = new MovingController(this.mainService);
   protected movingInProgress: boolean = false;
 
+  protected previousStepCount: number = 0;
+
   constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog, private statisticsService: StatisticsService) {
     this.gameService.gameView = this.view;
+    const hash = GameController.getGameHash(this.gameService.getContainers());
+    this.previousStepCount = this.statisticsService.getStepCount(hash);
     this.prepareBoard();
     this.createPositionContainers();
   }
@@ -55,6 +59,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
       setTimeout(() => this.onScreenResized(), 500);
     });
     this.onScreenResized();
+    // Check if it is resolved
+    setTimeout(() => {
+      this.checkGameFinished();
+    }, 500);
   }
 
   ngOnDestroy(): void {
@@ -297,21 +305,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private checkGameFinished() {
     if (GameContainer.isResolvedContainers(this.gameService.playContainers)) {
-      this.updateStatistics();
       this.showPlayedDialog();
     }
   }
 
-  private updateStatistics() {
-    const hash = GameController.getGameHash(this.gameService.getContainers());
-    this.statisticsService.add(hash, this.gameService.steps.length);
-    this.statisticsService.save();
-  }
-
   private showPlayedDialog() {
-    const config: MatDialogConfig = {
-      data: { text: "This is text." },
-      width: '300px',
+    const config: MatDialogConfig<PlayedDialogData> = {
+      data: { stepCount: this.gameService.steps.length },
       disableClose: true,
     };
 

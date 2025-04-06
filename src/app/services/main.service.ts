@@ -7,7 +7,7 @@ import { EWorkerResult, SolutionController, WorkerResult } from '../classes/solu
 import { GameService } from './game.service';
 
 export type TGameView = "setup" | "solve" | "play";
-export type TView = TGameView | "menu" | "in-progress" | "no-solution" | "settings" | "save" | "load";
+export type TView = TGameView | "menu" | "in-progress" | "no-solution" | "settings" | "save" | "load" | "stat";
 export type TLang = "en" | "uk";
 
 type TTheme = "light-theme" | "dark-theme";

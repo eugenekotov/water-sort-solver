@@ -37,6 +37,8 @@
 
   <div class="solution-text-container"
     [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
+
+    <div *ngIf="previousStepCount > 0">Ваш найкращий результат для цього пазлу {{previousStepCount}} кроків</div>
     <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
   </div>
 

@@ -208,6 +208,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     // TODO: Show error if board is not filled
     this.gameService.fromSetupContainersToContainers();
     this.gameService.playContainers = this.gameService.getContainers();
+    this.gameService.steps = [];
     this.mainService.play();
   }
 

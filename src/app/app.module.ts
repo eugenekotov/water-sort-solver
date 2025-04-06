@@ -27,7 +27,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { SaveGameComponent } from './components/save-game/save-game.component';
 import { LoadGameComponent } from './components/load-game/load-game.component';
 import { PlayedDialogComponent } from './components/played-dialog/played-dialog.component';
-import { MatDialogModule } from '@angular/material/dialog'
+import { MatDialogModule } from '@angular/material/dialog';
+import { StatisticsComponent } from './components/statistics/statistics.component'
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -48,7 +49,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MenuComponent,
     SaveGameComponent,
     LoadGameComponent,
-    PlayedDialogComponent
+    PlayedDialogComponent,
+    StatisticsComponent
   ],
   imports: [
     BrowserModule,
