@@ -3,9 +3,9 @@
         <div style="font-size: 24px; font-weight: 700; margin-bottom: 15px;">{{ 'PLAYED.CONGRATS' | translate }}</div>
         <div style="display: flex; flex-direction: column; justify-content: center;">
             <!-- TODO: закінчення слова крок відповідно до кількості кроків -->
-            <div style="margin-top: 15px;">{{ 'PLAYED.STEP_COUNT' | translate : { stepCount: stepCount } }}</div>
-            <div *ngIf="stepCount < previousStepCount">{{ 'PLAYED.STEPS_BETTER' | translate : { previousStepCount: previousStepCount } }}</div>
-            <div *ngIf="gameCount > 4" style="margin-top: 15px;">{{ 'PLAYED.SOLVED' | translate : { gameCount: gameCount } }}</div>
+            <div style="margin-top: 15px; text-align: center;">{{ 'PLAYED.STEP_COUNT' | translate : { stepCount: stepCount } }}</div>
+            <div *ngIf="stepCount < previousStepCount" style="text-align: center;">{{ 'PLAYED.STEPS_BETTER' | translate : { previousStepCount: previousStepCount } }}</div>
+            <div *ngIf="gameCount > 4" style="margin-top: 15px; text-align: center;">{{ 'PLAYED.SOLVED' | translate : { gameCount: gameCount } }}</div>
         </div>
     </div>
     <div style="display: flex; flex-direction: column; justify-content: center; align-items:center; flex-wrap: nowrap;">

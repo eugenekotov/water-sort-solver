@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GameController } from 'src/app/classes/controller/game-controller.class';
-import { MAX_CONTAINER_COUNT } from 'src/app/classes/model/const.class';
+import { MAX_CONTAINER_COUNT, OPACITY_DELAY } from 'src/app/classes/model/const.class';
 import { GameService } from 'src/app/services/game.service';
 import { MainService, TView } from 'src/app/services/main.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
@@ -44,11 +44,14 @@ export class PlayedDialogComponent implements OnInit {
   }
 
   protected onPlayClick() {
+    this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     this.dialogRef.close({ view: 'play' });
   }
 
   protected onPlayAgainClick() {
-
+    this.gameService.playContainers = this.gameService.getContainers();
+    this.gameService.steps = [];
+    this.dialogRef.close({ view: 'play' });
   }
 
   protected onShareClick() {
@@ -57,14 +60,13 @@ export class PlayedDialogComponent implements OnInit {
 
   protected onCustomizeClick() {
     this.mainService.setView('setup');
+    setTimeout(() => this.dialogRef.close(), OPACITY_DELAY);
     this.dialogRef.close();
-
   }
-
 
   protected onMainMenuClick() {
     this.mainService.setView('menu');
-    this.dialogRef.close();
+    setTimeout(() => this.dialogRef.close(), OPACITY_DELAY);
   }
 
 }

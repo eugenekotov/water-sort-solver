@@ -319,11 +319,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
       if (result?.view === 'play') {
-        this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
         this.prepareBoard();
       }
     });
   }
-
 
 }
