@@ -159,7 +159,7 @@ export class MovingController {
     }
   }
 
-  private setHidden(movingItems: MovingItem[], hidden: boolean) {
+  public setHidden(movingItems: MovingItem[], hidden: boolean) {
     movingItems.forEach(movingItem => movingItem.hidden = hidden);
   }
 

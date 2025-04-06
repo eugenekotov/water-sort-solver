@@ -65,6 +65,7 @@ export class PlayedDialogComponent implements OnInit {
   }
 
   protected onMainMenuClick() {
+    this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     this.mainService.setView('menu');
     setTimeout(() => this.dialogRef.close(), OPACITY_DELAY);
   }

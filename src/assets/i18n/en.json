@@ -13,7 +13,8 @@
     "SHARE": "Share the puzzle"
   },
   "SETUP": {
-    "TITLE_1": "Create your custom game board",
+    "TITLE_1": "Custom puzzle",
+    "SOLVED": "You solved it in {{stepCount}} steps",
     "CLEAR": "Clear",
     "FILL_RANDOM": "Fill randomly",
     "SOLVE": "Solve",
@@ -45,7 +46,8 @@
   },
   "PLAY": {
     "PLAY": "Play new game",
-    "RESTART": "Restart"
+    "RESTART": "Restart",
+    "BEST_STEPS": "Your best for this puzzle: {{ bestSteps }} steps"
   },
   "SAVE": {
     "TITLE": "Save game",

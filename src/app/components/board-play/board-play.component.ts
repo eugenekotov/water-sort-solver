@@ -176,7 +176,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     } else {
       if (this.selectedContainer) {
         const movingCount = this.movingController.getVisibleMovingItems().length;
-        this.movingController.moveDown(this.selectedContainer!, 0, movingCount).subscribe(() => this.stepBack());
+        this.movingController.moveDown(this.selectedContainer!, 0, movingCount).subscribe(() => {
+          this.selectedContainer = undefined;
+          this.stepBack();
+        });
       } else {
         this.stepBack();
       }
@@ -191,6 +194,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected restartClick() {
+    this.cancelUnfinishedStep();
     // TODO: Ask confirmation
     if (this.movingInProgress) {
       this.movingController.stoppingInProgress = true;
@@ -274,22 +278,40 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  protected mainMenuClick() {
+    this.cancelUnfinishedStep();
+    this.mainService.setView('menu');
+  }
+
   protected playClick() {
     this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
     this.prepareBoard();
   }
 
   protected createClick() {
+    this.cancelUnfinishedStep();
     this.gameService.setContainers(this.gameService.playContainers);
     this.gameService.fromContainersToSetupContainers();
     this.mainService.setView("setup");
   }
 
+  private cancelUnfinishedStep() {
+    if (this.selectedContainer) {
+      // We need to move down
+      const movingItems = this.movingController.getVisibleMovingItems();
+      movingItems.forEach(item => this.selectedContainer!.push(item.color!));
+      this.movingController.setHidden(movingItems, true);
+      this.selectedContainer = undefined;
+    }
+  }
+
   protected saveClick() {
+    this.cancelUnfinishedStep();
     this.mainService.saveState();
   }
 
   protected loadClick() {
+    this.cancelUnfinishedStep();
     // TODO: Confirm about lost current game
     this.mainService.setView('load');
   }
@@ -300,6 +322,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
   }
 
   protected solveClick() {
+    this.cancelUnfinishedStep();
     this.mainService.solve();
   }
 

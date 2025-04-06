@@ -35,7 +35,9 @@
 
 .text-containers-parent {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 
 .source-containers-parent {
@@ -52,13 +54,11 @@
 }
 
 .header-text-small {
-  margin: $margin-small;
-  width: 170px;
+  margin-top: $margin-small;
 }
 
 .header-text-large {
-  margin: $margin-large;
-  width: 350px;
+  margin-top: $margin-large;
 }
 
 .source-containers {

@@ -35,6 +35,9 @@
     <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
       {{ 'SETUP.TITLE_1' | translate }}
     </div>
+    <div [ngStyle]="mainService.isMobile ? {'height': '20px', 'font-size': '12px'} : {'height': '30px', 'font-size': '14px'}">
+      <div *ngIf="stepCount > 0" style="font-weight: 100; margin-top: 10px;">{{ 'SETUP.SOLVED' | translate: {stepCount: stepCount} }} </div>
+    </div>
   </div>
 
   <div class="source-containers-parent">

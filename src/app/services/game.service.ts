@@ -7,6 +7,8 @@ import { TGameView } from './main.service';
 import { PlayStep } from '../components/board-play/board-play.component';
 import { State } from '../classes/model/state.class';
 import { Solution } from '../classes/model/solution-set.class';
+import { GameController } from '../classes/controller/game-controller.class';
+import { StatisticsService } from './statistics.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +29,7 @@ export class GameService {
   //
   private containers: GameContainer[] = [];
 
-  constructor() {
+  constructor(private statisticsService: StatisticsService) {
     this.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
   }
 
@@ -86,8 +88,23 @@ export class GameService {
   }
 
   public createRandomGame(colorCount: number, containerCount: number) {
-    this.createEmptyGame(colorCount, containerCount);
-    this.fillRandomSetup();
+    let attempts = 0;
+    colorCount = 2;
+    containerCount = 4;
+    do {
+      attempts++;
+      console.log("attemps", attempts);
+      this.createEmptyGame(colorCount, containerCount);
+      this.fillRandomSetup();
+      const hash = GameController.getGameHash(this.setupContainers);
+      const b = this.statisticsService.hasHash(hash);
+      console.log("res", b);
+      // TODO: BUG it doesn't work
+    } while (this.statisticsService.hasHash(GameController.getGameHash(this.setupContainers)) && attempts < 10000);
+    if (attempts >= 10000) {
+      // TODO: Handle case
+      console.error("Cannot build new board.");
+    }
     this.fromSetupContainersToContainers();
     this.playContainers = this.getContainers();
   }

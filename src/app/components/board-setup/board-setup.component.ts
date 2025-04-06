@@ -1,16 +1,17 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { concatMap, debounceTime, Observable, Subject, Subscriber, Subscription, tap } from 'rxjs';
+import { GameController } from 'src/app/classes/controller/game-controller.class';
 import { Color } from 'src/app/classes/model/colors.class';
-import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT, STORAGE_KEY } from 'src/app/classes/model/const.class';
+import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE, MIN_CONTAINER_COUNT } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
-import { SourceItem } from 'src/app/classes/model/source-item.class';
 import { MovingItem, Position } from 'src/app/classes/model/item.class';
-import { State } from 'src/app/classes/model/state.class';
+import { SourceItem } from 'src/app/classes/model/source-item.class';
 import { MovingController } from 'src/app/classes/moving-controller.class';
 import { Utils } from 'src/app/classes/utils.class';
 import { GameService } from 'src/app/services/game.service';
-import { MainService, TGameView, TView } from 'src/app/services/main.service';
+import { MainService, TGameView } from 'src/app/services/main.service';
+import { StatisticsService } from 'src/app/services/statistics.service';
 import { Tour, TourItem, TourService } from 'src/app/services/tour.service';
 
 type TClick = "on-source" | "on-container";
@@ -47,11 +48,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   protected positionContainers1: GameContainer[] = [];
   protected positionContainers2: GameContainer[] = [];
 
+  protected stepCount: number = 0; // Step count if we already resolve the puzzle, otherwise 0
+
   movingItem: MovingItem = new MovingItem();
   private sourceItemElements: Map<Color, HTMLElement> = new Map<Color, HTMLElement>();
   private parentElementRect: DOMRect;
 
-  constructor(public mainService: MainService, public gameService: GameService, public tourService: TourService) {
+  constructor(public mainService: MainService, public gameService: GameService, public tourService: TourService, private statisticsService: StatisticsService) {
     this.gameService.gameView = this.view;
     this.createSetupContainers();
     this.createPositionContainers();
@@ -132,6 +135,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
       this.checkHasGame();
     }
     GameContainer.checkResolvedContainers(this.gameService.setupContainers);
+    this.checkStat();
   }
 
   private checkHasGame() {
@@ -191,6 +195,13 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.gameService.fillRandomSetup();
     this.createSetupContainers();
     this.checkHasGame();
+    this.checkStat();
+  }
+
+  private checkStat() {
+    // check if we already resolved it
+    const hash = GameController.getGameHash(this.gameService.setupContainers);
+    this.stepCount = this.statisticsService.getStepCount(hash);
   }
 
   saveClick() {
@@ -270,6 +281,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.createSetupContainers();
     this.createPositionContainers();
     this.checkHasGame();
+    this.checkStat();
   }
 
   getSourceItemId(item: SourceItem): string {
@@ -308,6 +320,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
             this.notify(observer);
           } else {
             this.moveSourceItem(this.selectedSourceItem, container).then(() => this.notify(observer));
+            this.checkStat();
           }
         }
       } else {

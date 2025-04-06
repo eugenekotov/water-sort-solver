@@ -9,7 +9,7 @@
       </button>
 
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
+        <button mat-menu-item (click)="mainMenuClick()">{{"MENU.MAIN" | translate}}</button>
         <mat-divider></mat-divider>
         <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
         <button mat-menu-item (click)="solveClick()">{{"MENU.SOLVE" | translate}}</button>
@@ -33,12 +33,8 @@
     </div>
   </div>
 
-
-
-  <div class="solution-text-container"
-    [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-
-    <div *ngIf="previousStepCount > 0">Ваш найкращий результат для цього пазлу {{previousStepCount}} кроків</div>
+  <div class="solution-text-container" [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
+    <div *ngIf="previousStepCount > 0">{{ "PLAY.BEST_STEPS" | translate: {bestSteps: previousStepCount} }}</div>
     <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
   </div>
 

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Utils } from '../classes/utils.class';
 import { STORAGE_KEY } from '../classes/model/const.class';
 
 export class StatisticsModel {
@@ -56,6 +55,10 @@ export class StatisticsService {
             const object = JSON.parse(dataString);
             this.data.gamesStatistics = new Map<string, GameStatisticsModel>(Object.entries(object));
         }
+    }
+
+    public hasHash(hash: string) {
+        return this.data.gamesStatistics.get(hash) !== undefined;
     }
 
 }
