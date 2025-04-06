@@ -48,8 +48,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog, private statisticsService: StatisticsService) {
     this.gameService.gameView = this.view;
-    const hash = GameController.getGameHash(this.gameService.getContainers());
-    this.previousStepCount = this.statisticsService.getStepCount(hash);
     this.prepareBoard();
     this.createPositionContainers();
   }
@@ -217,6 +215,8 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
   private prepareBoard() {
     this.createPlayContainers();
+    const hash = GameController.getGameHash(this.gameService.getContainers());
+    this.previousStepCount = this.statisticsService.getStepCount(hash);
     this.createStepsSubject();
     this.movingInProgress = false;
     this.movingController.stoppingInProgress = false;

@@ -60,6 +60,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
     this.createPositionContainers();
     this.checkHasGame();
     this.createClickSubject();
+    this.checkStat();
   }
 
   ngOnInit(): void {
@@ -200,7 +201,7 @@ export class BoardSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private checkStat() {
     // check if we already resolved it
-    const hash = GameController.getGameHash(this.gameService.setupContainers);
+    const hash = GameController.getGameHash(this.gameService.convertSetupContainers(this.gameService.setupContainers));
     this.stepCount = this.statisticsService.getStepCount(hash);
   }
 

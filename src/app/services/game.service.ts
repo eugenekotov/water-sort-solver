@@ -58,12 +58,16 @@ export class GameService {
     this.setupContainers.forEach(container => container.clear());
   }
 
-  public fromSetupContainersToContainers(): void {
-    this.containers = this.setupContainers.map(container => {
+  public convertSetupContainers(setupContainers: GameContainer[]): GameContainer[] {
+    return setupContainers.map(container => {
       const newContainer = GameContainer.clone(container);
       newContainer.colors = newContainer.colors.reverse();
       return newContainer;
     });
+  }
+
+  public fromSetupContainersToContainers(): void {
+    this.containers = this.convertSetupContainers(this.setupContainers);
   }
 
   public fromContainersToSetupContainers(): void {
@@ -89,20 +93,13 @@ export class GameService {
 
   public createRandomGame(colorCount: number, containerCount: number) {
     let attempts = 0;
-    colorCount = 2;
-    containerCount = 4;
     do {
       attempts++;
-      console.log("attemps", attempts);
       this.createEmptyGame(colorCount, containerCount);
       this.fillRandomSetup();
-      const hash = GameController.getGameHash(this.setupContainers);
-      const b = this.statisticsService.hasHash(hash);
-      console.log("res", b);
-      // TODO: BUG it doesn't work
-    } while (this.statisticsService.hasHash(GameController.getGameHash(this.setupContainers)) && attempts < 10000);
+    } while (this.statisticsService.hasHash(GameController.getGameHash(this.convertSetupContainers(this.setupContainers))) && attempts < 10000);
     if (attempts >= 10000) {
-      // TODO: Handle case
+      // TODO: Handle this case
       console.error("Cannot build new board.");
     }
     this.fromSetupContainersToContainers();
