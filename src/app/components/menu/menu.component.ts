@@ -22,7 +22,7 @@ export class MenuComponent {
         { title: "MENU.CREATE", view: "setup", disabled: false },
         { title: "MENU.STAT", view: "stat", disabled: false },
         { title: "MENU.LOAD", view: "load", disabled: false },
-        { title: "MENU.SETTINGS", view: "settings", disabled: false }
+        { title: "MENU.SETTINGS", view: "settings", disabled: false },
     ];
 
     constructor(public mainService: MainService, public gameService: GameService) {

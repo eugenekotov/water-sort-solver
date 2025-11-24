@@ -32,6 +32,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log(event);
     }
 
+    @HostListener('window:beforeunload', ['$event'])
+    unloadNotification($event: any): void {
+        if (this.mainService.view == "menu") {
+            delete $event.returnValue;
+        } else {
+            $event.returnValue = true;
+        }
+    }
 
     ngOnInit() {
         this.mainService.mainElement = document.documentElement;

@@ -48,7 +48,7 @@ export class WorkerResult {
 
 export class SolutionController {
 
-    private readonly TIME_LIMIT = 3000;
+    private readonly TIME_LIMIT = 5000;
 
     private canFinish: boolean = false;
 
