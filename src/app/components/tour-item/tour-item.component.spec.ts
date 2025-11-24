@@ -3,21 +3,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TourItemComponent } from './tour-item.component';
 
 describe('TourItemComponent', () => {
-  let component: TourItemComponent;
-  let fixture: ComponentFixture<TourItemComponent>;
+    let component: TourItemComponent;
+    let fixture: ComponentFixture<TourItemComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ TourItemComponent ]
-    })
-    .compileComponents();
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [TourItemComponent]
+        })
+            .compileComponents();
 
-    fixture = TestBed.createComponent(TourItemComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        fixture = TestBed.createComponent(TourItemComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

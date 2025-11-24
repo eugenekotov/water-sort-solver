@@ -3,220 +3,220 @@
 @use 'sass:math';
 
 .view-container {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .title-container {
-  width: 100%;
-  position: absolute;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    width: 100%;
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .title-buttons {
-  display: flex;
-  flex-grow: 1;
-  justify-content: space-between;
+    display: flex;
+    flex-grow: 1;
+    justify-content: space-between;
 }
 
 .title-buttons-small {
-  gap: 3px;
-  margin: $margin-small;
+    gap: 3px;
+    margin: $margin-small;
 }
 
 .title-buttons-large {
-  gap: 0.5rem;
-  margin: $margin-large;
+    gap: 0.5rem;
+    margin: $margin-large;
 }
 
 .text-containers-parent {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .source-containers-parent {
-  margin-left: 10px;
-  margin-right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .header-text {
-  text-align: center;
+    text-align: center;
 }
 
 .header-text-small {
-  margin-top: $margin-small;
+    margin-top: $margin-small;
 }
 
 .header-text-large {
-  margin-top: $margin-large;
+    margin-top: $margin-large;
 }
 
 .source-containers {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .source-containers-small {
-  height: $item-size-small * 3 + math.div($item-size-small, 6) * 3;
-  padding: math.div($item-size-small, 6);
-  gap: math.div($item-size-small, 6);
+    height: $item-size-small * 3 + math.div($item-size-small, 6) * 3;
+    padding: math.div($item-size-small, 6);
+    gap: math.div($item-size-small, 6);
 }
 
 .source-containers-large {
-  height: $item-size-large * 3 + math.div($item-size-large, 6) * 3;
-  padding: math.div($item-size-large, 6);
-  gap: math.div($item-size-large, 6);
+    height: $item-size-large * 3 + math.div($item-size-large, 6) * 3;
+    padding: math.div($item-size-large, 6);
+    gap: math.div($item-size-large, 6);
 }
 
 .source-container {
-  position: relative;
+    position: relative;
 }
 
 .relative-container {
-  margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .container {
-  flex-direction: column;
+    flex-direction: column;
 }
 
 .container-position {
-  flex-direction: column-reverse;
+    flex-direction: column-reverse;
 }
 
 .item {
-  cursor: move;
+    cursor: move;
 }
 
 .source-item-small {
-  position: relative;
-  margin-top: math.div($item-size-small, 2.5);
-  margin-right: math.div($item-size-small, 2.5);
+    position: relative;
+    margin-top: math.div($item-size-small, 2.5);
+    margin-right: math.div($item-size-small, 2.5);
 }
 
 .source-item-large {
-  position: relative;
-  margin-top: math.div($item-size-large, 2.5);
-  margin-right: math.div($item-size-large, 2.5);
+    position: relative;
+    margin-top: math.div($item-size-large, 2.5);
+    margin-right: math.div($item-size-large, 2.5);
 }
 
 .source-item-count {
-  position: absolute;
-  border-radius: 50%;
-  background-color: var(--container-source-count-background-color);
-  color: var(--container-source-count-text-color);
-  border: 1px solid var(--main-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+    border-radius: 50%;
+    background-color: var(--container-source-count-background-color);
+    color: var(--container-source-count-text-color);
+    border: 1px solid var(--main-background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .source-item-count-small {
-  top: 0px;
-  // left: $item-size-small - math.div($item-size-small, 10);
-  right: 0px;
-  width: 18px;
-  height: 18px;
-  font-size: 11px;
+    top: 0px;
+    // left: $item-size-small - math.div($item-size-small, 10);
+    right: 0px;
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
 }
 
 .source-item-count-large {
-  top: 0px;
-  // left: $item-size-large - math.div($item-size-large, 10);
-  right: 0px;
-  width: 22px;
-  height: 22px;
-  font-size: 12px;
+    top: 0px;
+    // left: $item-size-large - math.div($item-size-large, 10);
+    right: 0px;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
 }
 
 .cdk-drag-preview {
-  box-sizing: border-box;
-  cursor: move; // is not working
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+    cursor: move; // is not working
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+        0 8px 10px 1px rgba(0, 0, 0, 0.14),
+        0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-preview-small {
-  border-radius: $item-border-radius-small;
+    border-radius: $item-border-radius-small;
 }
 
 .cdk-drag-preview-large {
-  border-radius: $item-border-radius-large;
+    border-radius: $item-border-radius-large;
 }
 
 .cdk-drag-placeholder {
-  opacity: 0;
+    opacity: 0;
 }
 
 .cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drop-list-dragging {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .cdk-drag-animating {
-  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .dark-small {
-  fill: var(--button-text-color);
-  width: 16px;
-  height: 16px;
+    fill: var(--button-text-color);
+    width: 16px;
+    height: 16px;
 }
 
 .dark-large {
-  fill: var(--button-text-color);
-  width: 20px;
-  height: 20px;
+    fill: var(--button-text-color);
+    width: 20px;
+    height: 20px;
 }
 
 .light-small {
-  fill: var(--button-text-color);
-  width: 24px;
-  height: 24px;
+    fill: var(--button-text-color);
+    width: 24px;
+    height: 24px;
 }
 
 .light-large {
-  fill: var(--button-text-color);
-  width: 24px;
-  height: 24px;
+    fill: var(--button-text-color);
+    width: 24px;
+    height: 24px;
 }
 
 .relative-container {
-  justify-content: center;
+    justify-content: center;
 }
 
 // It needs beacuse of change container lines.
 .relative-container-small {
-  height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
-  margin-bottom: 30px;
+    height: ($item-size-small * 4 + $container-items-gap-small * 3) * 2 + $container-items-gap-small * 4 + $container-items-gap-small + 20;
+    margin-bottom: 30px;
 }
 
 .relative-container-large {
-  height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
-  margin-bottom: 30px;
+    height: ($item-size-large * 4 + $container-items-gap-large * 3) * 2 + $container-items-gap-large * 10;
+    margin-bottom: 30px;
 }
 
 .containers-parent-small {
-  gap: 0.5rem;
+    gap: 0.5rem;
 }
 
 .containers-parent-large {
-  gap: 1rem;
+    gap: 1rem;
 }

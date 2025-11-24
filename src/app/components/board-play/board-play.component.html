@@ -1,112 +1,126 @@
 <div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
 
-  <div class="title-container">
-    <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
-      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
-        <div style="display: flex; justify-content: center; align-items: center;">
-          <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
-        </div>
-      </button>
+    <div class="title-container">
+        <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
+            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
+                <div style="display: flex; justify-content: center; align-items: center;">
+                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
+                </div>
+            </button>
 
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="mainMenuClick()">{{"MENU.MAIN" | translate}}</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
-        <button mat-menu-item (click)="solveClick()">{{"MENU.SOLVE" | translate}}</button>
-        <mat-divider></mat-divider>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="mainMenuClick()">{{"MENU.MAIN" | translate}}</button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
+                <button mat-menu-item (click)="solveClick()">{{"MENU.SOLVE" | translate}}</button>
+                <mat-divider></mat-divider>
 
-        <button mat-menu-item (click)="createClick()">{{"MENU.CREATE" | translate}}</button>
-        <mat-divider></mat-divider>
-        <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
-        <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
+                <button mat-menu-item (click)="createClick()">{{"MENU.CREATE" | translate}}</button>
+                <mat-divider></mat-divider>
+                <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
+                <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
 
-        <!-- <mat-divider></mat-divider> -->
-        <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
+                <!-- <mat-divider></mat-divider> -->
+                <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
         <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
-        <!-- <mat-divider></mat-divider> -->
-        <button mat-menu-item (click)="mainService.setView('settings')" [disabled]="movingInProgress">{{"MENU.SETTINGS" |
-          translate}}</button>
-      </mat-menu>
+                <!-- <mat-divider></mat-divider> -->
+                <button mat-menu-item (click)="mainService.setView('settings')"
+                    [disabled]="movingInProgress">{{"MENU.SETTINGS" |
+                    translate}}</button>
+            </mat-menu>
 
-      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.setFullScreen(true)">?</button>
+            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
+                (click)="mainService.setFullScreen(true)">?</button>
 
-    </div>
-  </div>
-
-  <div class="solution-text-container" [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
-    <div *ngIf="previousStepCount > 0">{{ "PLAY.BEST_STEPS" | translate: {bestSteps: previousStepCount} }}</div>
-    <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
-  </div>
-
-  <div id="moving-parent" class="relative-container" (click)="onClick($event)">
-
-    <!-- Duplicate for position -->
-    <div  class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
-      style="position: absolute; opacity: 0; z-index: 0;">
-
-      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of positionContainers1" class="container"
-          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
-
-          <div *ngFor="let color of container.colors; let itemIndex=index"
-            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
-          </div>
         </div>
-      </div>
-      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of positionContainers2" class="container"
-          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+    </div>
 
-          <div *ngFor="let color of container.colors; let itemIndex=index"
-            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
-          </div>
+    <div class="solution-text-container"
+        [ngClass]="mainService.isMobile ? 'solution-text-container-small' : 'solution-text-container-large'">
+        <div *ngIf="previousStepCount > 0">{{ "PLAY.BEST_STEPS" | translate: {bestSteps: previousStepCount} }}</div>
+        <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
+    </div>
+
+    <div id="moving-parent" class="relative-container" (click)="onClick($event)">
+
+        <!-- Duplicate for position -->
+        <div class="containers-parent"
+            [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
+            style="position: absolute; opacity: 0; z-index: 0;">
+
+            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+                <div *ngFor="let container of positionContainers1" class="container"
+                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+
+                    <div *ngFor="let color of container.colors; let itemIndex=index"
+                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+                    </div>
+                </div>
+            </div>
+            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+                <div *ngFor="let container of positionContainers2" class="container"
+                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+
+                    <div *ngFor="let color of container.colors; let itemIndex=index"
+                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <!--  -->
-    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'">
-      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of playContainers1"
-          [id]="utils.getContainerId(container.index)"
-          class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-          (click)="onContainerClick($event, container)">
+        <!--  -->
+        <div class="containers-parent"
+            [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'">
+            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+                <div *ngFor="let container of playContainers1" [id]="utils.getContainerId(container.index)"
+                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                    (click)="onContainerClick($event, container)">
 
-          <div *ngFor="let color of container.colors" class="item shadow"
-            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)">
-          </div>
+                    <div *ngFor="let color of container.colors" class="item shadow"
+                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+                        [ngStyle]="utils.getItemStyle(color)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+                <div *ngFor="let container of playContainers2" [id]="utils.getContainerId(container.index)"
+                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                    (click)="onContainerClick($event, container)">
+
+                    <div *ngFor="let color of container.colors" class="item shadow"
+                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+                        [ngStyle]="utils.getItemStyle(color)">
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <app-moving-item *ngFor="let movingItem of movingController.movingItems" [item]="movingItem"
+            (click)="onMovingItemClick()"></app-moving-item>
+    </div>
 
-      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-        <div *ngFor="let container of playContainers2"
-          [id]="utils.getContainerId(container.index)"
-          class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-          (click)="onContainerClick($event, container)">
-
-          <div *ngFor="let color of container.colors" class="item shadow"
-            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)">
-          </div>
+    <ng-container *ngIf="mainService.isMobile">
+        <div class="buttons-container buttons-container-small">
+            <button class="button button-small" style="margin-right: 30px;" (click)="restartClick()"
+                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
+                translate }}</button>
+            <button class="button button-small" (click)="backClick()"
+                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
+                | translate }}</button>
         </div>
-      </div>
-    </div>
-    <app-moving-item *ngFor="let movingItem of movingController.movingItems" [item]="movingItem" (click)="onMovingItemClick()"></app-moving-item>
-  </div>
+    </ng-container>
 
-  <ng-container *ngIf="mainService.isMobile">
-    <div class="buttons-container buttons-container-small">
-      <button class="button button-small" style="margin-right: 30px;" (click)="restartClick()" [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
-      <button class="button button-small" (click)="backClick()" [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-    </div>
-  </ng-container>
-
-  <ng-container *ngIf="!mainService.isMobile">
-    <div class="buttons-container buttons-container-large">
-      <button class="button button-large" style="margin-right: 30px;" (click)="restartClick()" [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" | translate }}</button>
-      <button class="button button-large" (click)="backClick()" [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK" | translate }}</button>
-    </div>
-  </ng-container>
+    <ng-container *ngIf="!mainService.isMobile">
+        <div class="buttons-container buttons-container-large">
+            <button class="button button-large" style="margin-right: 30px;" (click)="restartClick()"
+                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
+                translate }}</button>
+            <button class="button button-large" (click)="backClick()"
+                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
+                | translate }}</button>
+        </div>
+    </ng-container>
 
 </div>

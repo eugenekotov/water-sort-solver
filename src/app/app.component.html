@@ -1,19 +1,19 @@
 <div class="body-container" [ngClass]="mainService.isMobile ? 'body-container-small': 'body-container-large'">
-  <div class="body-vertical-container">
-    <div class="main-container" [ngClass]="mainService.isMobile ? '': 'main-container-large shadow'">
-      <app-menu *ngIf="mainService.view === 'menu'"></app-menu>
-      <app-board-setup *ngIf="mainService.view === 'setup'"></app-board-setup>
-      <app-board-in-progress *ngIf="mainService.view === 'in-progress'"></app-board-in-progress>
-      <app-board-no-solution *ngIf="mainService.view === 'no-solution'"></app-board-no-solution>
-      <app-board-solve *ngIf="mainService.view === 'solve'"></app-board-solve>
-      <app-board-play *ngIf="mainService.view === 'play'"></app-board-play>
-      <app-settings *ngIf="mainService.view === 'settings'"></app-settings>
-      <app-save-game *ngIf="mainService.view === 'save'"></app-save-game>
-      <app-load-game *ngIf="mainService.view === 'load'"></app-load-game>
-      <app-statistics *ngIf="mainService.view === 'stat'"></app-statistics>
+    <div class="body-vertical-container">
+        <div class="main-container" [ngClass]="mainService.isMobile ? '': 'main-container-large shadow'">
+            <app-menu *ngIf="mainService.view === 'menu'"></app-menu>
+            <app-board-setup *ngIf="mainService.view === 'setup'"></app-board-setup>
+            <app-board-in-progress *ngIf="mainService.view === 'in-progress'"></app-board-in-progress>
+            <app-board-no-solution *ngIf="mainService.view === 'no-solution'"></app-board-no-solution>
+            <app-board-solve *ngIf="mainService.view === 'solve'"></app-board-solve>
+            <app-board-play *ngIf="mainService.view === 'play'"></app-board-play>
+            <app-settings *ngIf="mainService.view === 'settings'"></app-settings>
+            <app-save-game *ngIf="mainService.view === 'save'"></app-save-game>
+            <app-load-game *ngIf="mainService.view === 'load'"></app-load-game>
+            <app-statistics *ngIf="mainService.view === 'stat'"></app-statistics>
+        </div>
     </div>
-  </div>
 
-  <app-tour></app-tour>
+    <app-tour></app-tour>
 
 </div>

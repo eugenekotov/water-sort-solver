@@ -1,16 +1,17 @@
-<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item" [ngStyle]="tourService.getTourItemStyle()">
-  <div class="content-container">
-    <ng-content></ng-content>
-  </div>
-  <div style="display: flex; justify-content: end;">
-    <div *ngIf="!tourService.firstStep()" class="tour-button" (click)="tourService.prior()">
-      {{ 'TOUR.PRIOR' | translate }}
+<div *ngIf="index===tourService.tourStep" [id]="'item-' + index" class="tour-item"
+    [ngStyle]="tourService.getTourItemStyle()">
+    <div class="content-container">
+        <ng-content></ng-content>
     </div>
-    <div *ngIf="!tourService.lastStep()" class="tour-button" (click)="tourService.next()">
-      {{ 'TOUR.NEXT' | translate }}
+    <div style="display: flex; justify-content: end;">
+        <div *ngIf="!tourService.firstStep()" class="tour-button" (click)="tourService.prior()">
+            {{ 'TOUR.PRIOR' | translate }}
+        </div>
+        <div *ngIf="!tourService.lastStep()" class="tour-button" (click)="tourService.next()">
+            {{ 'TOUR.NEXT' | translate }}
+        </div>
+        <div class="tour-button" (click)="tourService.stopTour()">
+            {{ 'TOUR.FINISH' | translate }}
+        </div>
     </div>
-    <div class="tour-button" (click)="tourService.stopTour()">
-      {{ 'TOUR.FINISH' | translate }}
-    </div>
-  </div>
 </div>
