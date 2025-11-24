@@ -79,6 +79,8 @@ export class SolutionController {
             observer.complete();
           }
         };
+
+        // start work
         this.worker.postMessage(containers);
       } else {
         console.error("Web Workers are not supported in this environment.");

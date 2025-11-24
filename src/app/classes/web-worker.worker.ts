@@ -176,9 +176,9 @@ function optimizeSolution(solution: Solution): Solution {
   let i = 0;
   let optimized = true;
   while (optimized) {
-    // Optimize case 1 -> 2, ..., 2-> 1
-    // steps.forEach((step, index) => console.log("Step " + index + ": " + step.iFrom + " -> " + step.iTo));
     optimized = false;
+
+    // Optimize case 1 -> 2, ..., 2-> 1
     i = 0;
     let j = 0;
     while (i < steps.length - 1) {
@@ -186,7 +186,7 @@ function optimizeSolution(solution: Solution): Solution {
       let j = i + 1;
       while (j < steps.length && (steps[i].iFrom !== steps[j].iTo || steps[i].iTo !== steps[j].iFrom)) {
         if (steps[i].iFrom === steps[j].iFrom || steps[i].iFrom === steps[j].iTo ||
-          steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
+            steps[i].iTo === steps[j].iFrom || steps[i].iTo === steps[j].iTo) {
           break;
         }
         j++;
@@ -195,7 +195,7 @@ function optimizeSolution(solution: Solution): Solution {
         // found back step, remove both
         steps.splice(j, 1);
         steps.splice(i, 1);
-        // console.log("remove steps " + j + ", " + i);
+
         optimized = true;
         count1++;
       } else {
@@ -208,23 +208,25 @@ function optimizeSolution(solution: Solution): Solution {
     while (i < steps.length - 1) {
       // try to find second part
       let j = i + 1;
-      while (j < steps.length && steps[i].iTo !== steps[j].iFrom) {
+      while (j < steps.length && (steps[i].iTo !== steps[j].iFrom || steps[i].color !== steps[j].color)) {
         j++;
       }
-      if (j < steps.length && steps[i].iTo === steps[j].iFrom) {
+      if (j < steps.length && steps[i].iTo === steps[j].iFrom && steps[i].color === steps[j].color) {
         // We found, lets check that these containers was not used
+        // We should not use steps[i].iFrom, steps[i].iTo, steps[j].iFrom, steps[j].iTo
+        let restrictedContainers: number[] = [steps[i].iFrom, steps[i].iTo, steps[j].iFrom, steps[j].iTo];
+
+
         let k = j - 1;
         let used = false;
         while (i < k) {
-          if ((steps[k].iFrom === steps[j].iFrom || steps[k].iFrom === steps[j].iTo
-            || steps[k].iTo === steps[j].iFrom || steps[k].iTo === steps[j].iTo) && steps[k].color !== steps[j].color) {
+          if (restrictedContainers.includes(steps[k].iFrom) || restrictedContainers.includes(steps[k].iTo)) {
             used = true;
             break;
           }
           k--;
-
         }
-        if (used === false) {
+        if (!used) {
           steps[i].iTo = steps[j].iTo;
           steps[i].notes = "Updated by optimization 2";
           steps.splice(j, 1);
