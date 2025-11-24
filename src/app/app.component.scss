@@ -2,39 +2,39 @@
 @use 'sass:math';
 
 .body-container {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 
-  background-color: var(--main-background-color);
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  color: var(--text-color);
-  user-select: none;
+    background-color: var(--main-background-color);
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    color: var(--text-color);
+    user-select: none;
 }
 
 .body-container-small {
-  font-size: $font-size-small;
-  font-weight: $font-weight-small;
+    font-size: $font-size-small;
+    font-weight: $font-weight-small;
 }
 
 .body-container-large {
-  font-size: $font-size-large;
-  font-weight: $font-weight-large;
+    font-size: $font-size-large;
+    font-weight: $font-weight-large;
 }
 
 .body-vertical-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+    flex: 1;
+    display: flex;
+    justify-content: center;
 }
 
 .main-container {
-  background-color: var(--main-background-color);
-  flex: 1;
+    background-color: var(--main-background-color);
+    flex: 1;
 
 }
 
 .main-container-large {
-  margin: $margin-large;
+    margin: $margin-large;
 }

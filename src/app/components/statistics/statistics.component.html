@@ -4,7 +4,8 @@
 
         <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.goBack()">
             <div [ngClass]="mainService.isMobile ? 'button-back-small' : 'button-back-large'">
-                <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">arrow_back_ios</mat-icon>
+                <mat-icon
+                    [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">arrow_back_ios</mat-icon>
             </div>
         </button>
 

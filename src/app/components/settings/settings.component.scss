@@ -2,84 +2,83 @@
 @use 'src/styles/variables' as *;
 
 .view-container {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .button-back-small {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 4px;
 }
 
 .button-back-large {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 6px;
 }
 
 .top-container {
-  margin: 10px;
-  display: flex;
-  align-items: center;
+    margin: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .top-right-container-small {
-  width: $fab-button-size-small;
+    width: $fab-button-size-small;
 }
 
 .top-right-container-large {
-  width: $fab-button-size-large;
+    width: $fab-button-size-large;
 }
 
 .settings-container {
-  display: grid;
-  justify-items: center;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 50px 60px 100px;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: 50px 60px 100px;
 }
 
 .lang-flag-container {
-  border: 1px solid var(--main-background-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  width: 48px;
+    border: 1px solid var(--main-background-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 48px;
     height: 30px;
-  }
+}
 
 .lang-flag-container:active {
-  background-color: var(--lang-background-color);
-  border: 1px solid var(--lang-border-color);
+    background-color: var(--lang-background-color);
+    border: 1px solid var(--lang-border-color);
 }
 
 .current-lang {
-  border: 1px solid var(--lang-border-color);
+    border: 1px solid var(--lang-border-color);
 }
 
 .image {
-  -webkit-user-drag: none;
-  user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  width: 40px;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    width: 40px;
     height: 26px;
-  }
+}
 
 .speed-small-2 {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-  padding: $padding-small;
-  padding-top: $padding-large;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    padding: $padding-small;
+    padding-top: $padding-large;
 }
 
 mat-slider {
-  width: 250px;
+    width: 250px;
 }
-

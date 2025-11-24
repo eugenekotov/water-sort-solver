@@ -2,34 +2,34 @@
 @use 'src/styles/variables' as *;
 
 .view-container {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .button-back-small {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 4px;
 }
 
 .button-back-large {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 6px;
 }
 
 .top-container {
-  margin: 10px;
-  display: flex;
-  align-items: center;
+    margin: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .top-right-container-small {
-  width: $fab-button-size-small;
+    width: $fab-button-size-small;
 }
 
 .top-right-container-large {
-  width: $fab-button-size-large;
+    width: $fab-button-size-large;
 }

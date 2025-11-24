@@ -31,49 +31,49 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { StatisticsComponent } from './components/statistics/statistics.component'
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    BoardSetupComponent,
-    BoardSolveComponent,
-    MovingItemComponent,
-    BoardInProgressComponent,
-    BoardNoSolutionComponent,
-    TourItemComponent,
-    TourComponent,
-    BoardPlayComponent,
-    SettingsComponent,
-    MenuComponent,
-    SaveGameComponent,
-    LoadGameComponent,
-    PlayedDialogComponent,
-    StatisticsComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    DragDropModule,
-    MatButtonModule,
-    MatSliderModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    HttpClientModule,
-    MatTooltipModule,
-    MatIconModule,
-    BrowserAnimationsModule,
-    MatMenuModule,
-    MatDividerModule,
-    MatDialogModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        BoardSetupComponent,
+        BoardSolveComponent,
+        MovingItemComponent,
+        BoardInProgressComponent,
+        BoardNoSolutionComponent,
+        TourItemComponent,
+        TourComponent,
+        BoardPlayComponent,
+        SettingsComponent,
+        MenuComponent,
+        SaveGameComponent,
+        LoadGameComponent,
+        PlayedDialogComponent,
+        StatisticsComponent
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        DragDropModule,
+        MatButtonModule,
+        MatSliderModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        HttpClientModule,
+        MatTooltipModule,
+        MatIconModule,
+        BrowserAnimationsModule,
+        MatMenuModule,
+        MatDividerModule,
+        MatDialogModule,
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
