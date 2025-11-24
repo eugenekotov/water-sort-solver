@@ -1,33 +1,30 @@
 <div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
-    <div class="top-container">
+  <div class="top-container">
 
-        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.goBack()">
-            <div [ngClass]="mainService.isMobile ? 'button-back-small' : 'button-back-large'">
-                <mat-icon
-                    [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">arrow_back_ios</mat-icon>
-            </div>
-        </button>
+    <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="mainService.goBack()">
+      <div [ngClass]="mainService.isMobile ? 'button-back-small' : 'button-back-large'">
+        <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">arrow_back_ios</mat-icon>
+      </div>
+    </button>
 
-        <div style="flex-grow: 1; text-align: center;">{{ 'SAVE.TITLE' | translate }}</div>
+    <div style="flex-grow: 1; text-align: center;">{{ 'SAVE.TITLE' | translate }}</div>
 
-        <div [ngClass]="mainService.isMobile ? 'top-right-container-small' : 'top-right-container-large'"></div>
-    </div>
+    <div [ngClass]="mainService.isMobile ? 'top-right-container-small' : 'top-right-container-large'"></div>
+  </div>
 
 
     <ng-container *ngIf="mainService.isMobile">
-        <div class="buttons-container buttons-container-small">
-            <button class="button button-small" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate
-                }}</button>
-            <button class="button button-small" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
-        </div>
+      <div class="buttons-container buttons-container-small">
+        <button class="button button-small" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate }}</button>
+        <button class="button button-small" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
+      </div>
     </ng-container>
 
     <ng-container *ngIf="!mainService.isMobile">
-        <div class="buttons-container buttons-container-large">
-            <button class="button button-large" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate
-                }}</button>
-            <button class="button button-large" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
-        </div>
+      <div class="buttons-container buttons-container-large">
+        <button class="button button-large" (click)="onSaveClick()" [disabled]="false">{{ "SAVE.SAVE" | translate }}</button>
+        <button class="button button-large" (click)="mainService.goBack()">{{ "CANCEL" | translate }}</button>
+      </div>
     </ng-container>
 
 </div>

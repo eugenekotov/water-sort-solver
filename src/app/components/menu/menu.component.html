@@ -1,34 +1,33 @@
 <div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
 
     <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
-        <ng-container *ngIf="!mainService.isFullScreen">
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
-                (click)="mainService.setFullScreen(true)">
-                <div style="display: flex; justify-content: center; align-items: center;">
-                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'"
-                        style="font-size: 30px; height: 30px; width: 30px; font-weight: 500;">fullscreen</mat-icon>
-                </div>
-            </button>
-        </ng-container>
-        <ng-container *ngIf="mainService.isFullScreen">
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
-                (click)="mainService.setFullScreen(false)">
-                <div style="display: flex; justify-content: center; align-items: center;">
-                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'"
-                        style="font-size: 30px; height: 30px; width: 30px; font-weight: 500;">fullscreen_exit</mat-icon>
-                </div>
-            </button>
-        </ng-container>
+      <ng-container *ngIf="!mainService.isFullScreen">
+        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
+          (click)="mainService.setFullScreen(true)">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'"
+              style="font-size: 30px; height: 30px; width: 30px; font-weight: 500;">fullscreen</mat-icon>
+          </div>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="mainService.isFullScreen">
+        <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
+          (click)="mainService.setFullScreen(false)">
+          <div style="display: flex; justify-content: center; align-items: center;">
+            <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'"
+              style="font-size: 30px; height: 30px; width: 30px; font-weight: 500;">fullscreen_exit</mat-icon>
+          </div>
+        </button>
+      </ng-container>
     </div>
 
-    <div style="display: flex; justify-content: center; flex-grow: 1;">
-        <div class="menu-container">
-            <button *ngFor="let item of menu" class="button"
-                [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'" (click)="onClick(item)"
-                [disabled]="itemDisabled(item)">
+  <div style="display: flex; justify-content: center; flex-grow: 1;">
+    <div class="menu-container">
+      <button *ngFor="let item of menu" class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
+        (click)="onClick(item)" [disabled]="itemDisabled(item)">
 
-                {{item.title | translate}}
-            </button>
-        </div>
+        {{item.title | translate}}
+      </button>
     </div>
+  </div>
 </div>

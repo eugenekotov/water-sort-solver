@@ -1,28 +1,28 @@
 @use 'src/styles/variables' as *;
 
 .view-container {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 
 .menu-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 50px;
 }
 
 .title-buttons {
-    display: flex;
-    justify-content: end;
+  display: flex;
+  justify-content: end;
 }
 
 .title-buttons-small {
-    margin: $margin-small;
+  margin: $margin-small;
 }
 
 .title-buttons-large {
-    margin: $margin-large;
+  margin: $margin-large;
 }

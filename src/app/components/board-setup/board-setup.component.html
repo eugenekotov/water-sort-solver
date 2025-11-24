@@ -1,156 +1,144 @@
 <div class="view-container" [ngStyle]="mainService.visible.get(view) ? {'opacity' : 1} : {'opacity' : 0}">
 
-    <div class="title-container">
+  <div class="title-container">
 
-        <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
+    <div class="title-buttons" [ngClass]="mainService.isMobile ? 'title-buttons-small' : 'title-buttons-large'">
 
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
-                <div style="display: flex; justify-content: center; align-items: center;">
-                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
-                </div>
-            </button>
-
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="clearClick()">{{"SETUP.CLEAR" | translate}}</button>
-                <button mat-menu-item (click)="fillRandomly()">{{"SETUP.FILL_RANDOM" | translate}}</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="saveClick()" [disabled]="!hasGame">{{"MENU.SAVE" | translate}}</button>
-                <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="solveClick()" [disabled]="!hasGame">{{"SETUP.SOLVE" |
-                    translate}}</button>
-                <button mat-menu-item (click)="playClick()" [disabled]="!hasGame">{{"SETUP.PLAY" | translate}}</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="mainService.setView('settings')">{{"MENU.SETTINGS" | translate}}</button>
-            </mat-menu>
-
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
-                (click)="startTour()">?</button>
-
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" [matMenuTriggerFor]="menu">
+        <div style="display: flex; justify-content: center; align-items: center;">
+          <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">menu</mat-icon>
         </div>
+      </button>
+
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="mainService.setView('menu')">{{"MENU.MAIN" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="clearClick()">{{"SETUP.CLEAR" | translate}}</button>
+        <button mat-menu-item (click)="fillRandomly()">{{"SETUP.FILL_RANDOM" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="saveClick()" [disabled]="!hasGame">{{"MENU.SAVE" | translate}}</button>
+        <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="solveClick()"[disabled]="!hasGame">{{"SETUP.SOLVE" | translate}}</button>
+        <button mat-menu-item (click)="playClick()" [disabled]="!hasGame">{{"SETUP.PLAY" | translate}}</button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="mainService.setView('settings')">{{"MENU.SETTINGS" | translate}}</button>
+      </mat-menu>
+
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
+        (click)="startTour()">?</button>
+
+    </div>
+  </div>
+
+  <div class="text-containers-parent">
+    <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
+      {{ 'SETUP.TITLE_1' | translate }}
+    </div>
+    <div [ngStyle]="mainService.isMobile ? {'height': '20px', 'font-size': '12px'} : {'height': '30px', 'font-size': '14px'}">
+      <div *ngIf="stepCount > 0" style="font-weight: 100; margin-top: 10px;">{{ 'SETUP.SOLVED' | translate: {stepCount: stepCount} }} </div>
+    </div>
+  </div>
+
+  <div class="source-containers-parent">
+    <div id="source-containers" class="source-containers shadow-inset"
+      [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
+
+      <div *ngFor="let item of gameService.gameSourceItems.sourceItems" class="source-container"
+        [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'"
+        (click)="onSourceItemClick($event, item)">
+
+        <div [attr.id]="getSourceItemId(item)" class="shadow"
+          [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
+          [ngStyle]="getSourceItemStyle(item)">
+        </div>
+
+        <div class="source-item-count shadow"
+          [ngClass]="mainService.isMobile ? 'source-item-count-small' : 'source-item-count-large'"
+          [ngStyle]="item.count > 0 ? {'opacity' : 1} : {'opacity' : 1}">
+
+          {{item.count}}
+        </div>
+      </div>
     </div>
 
-    <div class="text-containers-parent">
-        <div class="header-text" [ngClass]="mainService.isMobile ? 'header-text-small' : 'header-text-large'">
-            {{ 'SETUP.TITLE_1' | translate }}
+    <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 5px;">
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="addContainer()">
+        <div style="display: flex; justify-content: center;">
+          <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">add</mat-icon>
         </div>
-        <div
-            [ngStyle]="mainService.isMobile ? {'height': '20px', 'font-size': '12px'} : {'height': '30px', 'font-size': '14px'}">
-            <div *ngIf="stepCount > 0" style="font-weight: 100; margin-top: 10px;">{{ 'SETUP.SOLVED' | translate:
-                {stepCount: stepCount} }} </div>
+      </button>
+      <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="removeContainer()">
+        <div style="display: flex; justify-content: center;">
+          <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">remove</mat-icon>
         </div>
+      </button>
     </div>
+  </div>
 
-    <div class="source-containers-parent">
-        <div id="source-containers" class="source-containers shadow-inset"
-            [ngClass]="mainService.isMobile ? 'source-containers-small' : 'source-containers-large'">
+  <div class="relative-container" [ngClass]="mainService.isMobile ? 'relative-container-small' : 'relative-container-large'">
 
-            <div *ngFor="let item of gameService.gameSourceItems.sourceItems" class="source-container"
-                [ngClass]="mainService.isMobile ? 'source-container-small' : 'source-container-large'"
-                (click)="onSourceItemClick($event, item)">
+    <!-- Duplicate for position -->
+    <div class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
+      style="position: absolute; opacity: 0; z-index: 0;">
 
-                <div [attr.id]="getSourceItemId(item)" class="shadow"
-                    [ngClass]="mainService.isMobile ? 'item-small source-item-small' : 'item-large source-item-large'"
-                    [ngStyle]="getSourceItemStyle(item)">
-                </div>
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
 
-                <div class="source-item-count shadow"
-                    [ngClass]="mainService.isMobile ? 'source-item-count-small' : 'source-item-count-large'"
-                    [ngStyle]="item.count > 0 ? {'opacity' : 1} : {'opacity' : 1}">
+        <div *ngFor="let container of positionContainers1" class="container container-position"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
 
-                    {{item.count}}
-                </div>
-            </div>
+          <div *ngFor="let color of container.colors; let itemIndex=index"
+            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
         </div>
 
-        <div id="buttons-add-remove" style="display: flex; gap: 0.5rem; margin: 5px;">
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'" (click)="addContainer()">
-                <div style="display: flex; justify-content: center;">
-                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">add</mat-icon>
-                </div>
-            </button>
-            <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
-                (click)="removeContainer()">
-                <div style="display: flex; justify-content: center;">
-                    <mat-icon [ngClass]="mainService.isMobile ? 'mat-icon-small' : 'mat-icon-large'">remove</mat-icon>
-                </div>
-            </button>
+      </div>
+      <div *ngIf="setupContainers2.length > 0" class="containers"
+        [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+
+        <div *ngFor="let container of positionContainers2" class="container container-position"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+
+          <div *ngFor="let color of container.colors; let itemIndex=index"
+            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+          </div>
         </div>
+      </div>
     </div>
+    <!--  -->
+    <div id="containers" class="containers-parent" [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'" style="z-index: 6;">
 
-    <div class="relative-container"
-        [ngClass]="mainService.isMobile ? 'relative-container-small' : 'relative-container-large'">
+      <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of setupContainers1" [id]="utils.getContainerId(container.index)" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList
+          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(utils.getContainerId(container.index))"
+          (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
+          (click)="onSetupContainerClick($event, container)">
 
-        <!-- Duplicate for position -->
-        <div class="containers-parent"
-            [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
-            style="position: absolute; opacity: 0; z-index: 0;">
-
-            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-
-                <div *ngFor="let container of positionContainers1" class="container container-position"
-                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
-
-                    <div *ngFor="let color of container.colors; let itemIndex=index"
-                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
-                    </div>
-                </div>
-
-            </div>
-            <div *ngIf="setupContainers2.length > 0" class="containers"
-                [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-
-                <div *ngFor="let container of positionContainers2" class="container container-position"
-                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
-
-                    <div *ngFor="let color of container.colors; let itemIndex=index"
-                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
-                    </div>
-                </div>
-            </div>
+          <div *ngFor="let color of container.colors" class="item shadow shadow-active"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)" cdkDrag>
+          </div>
         </div>
-        <!--  -->
-        <div id="containers" class="containers-parent"
-            [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'"
-            style="z-index: 6;">
+      </div>
 
-            <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-                <div *ngFor="let container of setupContainers1" [id]="utils.getContainerId(container.index)"
-                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                    cdkDropList [cdkDropListData]="container.colors"
-                    [cdkDropListConnectedTo]="getConnectedLists(utils.getContainerId(container.index))"
-                    (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
-                    (click)="onSetupContainerClick($event, container)">
+      <div *ngIf="setupContainers2.length > 0" class="containers"
+        [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
+        <div *ngFor="let container of setupContainers2" [id]="utils.getContainerId(container.index)" class="container"
+          [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'" cdkDropList
+          [cdkDropListData]="container.colors" [cdkDropListConnectedTo]="getConnectedLists(utils.getContainerId(container.index))"
+          (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
+          (click)="onSetupContainerClick($event, container)">
 
-                    <div *ngFor="let color of container.colors" class="item shadow shadow-active"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-                        [ngStyle]="utils.getItemStyle(color)" cdkDrag>
-                    </div>
-                </div>
-            </div>
-
-            <div *ngIf="setupContainers2.length > 0" class="containers"
-                [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
-                <div *ngFor="let container of setupContainers2" [id]="utils.getContainerId(container.index)"
-                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                    cdkDropList [cdkDropListData]="container.colors"
-                    [cdkDropListConnectedTo]="getConnectedLists(utils.getContainerId(container.index))"
-                    (cdkDropListDropped)="drop($event)" [cdkDropListEnterPredicate]="canDrop(container)"
-                    (click)="onSetupContainerClick($event, container)">
-
-                    <div *ngFor="let color of container.colors" class="item shadow shadow-active"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-                        [ngStyle]="utils.getItemStyle(color)" cdkDrag>
-                    </div>
-                </div>
-            </div>
+          <div *ngFor="let color of container.colors" class="item shadow shadow-active"
+            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'" [ngStyle]="utils.getItemStyle(color)" cdkDrag>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <app-moving-item [item]="movingItem" (click)="onMovingItemClick(movingItem)"></app-moving-item>
+  <app-moving-item [item]="movingItem" (click)="onMovingItemClick(movingItem)"></app-moving-item>
 
 </div>
