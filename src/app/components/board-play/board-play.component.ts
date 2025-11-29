@@ -94,8 +94,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         }
         this.clicksSubject$ = new Subject<GameContainer>();
         this.stepsSubjectSubscription = this.clicksSubject$.pipe(
-            concatMap(container => this.handleClick(container)))
-            .subscribe({
+            concatMap(container => this.handleClick(container))).subscribe({
                 next: (step: PlayStep | undefined) => {
                     if (step) {
                         this.gameService.steps.push(step);
@@ -241,15 +240,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.playContainers2 = this.gameService.playContainers.slice(container1Count, containerCount);
     }
 
-    protected onClick(event: MouseEvent) {
-        const x = event.clientX;
-        const y = event.clientY;
-        const container = this.getContainerByCoordinates(x, y);
-        if (container) {
-            this.clicksSubject$.next(container);
-        }
-    }
-
     private getContainerByCoordinates(x: number, y: number): GameContainer | undefined {
         for (let i = 0; i < this.containerHTMLElements.length; i++) {
             const rect = this.containerHTMLElements[i].getBoundingClientRect();
@@ -354,16 +344,16 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    protected onMouseUpDown(value: boolean, event: MouseEvent) {
+    protected onMouseUpDown(isUp: boolean, event: MouseEvent) {
         const x = event.clientX;
         const y = event.clientY;
         const container = this.getContainerByCoordinates(x, y);
         if (container) {
-            console.log(`Container index ${container.index} set to ${value}`);
-            if (value) {
+            if (isUp) {
                 this.activeContainerIndex = container.index;
             } else {
                 this.activeContainerIndex = undefined;
+                this.clicksSubject$.next(container);
             }
         }
     }
@@ -376,6 +366,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         if (event.buttons === 1) {
             this.activeContainerIndex = index;
         }
+    }
+
+    protected onMouseMove(event: any) {
+        console.log(event);
     }
 
     protected getContainerActiveStyle(containerIndex: number) {

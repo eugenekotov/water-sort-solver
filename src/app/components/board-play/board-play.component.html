@@ -38,8 +38,8 @@
         <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
     </div>
 
-    <div id="moving-parent" class="relative-container" (click)="onClick($event)"
-            (mousedown)="onMouseUpDown(true, $event)" (mouseup)="onMouseUpDown(false, $event)">
+    <div id="moving-parent" class="relative-container"
+            (pointerdown)="onMouseUpDown(true, $event)" (pointerup)="onMouseUpDown(false, $event)">
 
         <!-- Duplicate for position -->
         <div class="containers-parent"
@@ -49,22 +49,22 @@
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of positionContainers1" class="container"
                         [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                        (mouseenter)="onMouseEnter($event, container.index)" (mouseleave)="onMouseLeave()">
+                        (pointerenter)="onMouseEnter($event, container.index)" (pointerleave)="onMouseLeave()" (pointermove)="onMouseMove($event)">
 
                     <div *ngFor="let color of container.colors; let itemIndex=index"
-                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+                            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+                            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
                     </div>
                 </div>
             </div>
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of positionContainers2" class="container"
                         [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                        (mouseenter)="onMouseEnter($event, container.index)" (mouseleave)="onMouseLeave()">
+                        (pointerenter)="onMouseEnter($event, container.index)" (pointerleave)="onMouseLeave()">
 
                     <div *ngFor="let color of container.colors; let itemIndex=index"
-                        [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
+                            [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
+                            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'">
                     </div>
                 </div>
             </div>
@@ -80,8 +80,8 @@
                         [ngStyle]="getContainerActiveStyle(container.index)">
 
                     <div *ngFor="let color of container.colors" class="item shadow"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-                        [ngStyle]="utils.getItemStyle(color)">
+                            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+                            [ngStyle]="utils.getItemStyle(color)">
                     </div>
                 </div>
             </div>
@@ -92,8 +92,8 @@
                         [ngStyle]="getContainerActiveStyle(container.index)">
 
                     <div *ngFor="let color of container.colors" class="item shadow"
-                        [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
-                        [ngStyle]="utils.getItemStyle(color)">
+                            [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
+                            [ngStyle]="utils.getItemStyle(color)">
                     </div>
                 </div>
             </div>
@@ -105,22 +105,22 @@
     <ng-container *ngIf="mainService.isMobile">
         <div class="buttons-container buttons-container-small">
             <button class="button button-small" style="margin-right: 30px;" (click)="restartClick()"
-                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
-                translate }}</button>
+                    [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
+                    translate }}</button>
             <button class="button button-small" (click)="backClick()"
-                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
-                | translate }}</button>
+                    [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
+                    | translate }}</button>
         </div>
     </ng-container>
 
     <ng-container *ngIf="!mainService.isMobile">
         <div class="buttons-container buttons-container-large">
             <button class="button button-large" style="margin-right: 30px;" (click)="restartClick()"
-                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
-                translate }}</button>
+                    [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "PLAY.RESTART" |
+                    translate }}</button>
             <button class="button button-large" (click)="backClick()"
-                [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
-                | translate }}</button>
+                    [disabled]="movingController.stoppingInProgress || gameService.steps.length === 0">{{ "SOLVE.STEP_BACK"
+                    | translate }}</button>
         </div>
     </ng-container>
 

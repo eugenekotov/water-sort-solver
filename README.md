@@ -21,10 +21,10 @@ Deploy
 
 Execute commands:
   ng build --configuration production --base-href /water-sort-solver/
-  ngh --dir=dist/water-sort-solver
+  ngh --dir=dist/water-sort-solver/
 
 if ngh is not installed:
-  npx angular-cli-ghpages --dir=dist/water-sort-solver
+  npx angular-cli-ghpages --dir=dist/water-sort-solver/
 
 or install it:
   npm install -g angular-cli-ghpages
