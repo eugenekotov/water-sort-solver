@@ -20,10 +20,7 @@
                 <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
                 <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
 
-                <!-- <mat-divider></mat-divider> -->
-                <!-- <button mat-menu-item (click)="solveClick()" [disabled]="filling">{{"SETUP.SOLVE" | translate}}</button>
-        <button mat-menu-item (click)="playClick()" [disabled]="filling">{{"SETUP.PLAY" | translate}}</button> -->
-                <!-- <mat-divider></mat-divider> -->
+                <mat-divider></mat-divider>
                 <button mat-menu-item (click)="mainService.setView('settings')"
                     [disabled]="movingInProgress">{{"MENU.SETTINGS" |
                     translate}}</button>
@@ -41,7 +38,8 @@
         <p>{{ "SOLVE.STEP" | translate: {step: gameService.steps.length} }}</p>
     </div>
 
-    <div id="moving-parent" class="relative-container" (click)="onClick($event)">
+    <div id="moving-parent" class="relative-container" (click)="onClick($event)"
+            (mousedown)="onMouseUpDown(true, $event)" (mouseup)="onMouseUpDown(false, $event)">
 
         <!-- Duplicate for position -->
         <div class="containers-parent"
@@ -50,7 +48,8 @@
 
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of positionContainers1" class="container"
-                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+                        [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                        (mouseenter)="onMouseEnter($event, container.index)" (mouseleave)="onMouseLeave()">
 
                     <div *ngFor="let color of container.colors; let itemIndex=index"
                         [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
@@ -60,7 +59,8 @@
             </div>
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of positionContainers2" class="container"
-                    [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'">
+                        [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                        (mouseenter)="onMouseEnter($event, container.index)" (mouseleave)="onMouseLeave()">
 
                     <div *ngFor="let color of container.colors; let itemIndex=index"
                         [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"
@@ -72,11 +72,12 @@
 
         <!--  -->
         <div class="containers-parent"
-            [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'">
+                [ngClass]="mainService.isMobile ? 'containers-parent-small' : 'containers-parent-large'">
+
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of playContainers1" [id]="utils.getContainerId(container.index)"
-                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                    (click)="onContainerClick($event, container)">
+                        class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                        [ngStyle]="getContainerActiveStyle(container.index)">
 
                     <div *ngFor="let color of container.colors" class="item shadow"
                         [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"
@@ -87,8 +88,8 @@
 
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of playContainers2" [id]="utils.getContainerId(container.index)"
-                    class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                    (click)="onContainerClick($event, container)">
+                        class="container" [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
+                        [ngStyle]="getContainerActiveStyle(container.index)">
 
                     <div *ngFor="let color of container.colors" class="item shadow"
                         [ngClass]="mainService.isMobile ? 'item-small' : 'item-large'"

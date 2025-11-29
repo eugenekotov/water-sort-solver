@@ -46,10 +46,14 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     protected previousStepCount: number = 0;
 
+    protected activeContainerIndex: number | undefined;
+    protected activeContainerBackgroundColor: string;
+
     constructor(public mainService: MainService, public gameService: GameService, public dialog: MatDialog, private statisticsService: StatisticsService) {
         this.gameService.gameView = this.view;
         this.prepareBoard();
         this.createPositionContainers();
+        this.setActiveContainerBackgroundColor();
     }
 
     ngAfterViewInit(): void {
@@ -69,6 +73,14 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         }
         this.stepsSubjectSubscription.unsubscribe();
 
+    }
+
+    private setActiveContainerBackgroundColor() {
+        if (this.mainService.theme === 'dark-theme') {
+            this.activeContainerBackgroundColor = 'rgb(82, 88, 94)';
+        } else {
+            this.activeContainerBackgroundColor = 'rgb(220, 220, 220)';
+        }
     }
 
     private onScreenResized() {
@@ -159,11 +171,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         });
     }
 
-    protected onContainerClick(event: any, container: GameContainer) {
-        this.clicksSubject$.next(container);
-        event.stopPropagation();
-    }
-
     protected backClick() {
         if (this.movingInProgress) {
             this.movingController.stoppingInProgress = true;
@@ -234,7 +241,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.playContainers2 = this.gameService.playContainers.slice(container1Count, containerCount);
     }
 
-    protected onClick(event: any) {
+    protected onClick(event: MouseEvent) {
         const x = event.clientX;
         const y = event.clientY;
         const container = this.getContainerByCoordinates(x, y);
@@ -345,6 +352,39 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                 this.prepareBoard();
             }
         });
+    }
+
+    protected onMouseUpDown(value: boolean, event: MouseEvent) {
+        const x = event.clientX;
+        const y = event.clientY;
+        const container = this.getContainerByCoordinates(x, y);
+        if (container) {
+            console.log(`Container index ${container.index} set to ${value}`);
+            if (value) {
+                this.activeContainerIndex = container.index;
+            } else {
+                this.activeContainerIndex = undefined;
+            }
+        }
+    }
+
+    protected onMouseLeave() {
+        this.activeContainerIndex = undefined;
+    }
+
+    protected onMouseEnter(event: MouseEvent, index: number) {
+        if (event.buttons === 1) {
+            this.activeContainerIndex = index;
+        }
+    }
+
+    protected getContainerActiveStyle(containerIndex: number) {
+        if (containerIndex === this.activeContainerIndex) {
+            return {
+                'backgroundColor': this.activeContainerBackgroundColor
+            };
+        }
+        return undefined;
     }
 
 }
