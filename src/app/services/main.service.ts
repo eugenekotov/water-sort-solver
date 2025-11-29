@@ -33,7 +33,9 @@ export class MainService {
     readonly defaultSpeed = 5;
     speed: number = this.defaultSpeed;
 
-    private _view: TView | undefined = undefined;
+    predictStep: boolean;
+
+    private _view: TView;
     visible: Map<TView, boolean> = new Map<TView, boolean>();
 
     solutionController: SolutionController = new SolutionController();
@@ -43,9 +45,10 @@ export class MainService {
         // this.loadContainerCount();
         this.setLanguage();
         this.loadSpeed();
+        this.loadPredictStep();
     }
 
-    get view(): TView | undefined {
+    get view(): TView {
         return this._view;
     }
 
@@ -180,6 +183,14 @@ export class MainService {
         const value = localStorage.getItem(STORAGE_KEY + "-theme");
         this.theme = value ? value as TTheme : "light-theme";
         this.applyTheme();
+    }
+
+    savePredictStep(value: boolean) {
+        localStorage.setItem(STORAGE_KEY + "-predict-step", value.toString());
+    }
+
+    private loadPredictStep() {
+        this.predictStep = (localStorage.getItem(STORAGE_KEY + "-predict-step") ?? "false") == "true";
     }
 
     play() {

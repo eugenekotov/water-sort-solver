@@ -29,6 +29,7 @@ import { LoadGameComponent } from './components/load-game/load-game.component';
 import { PlayedDialogComponent } from './components/played-dialog/played-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { StatisticsComponent } from './components/statistics/statistics.component'
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -72,6 +73,7 @@ export function HttpLoaderFactory(http: HttpClient) {
         MatMenuModule,
         MatDividerModule,
         MatDialogModule,
+        MatCheckboxModule,
     ],
     providers: [],
     bootstrap: [AppComponent]

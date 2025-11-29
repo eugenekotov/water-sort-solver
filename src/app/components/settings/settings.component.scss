@@ -38,7 +38,7 @@
     display: grid;
     justify-items: center;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 50px 60px 100px;
+    row-gap: 2rem;
 }
 
 .lang-flag-container {
@@ -70,7 +70,8 @@
     height: 26px;
 }
 
-.speed-small-2 {
+.speed-small {
+    grid-column: 1 / 3;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -81,4 +82,8 @@
 
 mat-slider {
     width: 250px;
+}
+
+.settings-checkbox {
+    grid-column: 1 / 3;
 }

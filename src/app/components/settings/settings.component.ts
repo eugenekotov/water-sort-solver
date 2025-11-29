@@ -20,4 +20,8 @@ export class SettingsComponent implements OnInit {
         this.mainService.saveSpeed(speed);
     }
 
+    predictStepChanged(value: boolean) {
+        this.mainService.savePredictStep(value);
+    }
+
 }
