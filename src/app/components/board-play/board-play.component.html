@@ -49,7 +49,7 @@
             <div class="containers" [ngClass]="mainService.isMobile ? 'containers-small' : 'containers-large'">
                 <div *ngFor="let container of positionContainers1" class="container"
                         [ngClass]="mainService.isMobile ? 'container-small' : 'container-large'"
-                        (pointerenter)="onMouseEnter($event, container.index)" (pointerleave)="onMouseLeave()" (pointermove)="onMouseMove($event)">
+                        (pointerenter)="onMouseEnter($event, container.index)" (pointerleave)="onMouseLeave()">
 
                     <div *ngFor="let color of container.colors; let itemIndex=index"
                             [id]="utils.getContainerItemId(container.index, itemIndex)" class="item"

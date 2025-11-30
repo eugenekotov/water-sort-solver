@@ -61,10 +61,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             setTimeout(() => this.onScreenResized(), 500);
         });
         this.onScreenResized();
-        // Check if it is resolved
-        setTimeout(() => {
-            this.checkGameFinished();
-        }, 500);
+        setTimeout(() => this.checkGameFinished());
     }
 
     ngOnDestroy(): void {
@@ -325,6 +322,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     private checkGameFinished() {
         if (GameContainer.isResolvedContainers(this.gameService.playContainers)) {
+            // TODO: At this moment we need to stop playing
             this.showPlayedDialog();
         }
     }
@@ -335,9 +333,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             disableClose: true,
         };
 
-        const dialogRef = this.dialog.open(PlayedDialogComponent, config);
+        const dialogRef = this.dialog.open<PlayedDialogComponent, PlayedDialogData, PlayedDialogResult | undefined>(PlayedDialogComponent, config);
 
-        dialogRef.afterClosed().subscribe((result: PlayedDialogResult) => {
+        dialogRef.afterClosed().subscribe(result => {
             if (result?.view === 'play') {
                 this.prepareBoard();
             }
@@ -366,10 +364,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         if (event.buttons === 1) {
             this.activeContainerIndex = index;
         }
-    }
-
-    protected onMouseMove(event: any) {
-        console.log(event);
     }
 
     protected getContainerActiveStyle(containerIndex: number) {
