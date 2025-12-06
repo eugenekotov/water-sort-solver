@@ -87,12 +87,14 @@
 
 .buttons-container-small {
     margin: $margin-small;
-    gap: $margin-small;
+    margin-bottom: $margin-small * 3;
+    gap: $margin-small * 3;
 }
 
 .buttons-container-large {
     margin: $margin-large;
-    gap: math.div($margin-large, 2);
+    margin-bottom: $margin-large * 2;
+    gap: $margin-large * 3;
     flex-wrap: wrap;
 }
 

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { concatMap, Observable, Subject, Subscription } from 'rxjs';
+import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
 import { GameController } from 'src/app/classes/controller/game-controller.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
@@ -16,6 +16,11 @@ export class PlayStep {
     constructor(public iFrom: number, public iTo: number, public count: number) { }
 }
 
+interface HandleClickError {
+    message: string;
+    shouldStepBack: boolean;
+}
+
 @Component({
     selector: 'app-board-play',
     templateUrl: './board-play.component.html',
@@ -23,7 +28,7 @@ export class PlayStep {
 })
 export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
-    protected utils = Utils;
+    protected readonly Utils = Utils;
     protected readonly view: TGameView = 'play';
 
     protected playContainers1: GameContainer[] = [];
@@ -38,11 +43,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates // TODO: Check it
 
     private clicksSubject$ = new Subject<GameContainer>();
-    private stopSubject$ = new Subject<void>();
+    private stopMovingSubject$ = new Subject<boolean>(); // allow to subscribe to stopped event, result says should be reverted latest step
     private stepsSubjectSubscription: Subscription;
 
     protected movingController = new MovingController(this.mainService);
     protected movingInProgress: boolean = false;
+    private stoppingInProgress: boolean = false;
+
 
     protected previousStepCount: number = 0;
 
@@ -99,67 +106,40 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                     this.movingInProgress = false;
                     this.checkGameFinished();
                 },
-                error: () => {
-                    // Interrupted by button start from scratch or step back
-                    this.movingController.stoppingInProgress = false;
+                error: (error: HandleClickError) => {
+                    // Interrupted by Restert or step back button
+                    this.stoppingInProgress = false;
                     this.movingInProgress = false;
                     this.stepsSubjectSubscription.unsubscribe();
                     this.createStepsSubject();
-                    this.stopSubject$.next();
+                    this.stopMovingSubject$.next(error.shouldStepBack);
                 }
             });
     }
 
     private handleClick(container: GameContainer): Observable<PlayStep | undefined> {
-        return new Observable(observer => {
+        return new Observable<PlayStep | undefined>(observer => {
             this.movingInProgress = true;
             if (this.selectedContainer) {
                 if (container.index === this.selectedContainer.index) {
                     // Move colors back down
-                    const movingCount = this.movingController.getVisibleMovingItems().length;
-                    this.movingController.moveDown(container, 0, movingCount).subscribe(() => {
-                        this.selectedContainer = undefined;
-                        observer.next();
-                        observer.complete();
-                    });
+                    this.handleClickMoveDown(container, observer);
                 } else {
                     if (container.isEmpty() || ((!container.isFull()) && container.peek() === this.movingController.getColor())) {
                         // Move colors if it is possible
-                        const visibleCount = this.movingController.getVisibleMovingItems().length;
-                        const movingToCount = Math.min(CONTAINER_SIZE - container.size(), visibleCount);
-                        const movingDownCount = visibleCount - movingToCount;
-                        const fromIndex = this.selectedContainer!.index;
-                        this.movingController.moveTo(container, movingToCount).subscribe(() => {
-                            this.movingController.moveDown(this.selectedContainer!, movingToCount, movingDownCount).subscribe(() => {
-                                this.selectedContainer = undefined;
-                                observer.next(new PlayStep(fromIndex, container.index, movingToCount));
-                                observer.complete();
-                            });
-                        });
+                        this.handleClickMoveTo(container, observer);
                     } else {
-                        const movingCount = this.movingController.getVisibleMovingItems().length;
-                        this.movingController.moveDown(this.selectedContainer, 0, movingCount).subscribe(() => {
-                            this.selectedContainer = undefined;
-                            observer.next();
-                            observer.complete();
-                        });
+                        // Nothing possible to move, then move down
+                        this.handleClickMoveDown(this.selectedContainer, observer);
                     }
                 }
             } else {
-                if (this.movingController.stoppingInProgress) {
-                    observer.error({ message: "Stop" });
-                    return;
-                }
                 // No selected container
                 if (!container.isEmpty()) {
                     // We selected container, move colors up
-                    const movingCount = container.getTopColorCount();
-                    this.movingController.moveUp(container, movingCount).subscribe(() => {
-                        this.selectedContainer = container;
-                        observer.next();
-                        observer.complete();
-                    });
+                    this.handleClickMoveUp(container, observer);
                 } else {
+                    // Click somewhere nothing to do
                     observer.next();
                     observer.complete();
                 }
@@ -167,20 +147,82 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         });
     }
 
+    private handleClickThrowError(subscriber: Subscriber<PlayStep | undefined>, message: string, shouldStepBack: boolean) {
+        subscriber.error(<HandleClickError>{ message, shouldStepBack });
+    }
+
+    private handleClickMoveDown(container: GameContainer, subscriber: Subscriber<PlayStep | undefined>) {
+        const movingCount = this.movingController.getVisibleMovingItems().length;
+        this.movingController.moveDown(container, 0, movingCount).subscribe(() => {
+            this.selectedContainer = undefined;
+            if (this.stoppingInProgress) {
+                subscriber.error(<HandleClickError>{ message: "Moving down back canceled", shouldStepBack: false });
+            } else {
+                subscriber.next();
+                subscriber.complete();
+            }
+        });
+    }
+
+    private handleClickMoveTo(container: GameContainer, subscriber: Subscriber<PlayStep | undefined>) {
+        const visibleCount = this.movingController.getVisibleMovingItems().length;
+        const movingToCount = Math.min(CONTAINER_SIZE - container.size(), visibleCount);
+        const movingDownCount = visibleCount - movingToCount;
+        const fromIndex = this.selectedContainer!.index;
+        this.movingController.moveTo(container, movingToCount).subscribe(() => {
+            if (movingDownCount > 0) {
+                this.movingController.moveDown(this.selectedContainer!, movingToCount, movingDownCount).subscribe(() => {
+                    if (this.stoppingInProgress) {
+                        this.movingController.moveToCancel(this.selectedContainer!, container, movingToCount);
+                        this.selectedContainer = undefined;
+                        this.handleClickThrowError(subscriber, "Moving to canceled", false);
+                    } else {
+                        this.selectedContainer = undefined;
+                        subscriber.next(new PlayStep(fromIndex, container.index, movingToCount));
+                        subscriber.complete();
+                    }
+                });
+            } else {
+                if (this.stoppingInProgress) {
+                    this.movingController.moveToCancel(this.selectedContainer!, container, movingToCount);
+                    this.selectedContainer = undefined;
+                    this.handleClickThrowError(subscriber, "Moving to canceled", false);
+                } else {
+                    this.selectedContainer = undefined;
+                    subscriber.next(new PlayStep(fromIndex, container.index, movingToCount));
+                    subscriber.complete();
+                }
+            }
+        });
+    }
+
+    private handleClickMoveUp(container: GameContainer, subscriber: Subscriber<PlayStep | undefined>) {
+        const movingCount = container.getTopColorCount();
+        this.movingController.moveUp(container, movingCount).subscribe(() => {
+            if (this.stoppingInProgress) {
+                this.movingController.moveUpCancel(container, movingCount);
+                subscriber.error(<HandleClickError>{ message: "Moving up canceled.", shouldStepBack: false });
+            } else {
+                this.selectedContainer = container;
+                subscriber.next();
+                subscriber.complete();
+            }
+        });
+    }
+
     protected backClick() {
         if (this.movingInProgress) {
-            this.movingController.stoppingInProgress = true;
-            const stopSubscriber = this.stopSubject$.subscribe(() => {
+            this.stoppingInProgress = true;
+            const stopSubscriber = this.stopMovingSubject$.subscribe((shouldStepBack) => {
                 stopSubscriber.unsubscribe();
-                this.stepBack();
+                if (shouldStepBack) {
+                    this.stepBack();
+                }
             });
         } else {
             if (this.selectedContainer) {
-                const movingCount = this.movingController.getVisibleMovingItems().length;
-                this.movingController.moveDown(this.selectedContainer!, 0, movingCount).subscribe(() => {
-                    this.selectedContainer = undefined;
-                    this.stepBack();
-                });
+                this.movingController.moveUpCancel(this.selectedContainer, this.movingController.getVisibleMovingItems().length);
+                this.selectedContainer = undefined;
             } else {
                 this.stepBack();
             }
@@ -198,13 +240,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.cancelUnfinishedStep();
         // TODO: Ask confirmation
         if (this.movingInProgress) {
-            this.movingController.stoppingInProgress = true;
+            this.stoppingInProgress = true;
             setTimeout(() => {
-                const stopSubscriber = this.stopSubject$.subscribe(() => {
+                const stopSubscriber = this.stopMovingSubject$.subscribe(() => {
                     stopSubscriber.unsubscribe();
                     this.restart();
                 });
-            }, 0);
+            });
         } else {
             this.restart();
         }
@@ -222,7 +264,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.previousStepCount = this.statisticsService.getStepCount(hash);
         this.createStepsSubject();
         this.movingInProgress = false;
-        this.movingController.stoppingInProgress = false;
+        this.stoppingInProgress = false;
         this.createPositionContainers();
         setTimeout(() => this.onScreenResized());
     }
@@ -373,6 +415,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             };
         }
         return undefined;
+    }
+
+    protected stopDisabled(): boolean {
+        const enabled = (this.movingInProgress || this.gameService.steps.length > 0 || this.selectedContainer) && !this.stoppingInProgress;
+        return !enabled;
     }
 
 }
