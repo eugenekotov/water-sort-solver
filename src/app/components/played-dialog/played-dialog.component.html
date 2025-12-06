@@ -14,20 +14,19 @@
     <div style="display: flex; flex-direction: column; justify-content: center; align-items:center; flex-wrap: nowrap;">
         <div class="buttons-container">
             <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
-                style="margin-bottom: 15px;" (click)="onPlayClick()">{{ 'MENU.PLAY_NEXT' | translate }}</button>
+                    (click)="onPlayClick()">{{ 'MENU.PLAY_NEXT' | translate }}</button>
 
             <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
-                style="margin-bottom: 15px;" (click)="onPlayAgainClick()">{{ 'MENU.PLAY_AGAIN' | translate }}</button>
+                    (click)="onPlayAgainClick()">{{ 'MENU.PLAY_AGAIN' | translate }}</button>
 
             <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
                 (click)="onShareClick()">{{ 'MENU.SHARE' | translate }}</button>
 
             <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
-                style="margin-bottom: 15px;" (click)="onCustomizeClick()">{{ 'MENU.CREATE' | translate }}</button>
+                    (click)="onCustomizeClick()">{{ 'MENU.CREATE' | translate }}</button>
 
             <button class="button" [ngClass]="mainService.isMobile ? 'button-small' : 'button-large'"
                 (click)="onMainMenuClick()">{{ 'MENU.MAIN' | translate }}</button>
-
         </div>
     </div>
 </div>

@@ -104,7 +104,7 @@
 
     <ng-container *ngIf="mainService.isMobile">
         <div>
-            <div class="buttons-container buttons-container-small">
+            <div class="buttons-container buttons-container-small" style="margin-bottom: 10px;">
                 <button class="button button-small" (click)="backClick()" [disabled]="playing || stepIndex === 0">{{
                     "SOLVE.STEP_BACK" | translate }}</button>
                 <button class="button button-small" (click)="nextClick()"
@@ -112,9 +112,9 @@
                     translate }}</button>
             </div>
             <div class="buttons-container buttons-container-small">
-                <button class="button button-small" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">{{
+                <button class="button button-small"  style="padding-left: 15px; padding-right: 15px;" (click)="playBackClick()" [disabled]="playing || stepIndex === 0">{{
                     "SOLVE.PLAY_BACK" | translate }}</button>
-                <button class="button button-small mr-1" (click)="playClick()"
+                <button class="button button-small" style="margin-right: 5px; padding-left: 15px; padding-right: 15px;" (click)="playClick()"
                     [disabled]="playing || stepIndex>=gameService.solution!.steps.length">{{ "SOLVE.PLAY_FORWARD" |
                     translate }}</button>
                 <button class="button button-small" (click)="stopClick()" [disabled]="!playing || stopping">{{

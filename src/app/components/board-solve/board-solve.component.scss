@@ -1,5 +1,6 @@
 @use 'src/styles/global-styles' as *;
 @use 'src/styles/variables' as *;
+@use 'sass:math';
 
 .view-container {
     display: flex;
@@ -25,4 +26,8 @@
 
 .solution-text-container {
     text-align: center;
+}
+
+.buttons-container-small {
+    gap: math.div($margin-small, 2);
 }
