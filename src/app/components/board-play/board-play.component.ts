@@ -48,8 +48,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     protected movingController = new MovingController(this.mainService);
     protected movingInProgress: boolean = false;
-    private stoppingInProgress: boolean = false;
-
+    protected stoppingInProgress: boolean = false;
 
     protected previousStepCount: number = 0;
 
@@ -237,19 +236,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
 
     protected restartClick() {
-        this.cancelUnfinishedStep();
-        // TODO: Ask confirmation
-        if (this.movingInProgress) {
-            this.stoppingInProgress = true;
-            setTimeout(() => {
-                const stopSubscriber = this.stopMovingSubject$.subscribe(() => {
-                    stopSubscriber.unsubscribe();
-                    this.restart();
-                });
-            });
-        } else {
+        this.cancelUnfinishedStep().subscribe(() => {
+            // TODO: Ask confirmation
             this.restart();
-        }
+        });
     }
 
     private restart() {
@@ -315,51 +305,65 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
 
     protected mainMenuClick() {
-        this.cancelUnfinishedStep();
-        this.mainService.setView('menu');
+        this.cancelUnfinishedStep().subscribe(() => this.mainService.setView('menu'));
     }
 
     protected playClick() {
-        this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
-        this.prepareBoard();
+        this.cancelUnfinishedStep().subscribe(() => {
+            this.gameService.createRandomGame(MAX_CONTAINER_COUNT - 2, MAX_CONTAINER_COUNT);
+            this.prepareBoard();
+        });
     }
 
     protected createClick() {
-        this.cancelUnfinishedStep();
-        this.gameService.setContainers(this.gameService.playContainers);
-        this.gameService.fromContainersToSetupContainers();
-        this.mainService.setView("setup");
+        this.cancelUnfinishedStep().subscribe(() => {
+            this.gameService.setContainers(this.gameService.playContainers);
+            this.gameService.fromContainersToSetupContainers();
+            this.mainService.setView("setup");
+        });
     }
 
-    private cancelUnfinishedStep() {
-        if (this.selectedContainer) {
-            // We need to move down
-            const movingItems = this.movingController.getVisibleMovingItems();
-            movingItems.forEach(item => this.selectedContainer!.push(item.color!));
-            this.movingController.setHidden(movingItems, true);
-            this.selectedContainer = undefined;
-        }
+    private cancelUnfinishedStep(): Observable<void> {
+        return new Observable<void>(observer => {
+            if (this.movingInProgress) {
+                this.stoppingInProgress = true;
+                const stopSubscriber = this.stopMovingSubject$.subscribe(() => {
+                    stopSubscriber.unsubscribe();
+                    observer.next();
+                    observer.complete();
+                });
+            } else {
+                if (this.selectedContainer) {
+                    this.movingController.moveUpCancel(this.selectedContainer, this.movingController.getVisibleMovingItems().length);
+                    this.selectedContainer = undefined;
+                }
+                observer.next();
+                observer.complete();
+            }
+        });
     }
 
     protected saveClick() {
-        this.cancelUnfinishedStep();
-        this.mainService.saveState();
+        this.cancelUnfinishedStep().subscribe(() => this.mainService.saveState());
     }
 
     protected loadClick() {
-        this.cancelUnfinishedStep();
-        // TODO: Confirm about lost current game
-        this.mainService.setView('load');
+        this.cancelUnfinishedStep().subscribe(() => {
+            // TODO: Confirm about lost current game
+            this.mainService.setView('load');
+        });
     }
 
+    protected settingsClick() {
+        this.cancelUnfinishedStep().subscribe(() => this.mainService.setView('settings'));
+    }
     private createPositionContainers() {
         this.positionContainers1 = this.playContainers1.map(container => Utils.createPositionContainer(container.index));
         this.positionContainers2 = this.playContainers2.map(container => Utils.createPositionContainer(container.index));
     }
 
     protected solveClick() {
-        this.cancelUnfinishedStep();
-        this.mainService.solve();
+        this.cancelUnfinishedStep().subscribe(() => this.mainService.solve());
     }
 
     private checkGameFinished() {

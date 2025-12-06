@@ -9,21 +9,26 @@
             </button>
 
             <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="mainMenuClick()">{{"MENU.MAIN" | translate}}</button>
+                <button mat-menu-item (click)="mainMenuClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.MAIN" | translate}}</button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="playClick()">{{"PLAY.PLAY" | translate}}</button>
-                <button mat-menu-item (click)="solveClick()">{{"MENU.SOLVE" | translate}}</button>
+                <button mat-menu-item (click)="playClick()"
+                        [disabled]="stoppingInProgress">{{"PLAY.PLAY" | translate}}</button>
+                <button mat-menu-item (click)="solveClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.SOLVE" | translate}}</button>
                 <mat-divider></mat-divider>
 
-                <button mat-menu-item (click)="createClick()">{{"MENU.CREATE" | translate}}</button>
+                <button mat-menu-item (click)="createClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.CREATE" | translate}}</button>
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="saveClick()">{{"MENU.SAVE" | translate}}</button>
-                <button mat-menu-item (click)="loadClick()">{{"MENU.LOAD" | translate}}</button>
+                <button mat-menu-item (click)="saveClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.SAVE" | translate}}</button>
+                <button mat-menu-item (click)="loadClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.LOAD" | translate}}</button>
 
                 <mat-divider></mat-divider>
-                <button mat-menu-item (click)="mainService.setView('settings')"
-                    [disabled]="movingInProgress">{{"MENU.SETTINGS" |
-                    translate}}</button>
+                <button mat-menu-item (click)="settingsClick()"
+                        [disabled]="stoppingInProgress">{{"MENU.SETTINGS" | translate}}</button>
             </mat-menu>
 
             <button class="fab" [ngClass]="mainService.isMobile ? 'fab-small' : 'fab-large'"
