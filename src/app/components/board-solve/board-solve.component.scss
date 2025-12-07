@@ -31,3 +31,7 @@
 .buttons-container-small {
     gap: math.div($margin-small, 2);
 }
+
+.buttons-container-large {
+    gap: $margin-large;
+}
