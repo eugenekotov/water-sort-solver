@@ -1,0 +1,104 @@
+import { Color } from "./model/colors.class";
+import { CONTAINER_SIZE } from "./model/const.class";
+import { GameContainer } from "./model/game/game-container.class";
+
+export class PredictionController {
+
+    private containers: GameContainer[] = [];
+    private selectedContainerIndex: number | undefined;
+    private predictedIndex: number | undefined;
+    private predictedIndexTimeout: NodeJS.Timeout;
+
+    createContainers(containers: GameContainer[]) {
+        this.containers = GameContainer.cloneContainers(containers);
+        this.selectedContainerIndex = undefined;
+    }
+
+    handleClick(index: number) {
+        if (this.selectedContainerIndex === undefined) {
+            // select container
+            this.selectedContainerIndex = index;
+        } else {
+            // Moving colors if it is possible
+            this.move(this.selectedContainerIndex, index);
+            this.selectedContainerIndex = undefined;
+        }
+    }
+
+    private move(indexFrom: number, indexTo: number) {
+        if (indexFrom === indexTo) {
+            // Clicked the same
+            return;
+        }
+        if (this.containers[indexFrom].size() === 0 || this.containers[indexTo].size() === CONTAINER_SIZE) {
+            // Source - empty, destination - full
+            return;
+        }
+        if (this.containers[indexTo].size() !== 0 && this.containers[indexTo].peek() !== this.containers[indexFrom].peek()) {
+            // Different top colors and destination not empty
+            return;
+        }
+        const color = this.containers[indexFrom].peek();
+        const fromCount = this.containers[indexFrom].getTopColorCount();
+        const toCount = CONTAINER_SIZE - this.containers[indexTo].size();
+        const count = Math.min(fromCount, toCount);
+        for (let i = 0; i < count; i++) {
+            this.containers[indexFrom].pop();
+            this.containers[indexTo].push(color);
+        }
+    }
+
+    checkIfPredicted(index: number): boolean {
+        const result = this.predictedIndex === index;
+        clearTimeout(this.predictedIndexTimeout);
+        this.predictedIndex = undefined;
+        return result;
+    }
+
+    private setPrediction(index: number) {
+        this.predictedIndex = index;
+        this.predictedIndexTimeout = setTimeout(
+            () => {
+                this.predictedIndex = undefined;
+                // console.log('predictedIndex cleared!');
+            }, 3000);
+    }
+
+    predictNextClick(): number | undefined {
+        if (this.selectedContainerIndex === undefined) {
+            return undefined;
+        }
+        const color = this.containers[this.selectedContainerIndex].peek();
+        const fromCount = this.containers[this.selectedContainerIndex].getTopColorCount();
+        let predictionTo: number | undefined = undefined;
+        for (let i = 0; i < this.containers.length; i++) {
+            if (i === this.selectedContainerIndex) {
+                continue;
+            }
+            if (this.canMoveTo(this.containers[i], color)) {
+                // Have possible option
+                if (predictionTo !== undefined) {
+                    // It is second option, then we cannot predict
+                    return undefined;
+                }
+                predictionTo = i;
+            }
+        }
+        if (predictionTo !== undefined) {
+            this.setPrediction(predictionTo);
+        }
+        return predictionTo;
+    }
+
+    private canMoveTo(container: GameContainer, color: Color): boolean {
+        if (container.size() === 0) {
+            return true;
+        }
+        if (container.peek() === color && container.size() < CONTAINER_SIZE) {
+            return true;
+        }
+        return false;
+    }
+
+
+}

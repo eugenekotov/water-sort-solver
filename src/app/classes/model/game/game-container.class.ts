@@ -44,6 +44,9 @@ export class GameContainer {
         return this.size() === CONTAINER_SIZE;
     }
 
+    /**
+     * @returns number of same colors starting from top
+     */
     public getTopColorCount(): number {
         if (this.isEmpty()) {
             return 0;

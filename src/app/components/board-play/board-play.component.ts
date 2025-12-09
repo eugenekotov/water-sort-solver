@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { concatMap, Observable, Subject, Subscriber, Subscription } from 'rxjs';
+import { concatMap, filter, map, Observable, of, Subject, Subscriber, Subscription, tap } from 'rxjs';
 import { GameController } from 'src/app/classes/controller/game-controller.class';
 import { CONTAINER_SIZE, MAX_CONTAINER_COUNT, MAX_CONTAINER_COUNT_IN_LINE } from 'src/app/classes/model/const.class';
 import { GameContainer } from 'src/app/classes/model/game/game-container.class';
@@ -10,6 +10,7 @@ import { GameService } from 'src/app/services/game.service';
 import { MainService, TGameView } from 'src/app/services/main.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
 import { PlayedDialogComponent, PlayedDialogData, PlayedDialogResult } from '../played-dialog/played-dialog.component';
+import { PredictionController } from 'src/app/classes/prediction-controller.class';
 
 
 export class PlayStep {
@@ -20,6 +21,17 @@ interface HandleClickError {
     message: string;
     shouldStepBack: boolean;
 }
+
+interface ClickObject {
+    containerIndex: number;
+    isPrediction: boolean; // true - if click was predicted
+}
+
+interface PredictionObject {
+    containerIndex: number;
+    shouldBeSkipped: boolean; // true - if we need to skip this click
+}
+
 
 @Component({
     selector: 'app-board-play',
@@ -39,10 +51,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     private selectedContainer: GameContainer | undefined;
 
+    private predictionController: PredictionController = new PredictionController();
+
     private screenResizedSubscription: Subscription | undefined = undefined;
     private containerHTMLElements: HTMLElement[] = []; // To get container by coordinates // TODO: Check it
 
-    private clicksSubject$ = new Subject<GameContainer>();
+    private clicksSubject$ = new Subject<ClickObject>();
     private stopMovingSubject$ = new Subject<boolean>(); // allow to subscribe to stopped event, result says should be reverted latest step
     private stepsSubjectSubscription: Subscription;
 
@@ -95,9 +109,37 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         if (this.stepsSubjectSubscription) {
             this.stepsSubjectSubscription.unsubscribe();
         }
-        this.clicksSubject$ = new Subject<GameContainer>();
-        this.stepsSubjectSubscription = this.clicksSubject$.pipe(
-            concatMap(container => this.handleClick(container))).subscribe({
+        this.clicksSubject$ = new Subject<ClickObject>();
+        this.stepsSubjectSubscription = this.clicksSubject$
+            .pipe(
+                concatMap(clickContainer => {
+                    if (this.mainService.predictStep) {
+                        if (clickContainer.isPrediction) {
+                            // console.log(`Registerd PREDICTED click on container ${clickContainer.containerIndex}`);
+                            this.predictionController.handleClick(clickContainer.containerIndex);
+                        } else {
+                            // console.log(`Registerd click on container ${clickContainer.containerIndex}`);
+                            if (this.predictionController.checkIfPredicted(clickContainer.containerIndex)) {
+                                // console.log(`Skip already predicted click on ${clickContainer.containerIndex}`);
+                                return of(<PredictionObject>{ containerIndex: clickContainer.containerIndex, shouldBeSkipped: true });
+                            }
+                            this.predictionController.handleClick(clickContainer.containerIndex);
+                            const predictedIndex = this.predictionController.predictNextClick();
+                            if (predictedIndex !== undefined) {
+                                // console.log(`Send virtual click on ${predictedIndex}`);
+                                this.clicksSubject$.next(<ClickObject>{ containerIndex: predictedIndex, isPrediction: true });
+                                this.showPrediction(predictedIndex);
+                                // console.log(`Continue after sent virtual click on ${predictedIndex}`);
+                            }
+                        }
+                        return of(<PredictionObject>{ containerIndex: clickContainer.containerIndex, shouldBeSkipped: false });
+                    } else {
+                        return of(<PredictionObject>{ containerIndex: clickContainer.containerIndex, shouldBeSkipped: false });
+                    }
+                }),
+                filter(container => container.shouldBeSkipped === false),
+            )
+            .pipe(concatMap(container => this.handleClick(container.containerIndex))).subscribe({
                 next: (step: PlayStep | undefined) => {
                     if (step) {
                         this.gameService.steps.push(step);
@@ -116,7 +158,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             });
     }
 
-    private handleClick(container: GameContainer): Observable<PlayStep | undefined> {
+    private handleClick(containerIndex: number): Observable<PlayStep | undefined> {
+        const container = this.gameService.playContainers[containerIndex];
+        // console.log(`Handled click on container ${container.index}`);
         return new Observable<PlayStep | undefined>(observer => {
             this.movingInProgress = true;
             if (this.selectedContainer) {
@@ -217,6 +261,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                 if (shouldStepBack) {
                     this.stepBack();
                 }
+                this.createPredictionContainers();
             });
         } else {
             if (this.selectedContainer) {
@@ -224,6 +269,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                 this.selectedContainer = undefined;
             } else {
                 this.stepBack();
+                this.createPredictionContainers();
             }
         }
     }
@@ -250,6 +296,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
 
     private prepareBoard() {
         this.createPlayContainers();
+        this.createPredictionContainers();
         const hash = GameController.getGameHash(this.gameService.getContainers());
         this.previousStepCount = this.statisticsService.getStepCount(hash);
         this.createStepsSubject();
@@ -267,6 +314,10 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         }
         this.playContainers1 = this.gameService.playContainers.slice(0, container1Count);
         this.playContainers2 = this.gameService.playContainers.slice(container1Count, containerCount);
+    }
+
+    private createPredictionContainers() {
+        this.predictionController.createContainers(this.gameService.playContainers);
     }
 
     private getContainerByCoordinates(x: number, y: number): GameContainer | undefined {
@@ -296,11 +347,11 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
 
     protected onMovingItemClick() {
-        if (this.movingInProgress) {
+        if (this.movingInProgress || this.stoppingInProgress) {
             return;
         }
         if (this.selectedContainer) {
-            this.clicksSubject$.next(this.selectedContainer);
+            this.clicksSubject$.next({ containerIndex: this.selectedContainer.index, isPrediction: false });
         }
     }
 
@@ -389,6 +440,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
 
     protected onMouseUpDown(isUp: boolean, event: MouseEvent) {
+        if (this.stoppingInProgress) {
+            return;
+        }
         const x = event.clientX;
         const y = event.clientY;
         const container = this.getContainerByCoordinates(x, y);
@@ -397,7 +451,7 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                 this.activeContainerIndex = container.index;
             } else {
                 this.activeContainerIndex = undefined;
-                this.clicksSubject$.next(container);
+                this.clicksSubject$.next({ containerIndex: container.index, isPrediction: false });
             }
         }
     }
@@ -424,6 +478,13 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     protected stopDisabled(): boolean {
         const enabled = (this.movingInProgress || this.gameService.steps.length > 0 || this.selectedContainer) && !this.stoppingInProgress;
         return !enabled;
+    }
+
+    private showPrediction(index: number) {
+        setTimeout(() => {
+            this.activeContainerIndex = index;
+            setTimeout(() => this.activeContainerIndex = undefined, 1000);
+        });
     }
 
 }
