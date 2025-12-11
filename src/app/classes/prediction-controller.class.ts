@@ -10,6 +10,7 @@ class CheckMoveResult {
             public canMove: boolean,
             public moveToEmpty: boolean,
             public destinationHasOnlyColor: boolean,
+            public emptySlotCount: number,
         ) {
     }
 }
@@ -109,6 +110,15 @@ export class PredictionController {
                 if (checkResults[1].destinationHasOnlyColor) {
                     return this.setPrediction(checkResults[1].index);
                 }
+                if (GameContainer.hasOnlyOneColor(this.containers[this.selectedContainerIndex])) {
+                    // container from has only one color
+                    if (!checkResults[0].moveToEmpty && checkResults[0].emptySlotCount >= fromCount) {
+                        return this.setPrediction(checkResults[0].index);
+                    }
+                    if (!checkResults[1].moveToEmpty && checkResults[1].emptySlotCount >= fromCount) {
+                        return this.setPrediction(checkResults[1].index);
+                    }
+                }
             }
         } else if (checkResults.length === 3) {
             for (let i = 0; i < checkResults.length; i++) {
@@ -123,13 +133,12 @@ export class PredictionController {
     private canMoveTo(index: number, color: Color): CheckMoveResult {
         const container: GameContainer = this.containers[index];
         if (container.size() === 0) {
-            return new CheckMoveResult(index, true, true, false);
+            return new CheckMoveResult(index, true, true, false, CONTAINER_SIZE);
         }
         if (container.peek() === color && container.size() < CONTAINER_SIZE) {
-            return new CheckMoveResult(index, true, false, GameContainer.hasOnlyOneColor(container));
+            return new CheckMoveResult(index, true, false, GameContainer.hasOnlyOneColor(container), CONTAINER_SIZE - container.size());
         }
-        return new CheckMoveResult(index, false, false, false);
+        return new CheckMoveResult(index, false, false, false, 0);
     }
-
 
 }
