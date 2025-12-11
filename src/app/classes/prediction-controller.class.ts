@@ -2,6 +2,18 @@ import { Color } from "./model/colors.class";
 import { CONTAINER_SIZE } from "./model/const.class";
 import { GameContainer } from "./model/game/game-container.class";
 
+
+class CheckMoveResult {
+
+    constructor (
+            public index: number,
+            public canMove: boolean,
+            public moveToEmpty: boolean,
+            public destinationHasOnlyColor: boolean,
+        ) {
+    }
+}
+
 export class PredictionController {
 
     private containers: GameContainer[] = [];
@@ -55,13 +67,14 @@ export class PredictionController {
         return result;
     }
 
-    private setPrediction(index: number) {
+    private setPrediction(index: number): number {
         this.predictedIndex = index;
         this.predictedIndexTimeout = setTimeout(
             () => {
                 this.predictedIndex = undefined;
                 // console.log('predictedIndex cleared!');
             }, 3000);
+        return index;
     }
 
     predictNextClick(): number | undefined {
@@ -70,34 +83,52 @@ export class PredictionController {
         }
         const color = this.containers[this.selectedContainerIndex].peek();
         const fromCount = this.containers[this.selectedContainerIndex].getTopColorCount();
-        let predictionTo: number | undefined = undefined;
+        let checkResults: CheckMoveResult[] = [];
         for (let i = 0; i < this.containers.length; i++) {
             if (i === this.selectedContainerIndex) {
                 continue;
             }
-            if (this.canMoveTo(this.containers[i], color)) {
-                // Have possible option
-                if (predictionTo !== undefined) {
-                    // It is second option, then we cannot predict
-                    return undefined;
-                }
-                predictionTo = i;
+            const checkResult = this.canMoveTo(i, color);
+            if (checkResult.canMove) {
+                checkResults.push(checkResult);
             }
         }
-        if (predictionTo !== undefined) {
-            this.setPrediction(predictionTo);
+        // Select best prediction
+        if (checkResults.length === 0) {
+            return undefined;
+        } else if (checkResults.length === 1) {
+            return this.setPrediction(checkResults[0].index);
+        } else if (checkResults.length === 2) {
+            if (checkResults[0].moveToEmpty && checkResults[1].moveToEmpty) {
+                // Both move to empty
+                return this.setPrediction(checkResults[0].index);
+            } else {
+                if (checkResults[0].destinationHasOnlyColor) {
+                    return this.setPrediction(checkResults[0].index);
+                }
+                if (checkResults[1].destinationHasOnlyColor) {
+                    return this.setPrediction(checkResults[1].index);
+                }
+            }
+        } else if (checkResults.length === 3) {
+            for (let i = 0; i < checkResults.length; i++) {
+                if (checkResults[i].destinationHasOnlyColor && this.containers[checkResults[i].index].size() > 1) {
+                    return this.setPrediction(checkResults[i].index);
+                }
+            }
         }
-        return predictionTo;
+        return undefined;
     }
 
-    private canMoveTo(container: GameContainer, color: Color): boolean {
+    private canMoveTo(index: number, color: Color): CheckMoveResult {
+        const container: GameContainer = this.containers[index];
         if (container.size() === 0) {
-            return true;
+            return new CheckMoveResult(index, true, true, false);
         }
         if (container.peek() === color && container.size() < CONTAINER_SIZE) {
-            return true;
+            return new CheckMoveResult(index, true, false, GameContainer.hasOnlyOneColor(container));
         }
-        return false;
+        return new CheckMoveResult(index, false, false, false);
     }
 
 
