@@ -98,6 +98,10 @@ export class PredictionController {
         if (checkResults.length === 0) {
             return undefined;
         } else if (checkResults.length === 1) {
+            // If move all to empty it doesn't make sense
+            if (fromCount === this.containers[this.selectedContainerIndex].size() && checkResults[0].moveToEmpty) {
+                return undefined;
+            }
             return this.setPrediction(checkResults[0].index);
         } else if (checkResults.length === 2) {
             if (checkResults[0].moveToEmpty && checkResults[1].moveToEmpty) {
