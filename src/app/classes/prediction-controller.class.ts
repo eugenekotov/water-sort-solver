@@ -74,7 +74,7 @@ export class PredictionController {
             () => {
                 this.predictedIndex = undefined;
                 // console.log('predictedIndex cleared!');
-            }, 3000);
+            }, 1500);
         return index;
     }
 
@@ -95,19 +95,29 @@ export class PredictionController {
             }
         }
         // Select best prediction
-        if (checkResults.length === 0) {
+        if (checkResults.length === 0) { // 0
             return undefined;
-        } else if (checkResults.length === 1) {
+
+        } else if (checkResults.length === 1) { // 1
+
             // If move all to empty it doesn't make sense
             if (fromCount === this.containers[this.selectedContainerIndex].size() && checkResults[0].moveToEmpty) {
                 return undefined;
             }
             return this.setPrediction(checkResults[0].index);
-        } else if (checkResults.length === 2) {
+
+        } else if (checkResults.length === 2) { // 2
             if (checkResults[0].moveToEmpty && checkResults[1].moveToEmpty) {
-                // Both move to empty
+                // Both move to empty, move to first
                 return this.setPrediction(checkResults[0].index);
             } else {
+                // Both not empty and not one color
+                const container1 = this.containers[checkResults[0].index];
+                const container2 = this.containers[checkResults[1].index];
+                if (container1.size() > 0 && !GameContainer.hasOnlyOneColor(container1) && container2.size() > 0 && !GameContainer.hasOnlyOneColor(container2)) {
+                    return undefined;
+                }
+                //
                 if (checkResults[0].destinationHasOnlyColor) {
                     return this.setPrediction(checkResults[0].index);
                 }
@@ -116,15 +126,24 @@ export class PredictionController {
                 }
                 if (GameContainer.hasOnlyOneColor(this.containers[this.selectedContainerIndex])) {
                     // container from has only one color
-                    if (!checkResults[0].moveToEmpty && checkResults[0].emptySlotCount >= fromCount) {
+                    if (!checkResults[0].moveToEmpty && checkResults[1].moveToEmpty && checkResults[0].emptySlotCount >= fromCount) {
                         return this.setPrediction(checkResults[0].index);
                     }
-                    if (!checkResults[1].moveToEmpty && checkResults[1].emptySlotCount >= fromCount) {
+                    if (!checkResults[1].moveToEmpty && checkResults[0].moveToEmpty && checkResults[1].emptySlotCount >= fromCount) {
                         return this.setPrediction(checkResults[1].index);
                     }
                 }
+                if (fromCount > 1) {
+                    if (checkResults[0].emptySlotCount < fromCount && container2.isEmpty()) {
+                        return this.setPrediction(checkResults[1].index);
+                    }
+                    if (checkResults[1].emptySlotCount < fromCount && container1.isEmpty()) {
+                        return this.setPrediction(checkResults[0].index);
+                    }
+                }
             }
-        } else if (checkResults.length === 3) {
+        } else if (checkResults.length === 3) { // 3
+
             for (let i = 0; i < checkResults.length; i++) {
                 if (checkResults[i].destinationHasOnlyColor && this.containers[checkResults[i].index].size() > 1) {
                     return this.setPrediction(checkResults[i].index);
