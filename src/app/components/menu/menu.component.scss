@@ -17,6 +17,12 @@
 .title-buttons {
     display: flex;
     justify-content: end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.version {
+    color: var(--button-background-color-disabled);
 }
 
 .title-buttons-small {
