@@ -111,13 +111,34 @@ export class PredictionController {
                 // Both move to empty, move to first
                 return this.setPrediction(checkResults[0].index);
             } else {
-                // Both not empty and not one color
+                // Atleast one is not empty
                 const container1 = this.containers[checkResults[0].index];
                 const container2 = this.containers[checkResults[1].index];
                 if (container1.size() > 0 && !GameContainer.hasOnlyOneColor(container1) && container2.size() > 0 && !GameContainer.hasOnlyOneColor(container2)) {
+                    // Boath are not empty and not one color
+                    // Probably only one can take all colors
+                    if (fromCount > 1) {
+                        if (checkResults[0].emptySlotCount >= fromCount && checkResults[1].emptySlotCount < fromCount) {
+                            // we can move to 0
+                            return this.setPrediction(checkResults[0].index);
+                        }
+                        if (checkResults[0].emptySlotCount < fromCount && checkResults[1].emptySlotCount >= fromCount) {
+                            // we can move to 1
+                            return this.setPrediction(checkResults[1].index);
+                        }
+                    }
                     return undefined;
                 }
                 //
+                if (checkResults[0].destinationHasOnlyColor && checkResults[1].destinationHasOnlyColor) {
+                    // Both have only one color, move to bigger
+                    if (this.containers[checkResults[1].index].size() > this.containers[checkResults[0].index].size()) {
+                        return this.setPrediction(checkResults[1].index);
+                    } else {
+                        return this.setPrediction(checkResults[0].index);
+                    }
+                }
+
                 if (checkResults[0].destinationHasOnlyColor) {
                     return this.setPrediction(checkResults[0].index);
                 }
