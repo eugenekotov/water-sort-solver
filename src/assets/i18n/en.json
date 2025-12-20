@@ -48,7 +48,11 @@
         "PLAY": "Play new game",
         "RESTART": "Restart",
         "BEST_STEPS": "Your best for this puzzle: {{ bestSteps }} steps",
-        "HINT": "Hint"
+        "HINT": {
+            "TITLE": "Hint",
+            "NO_SOLUTION": "Oops, the play board has no solution :(",
+            "YES_SOLUTION": "The board has solution!"
+        }
     },
     "SAVE": {
         "TITLE": "Save game",
@@ -67,4 +71,5 @@
     "SETTINGS": {
         "PREDICT_STEP": "Next step prediction"
     }
+
 }

@@ -30,6 +30,7 @@ import { PlayedDialogComponent } from './components/played-dialog/played-dialog.
 import { MatDialogModule } from '@angular/material/dialog';
 import { StatisticsComponent } from './components/statistics/statistics.component'
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { HintDialogComponent } from './components/board-play/hint-dialog/hint-dialog.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -51,7 +52,8 @@ export function HttpLoaderFactory(http: HttpClient) {
         SaveGameComponent,
         LoadGameComponent,
         PlayedDialogComponent,
-        StatisticsComponent
+        StatisticsComponent,
+        HintDialogComponent,
     ],
     imports: [
         BrowserModule,
