@@ -89,7 +89,6 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
             this.screenResizedSubscription.unsubscribe();
         }
         this.stepsSubjectSubscription.unsubscribe();
-
     }
 
     private setActiveContainerBackgroundColor() {
@@ -145,7 +144,9 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
                         this.gameService.steps.push(step);
                     }
                     this.movingInProgress = false;
-                    this.checkGameFinished();
+                    if (this.checkGameFinished()) {
+                        this.stepsSubjectSubscription.unsubscribe();
+                    }
                 },
                 error: (error: HandleClickError) => {
                     // Interrupted by Restert or step back button
@@ -417,11 +418,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         this.cancelUnfinishedStep().subscribe(() => this.mainService.solve());
     }
 
-    private checkGameFinished() {
+    private checkGameFinished(): boolean {
         if (GameContainer.isResolvedContainers(this.gameService.playContainers)) {
-            // TODO: At this moment we need to stop playing
             this.showPlayedDialog();
+            return true;
         }
+        return false;
     }
 
     private showPlayedDialog() {
@@ -480,11 +482,20 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
         return !enabled;
     }
 
+    protected hintDisabled(): boolean {
+        const enabled = !this.movingInProgress && !this.selectedContainer && !this.stoppingInProgress;
+        return !enabled;
+    }
+
     private showPrediction(index: number) {
         setTimeout(() => {
             this.activeContainerIndex = index;
-            setTimeout(() => this.activeContainerIndex = undefined, 1000);
-        });
+            setTimeout(() => this.activeContainerIndex = undefined, 700);
+        }, 100);
+    }
+
+    protected hintClick(): void {
+
     }
 
 }

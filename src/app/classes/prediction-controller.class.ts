@@ -30,7 +30,9 @@ export class PredictionController {
     handleClick(index: number) {
         if (this.selectedContainerIndex === undefined) {
             // select container
-            this.selectedContainerIndex = index;
+            if (this.containers[index].size() > 0) {
+                this.selectedContainerIndex = index;
+            }
         } else {
             // Moving colors if it is possible
             this.move(this.selectedContainerIndex, index);
@@ -80,6 +82,10 @@ export class PredictionController {
 
     predictNextClick(): number | undefined {
         if (this.selectedContainerIndex === undefined) {
+            return undefined;
+        }
+        if (this.containers[this.selectedContainerIndex].resolved) {
+            // Noprediction if user click on resolved container
             return undefined;
         }
         const color = this.containers[this.selectedContainerIndex].peek();

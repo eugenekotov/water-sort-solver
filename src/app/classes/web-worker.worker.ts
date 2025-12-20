@@ -19,7 +19,7 @@ class SolutionData {
     logicFunctions: TLogicFunction[] = [];
 }
 
-function solve(containers: GameContainer[]) {
+function solve(containers: GameContainer[]): void {
     const solutionData = new SolutionData();
     solutionData.containers = containers;
     solutionData.hashes = new Set();
@@ -38,7 +38,7 @@ function solve(containers: GameContainer[]) {
     }
 }
 
-function tryToResolve(solutionData: SolutionData, containers: GameContainer[], stepCount: number) {
+function tryToResolve(solutionData: SolutionData, containers: GameContainer[], stepCount: number): void {
     // console.log(stepCount);
     solutionData.counter++;
     // console.log("Counter ", solutionData.counter, "Counter ", "We have ", solutionData.solutions.solutions.length, "solutions");

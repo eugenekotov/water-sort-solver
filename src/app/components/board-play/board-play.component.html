@@ -111,6 +111,8 @@
         <div class="buttons-container buttons-container-small">
             <button class="button button-small" (click)="restartClick()"
                     [disabled]="stopDisabled()">{{ "PLAY.RESTART" | translate }}</button>
+            <button class="button button-small" (click)="hintClick()"
+                    [disabled]="hintDisabled()">{{ "PLAY.HINT" | translate }}</button>
             <button class="button button-small" (click)="backClick()"
                     [disabled]="stopDisabled()">{{ "SOLVE.STEP_BACK" | translate }}</button>
         </div>
@@ -120,6 +122,8 @@
         <div class="buttons-container buttons-container-large">
             <button class="button button-large" (click)="restartClick()"
                     [disabled]="stopDisabled()">{{ "PLAY.RESTART" | translate }}</button>
+            <button class="button button-large" (click)="hintClick()"
+                    [disabled]="hintDisabled()">{{ "PLAY.HINT" | translate }}</button>
             <button class="button button-large" (click)="backClick()"
                     [disabled]="stopDisabled()">{{ "SOLVE.STEP_BACK" | translate }}</button>
         </div>

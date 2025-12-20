@@ -47,7 +47,8 @@
     "PLAY": {
         "PLAY": "Play new game",
         "RESTART": "Restart",
-        "BEST_STEPS": "Your best for this puzzle: {{ bestSteps }} steps"
+        "BEST_STEPS": "Your best for this puzzle: {{ bestSteps }} steps",
+        "HINT": "Hint"
     },
     "SAVE": {
         "TITLE": "Save game",
