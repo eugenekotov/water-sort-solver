@@ -27,9 +27,11 @@ export class PlayedDialogComponent implements OnInit {
     protected stepCount: number;
     protected statText: string;
 
-    constructor(public mainService: MainService, public gameService: GameService,
-        public dialogRef: MatDialogRef<PlayedDialogComponent, PlayedDialogResult | undefined>,
-        @Inject(MAT_DIALOG_DATA) public data: PlayedDialogData, private statisticsService: StatisticsService) {
+    constructor(
+            public mainService: MainService,
+            private gameService: GameService,
+            private dialogRef: MatDialogRef<PlayedDialogComponent, PlayedDialogResult | undefined>,
+            @Inject(MAT_DIALOG_DATA) data: PlayedDialogData, private statisticsService: StatisticsService) {
         this.stepCount = data.stepCount;
         const hash = GameController.getGameHash(this.gameService.getContainers());
         this.gameCount = this.statisticsService.getGameCount();

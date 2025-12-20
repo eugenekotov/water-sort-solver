@@ -139,6 +139,7 @@ body {
 .mat-dialog-container {
   background-color: var(--main-background-color);
   color: var(--text-color);
+  padding: 0 !important;
 }
 
 .mat-checkbox-layout {

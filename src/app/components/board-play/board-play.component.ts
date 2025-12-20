@@ -11,7 +11,7 @@ import { MainService, TGameView } from 'src/app/services/main.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
 import { PlayedDialogComponent, PlayedDialogData, PlayedDialogResult } from '../played-dialog/played-dialog.component';
 import { PredictionController } from 'src/app/classes/prediction-controller.class';
-
+import { HintDialogComponent } from './hint-dialog/hint-dialog.component';
 
 export class PlayStep {
     constructor(public iFrom: number, public iTo: number, public count: number) { }
@@ -31,7 +31,6 @@ interface PredictionObject {
     containerIndex: number;
     shouldBeSkipped: boolean; // true - if we need to skip this click
 }
-
 
 @Component({
     selector: 'app-board-play',
@@ -495,7 +494,12 @@ export class BoardPlayComponent implements AfterViewInit, OnDestroy {
     }
 
     protected hintClick(): void {
+        const config: MatDialogConfig<PlayedDialogData> = {
+            data: { stepCount: this.gameService.steps.length },
+            disableClose: false,
+        };
 
+        this.dialog.open<HintDialogComponent, PlayedDialogData, PlayedDialogResult | undefined>(HintDialogComponent, config);
     }
 
 }
